@@ -1,7 +1,8 @@
 /* Publications — source: Europass CV (19 Nov 2026).
    Add a new paper by adding one object to the top of the right list below.
    type: book | chapter | journal | conference | workshop | patent | talk
-   "me" is highlighted automatically in author lists. */
+   "me" is highlighted automatically in author lists.
+   scholarTitle (optional): the title as Google Scholar spells it, only needed when it differs enough to break matching. */
 window.PUBLICATIONS = [
   /* ---------- 2026 ---------- */
   { year: 2026, type: "conference",
@@ -61,23 +62,23 @@ window.PUBLICATIONS = [
     authors: "KC Santosh, N Das, Swarnendu Ghosh",
     venue: "Primers in Biomedical Imaging Devices and Systems", detail: "Academic Press (Elsevier)" },
   { year: 2021, type: "chapter",
-    title: "Introduction",
+    title: "Introduction", scholarTitle: "Chapter 1 Introduction",
     authors: "KC Santosh, N Das, Swarnendu Ghosh",
     venue: "Deep Learning Models for Medical Imaging", detail: "pp. 1–27 · Academic Press (Elsevier)" },
   { year: 2021, type: "chapter",
-    title: "Deep learning: a review",
+    title: "Deep learning: a review", scholarTitle: "Chapter 2 Deep learning: a review",
     authors: "KC Santosh, N Das, Swarnendu Ghosh",
     venue: "Deep Learning Models for Medical Imaging", detail: "pp. 29–63 · Academic Press (Elsevier)" },
   { year: 2021, type: "chapter",
-    title: "Deep learning models",
+    title: "Deep learning models", scholarTitle: "Chapter 3 Deep learning models",
     authors: "KC Santosh, N Das, Swarnendu Ghosh",
     venue: "Deep Learning Models for Medical Imaging", detail: "pp. 65–97 · Academic Press (Elsevier)" },
   { year: 2021, type: "chapter",
-    title: "Cytology image analysis",
+    title: "Cytology image analysis", scholarTitle: "Chapter 4 Cytology image analysis",
     authors: "KC Santosh, N Das, Swarnendu Ghosh",
     venue: "Deep Learning Models for Medical Imaging", detail: "pp. 99–123 · Academic Press" },
   { year: 2021, type: "chapter",
-    title: "COVID-19: prediction, screening, and decision-making",
+    title: "COVID-19: prediction, screening, and decision-making", scholarTitle: "Chapter 5 COVID-19: prediction, screening, and decision-making",
     authors: "KC Santosh, N Das, Swarnendu Ghosh",
     venue: "Deep Learning Models for Medical Imaging", detail: "pp. 125–145 · Academic Press (Elsevier)" },
   { year: 2021, type: "journal",

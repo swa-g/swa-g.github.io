@@ -70,7 +70,7 @@
   var cites = {};
   var normTitle = function (s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, ""); };
   function citesFor(p) {
-    var k = normTitle(p.title);
+    var k = normTitle(p.scholarTitle || p.title);
     if (cites[k] !== undefined) return cites[k];
     if (k.length < 25) return undefined;                       // too short to match loosely
     var head = k.slice(0, 40);
