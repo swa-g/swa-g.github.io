@@ -376,7 +376,7 @@
     var cfg = window.TESTIMONIAL_CONFIG || {};
     if (cfg.endpoint) {
       var lede = $(".form-lede");
-      if (lede) lede.textContent = "Worked or studied with me? I'd be glad to hear how it went. Your testimonial is saved privately and appears here only after I have verified it.";
+      if (lede) lede.textContent = "Worked or studied with me? I'd be glad to hear how it went. Your testimonial is saved privately and checked before it appears here. You will be told straight away if it is waiting for review.";
       var sb = form.querySelector('button[type="submit"]'); if (sb) sb.textContent = "Submit testimonial";
       var cp = $("#t-copy"); if (cp) cp.hidden = true;
     }
@@ -399,6 +399,32 @@
         "I agree to my name and these words being shown on swarnendughosh.com.";
       return { subject: "Testimonial for your website from " + name.value.trim(), body: body };
     }
+    /* The submitter's private id lives only in their own browser. The server returns just the Status for that id. */
+    var MINE = "testimonial_ids";
+    function readMine() { try { return JSON.parse(localStorage.getItem(MINE) || "[]"); } catch (e) { return []; } }
+    function writeMine(list) { try { localStorage.setItem(MINE, JSON.stringify(list.slice(-5))); } catch (e) {} }
+    function rememberMine(id) { if (id) { var l = readMine(); l.push(id); writeMine(l); } }
+    function checkMine() {
+      var ids = readMine(), box = $("#my-status");
+      if (!cfg.endpoint || !ids.length || !box) return;
+      Promise.all(ids.map(function (id) {
+        return fetch(cfg.endpoint + (cfg.endpoint.indexOf("?") > -1 ? "&" : "?") + "action=status&id=" + encodeURIComponent(id), { cache: "no-store" })
+          .then(function (r) { return r.json(); }).then(function (d) { return { id: id, status: d && d.status }; }).catch(function () { return { id: id, status: "error" }; });
+      })).then(function (res) {
+        var waiting = res.filter(function (x) { return x.status === "Unverified"; }).length;
+        var live = res.filter(function (x) { return x.status === "Verified"; }).length;
+        var declined = res.filter(function (x) { return x.status === "Rejected"; }).length;
+        var msgs = [];
+        if (waiting) msgs.push("Your testimonial is pending verification. It will appear here once it has been checked.");
+        if (live) msgs.push("Good news: your testimonial has been verified and is now live.");
+        if (declined) msgs.push("Your testimonial was reviewed and will not be shown. Thank you for taking the time to write it.");
+        if (msgs.length) { box.textContent = msgs.join(" "); box.hidden = false; }
+        // keep only the ones still waiting (or temporarily unreachable); live/declined are told once
+        writeMine(res.filter(function (x) { return x.status === "Unverified" || x.status === "error"; }).map(function (x) { return x.id; }));
+      });
+    }
+    checkMine();
+
     function send() {
       var btn = form.querySelector('button[type="submit"]');
       btn.disabled = true; say("Submitting…");
@@ -407,9 +433,15 @@
         .then(function (r) { return r.json(); })
         .then(function (d) {
           if (!d || !d.ok) throw new Error((d && d.error) || "failed");
-          say("Thank you! Your testimonial has been submitted and is pending review. It will appear here once I have verified it.", "ok");
+          var pending = d.status !== "Verified";
+          if (pending) {
+            say("Thank you! Your testimonial has been submitted and is pending verification. It will appear here once it has been checked. You will see a note on this page whenever you come back.", "ok");
+            var pn = $("#pending-note"); if (pn) pn.hidden = false;
+          } else {
+            say("Thank you! Your testimonial has been verified and published. Reload the page to see it in the slider.", "ok");
+          }
+          rememberMine(d.id);
           form.reset(); count.textContent = "0 / " + msg.maxLength;
-          var pn = $("#pending-note"); if (pn) pn.hidden = false;
         })
         .catch(function (err) {
           say(/at least 20|confirm|Too many/.test(String(err && err.message)) ? err.message : "Sorry, I couldn't submit that just now. Please try again in a little while.", "err");
