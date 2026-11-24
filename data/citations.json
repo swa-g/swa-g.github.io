@@ -1,0 +1,99 @@
+{
+  "updated": "2026-11-24T15:53:35.825Z",
+  "source": "Google Scholar via SerpAPI",
+  "total": 1345,
+  "h_index": 13,
+  "i10_index": 17,
+  "graph": [
+    {
+      "year": 2015,
+      "citations": 9
+    },
+    {
+      "year": 2016,
+      "citations": 7
+    },
+    {
+      "year": 2017,
+      "citations": 3
+    },
+    {
+      "year": 2018,
+      "citations": 26
+    },
+    {
+      "year": 2019,
+      "citations": 51
+    },
+    {
+      "year": 2020,
+      "citations": 116
+    },
+    {
+      "year": 2021,
+      "citations": 197
+    },
+    {
+      "year": 2022,
+      "citations": 220
+    },
+    {
+      "year": 2023,
+      "citations": 230
+    },
+    {
+      "year": 2024,
+      "citations": 202
+    },
+    {
+      "year": 2025,
+      "citations": 199
+    },
+    {
+      "year": 2026,
+      "citations": 76
+    }
+  ],
+  "papers": {
+    "understandingdeeplearningtechniquesforimagesegmentation": 695,
+    "thejourneyofgraphkernelsthroughtwodecades": 111,
+    "reshapinginputsforconvolutionalneuralnetworksomecommonanduncommonmethods": 89,
+    "improvedwordlevelhandwrittenindicscriptidentificationbyintegratingsmallconvolutionalneuralnetworks": 60,
+    "segfastv2semanticimagesegmentationwithlessparametersindeeplearningforautonomousdriving": 51,
+    "deeplearningmodelsformedicalimaging": 50,
+    "chapter2deeplearningareview": 48,
+    "deeplearningforwordlevelhandwrittenindicscriptidentification": 39,
+    "handwrittenindiccharacterrecognitionusingcapsulenetworks": 33,
+    "segfastafastersqueezenetbasedsemanticimagesegmentationtechniqueusingdepthwiseseparableconvolutions": 27,
+    "comparisonofdifferentgraphdistancemetricsforsemantictextbasedclassification": 25,
+    "twophasedynamicroutingformicroandmacrolevelequivarianceinmulticolumncapsulenetworks": 14,
+    "usingdynamicroutingtoextractintermediatefeaturesfordevelopingscalablecapsulenetworks": 13,
+    "combiningmultilevelcontextsofsuperpixelusingconvolutionalneuralnetworkstoperformnaturalscenelabeling": 12,
+    "usingthermalintensitiestobuildconditionalrandomfieldsforobjectsegmentationatnight": 11,
+    "syncganusinglearnableclassspecificpriorstogeneratesyntheticdataforimprovingclassifierperformanceoncytologicalimages": 11,
+    "gsdnetcompactnetworkforpixellevelgraphicalsymboldetection": 10,
+    "multiscalemirrorconnectionbasedencoderdecodernetworkfortextlocalization": 8,
+    "usinggraphsandsemanticinformationtoimprovetextclassifiers": 8,
+    "chapter4cytologyimageanalysis": 5,
+    "handwrittenoriyadigitrecognitionusingmaximumcommonsubgraphbasedsimilaritymeasures": 5,
+    "representingimagecaptionsasconceptgraphsusingsemanticinformation": 4,
+    "juvntamultispectraldatasetofindoorobjectrecognitionusingvisiblenearinfraredandthermalspectrum": 3,
+    "chapter1introduction": 3,
+    "hileximagebasedhierarchicallayoutextractionfromquestionpapers": 2,
+    "im2graphaweaklysupervisedapproachforgeneratingholisticscenegraphsfromregionaldependencies": 2,
+    "chapter5covid19predictionscreeninganddecisionmaking": 2,
+    "amulticueinformationbasedapproachtocontourdetectionbyutilizingsuperpixelsegmentation": 2,
+    "juevoraagraphbasedcrosslevelsemanticsimilarityanalysisusingdiscourseinformation": 2,
+    "multimodalsurvivaltransformerforprogressionwindowestimationoftimetodementia": 0,
+    "questioningposthocimagecorruptionsasaproxyforenvironmentalvariationinautonomousdriving": 0,
+    "rocketsimbenchmarkingreinforcementlearninghovercontrolofareusablebooster": 0,
+    "ravnetconditioningretinalvesselidentificationusingacascadedmultiobjectiveunet": 0,
+    "aibasedwristbandforheartattackdetection": 0,
+    "madsamultimodalacademicdocumentsegmentationdatasetforsmartquestionbankmanagement": 0,
+    "digitaltwinsinhealthcareaforefrontforknowledgerepresentationtechniques": 0,
+    "acutelymphoblasticleukemiaclassificationusingcompactchannelspecificmulticolumncnns": 0,
+    "guidebpguidedbackpropagationinmultioutputneuralnetworksbychannelinggradientsthroughweakerlogits": 0,
+    "chapter3deeplearningmodels": 0,
+    "captiongenerationfromkeywordsusingprobabilisticduallstmnetworksanddynamicprogramming": 0
+  }
+}
