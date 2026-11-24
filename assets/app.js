@@ -208,12 +208,19 @@
       });
     });
 
+    var affHtml = function (o) {
+      if (!o) return "";
+      if (typeof o === "string") return '<p class="aff"><span class="pos">' + esc(o) + "</span></p>";
+      var inst = [o.name ? o.name + (o.abbr ? " (" + o.abbr + ")" : "") : "", o.city, o.country].filter(Boolean).join(", ");
+      return '<p class="aff">' + (o.pos ? '<span class="pos">' + esc(o.pos) + "</span>" : "") +
+        (inst ? '<span class="inst">' + esc(inst) + "</span>" : "") + "</p>";
+    };
     var card = function (p) {
       var face = p.photo
         ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="56" height="56" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
         : '<div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div>";
       return '<div class="person">' + face + "<div><h4>" + esc(p.name) + "</h4>" +
-        (p.org ? '<p class="aff">' + esc(p.org) + "</p>" : "") + "</div></div>";
+        affHtml(p.org) + "</div></div>";
     };
 
     var html = "", placed = {};
@@ -227,15 +234,6 @@
       if (!list.length) return;
       html += '<div class="people-group"><h3>' + esc(g.title) + '</h3><div class="people-grid">' + list.map(card).join("") + "</div></div>";
     });
-
-    /* Co-authors without a relationship label yet: plain names */
-    var others = Object.keys(names).filter(function (k) { return !placed[k]; })
-      .map(function (k) { return names[k]; })
-      .sort(function (a, b) { return surname(a) < surname(b) ? -1 : surname(a) > surname(b) ? 1 : a < b ? -1 : 1; });
-    if (others.length) {
-      html += '<div class="people-group"><h3>Other co-authors</h3><ul class="author-list">' +
-        others.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul></div>";
-    }
 
     root.innerHTML = '<p class="people-summary">Everyone here is a co-author on at least one of my publications.</p>' + html;
 
