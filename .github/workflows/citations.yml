@@ -1,0 +1,41 @@
+name: Update citations
+
+on:
+  schedule:
+    - cron: "17 5 * * *"   # once a day, 05:17 UTC (~30 SerpAPI searches a month)
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: citations
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch citations from Google Scholar (via SerpAPI)
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          SCHOLAR_AUTHOR_ID: B_44F14AAAAJ   # the user= value in your Scholar profile URL
+        run: node scripts/update-citations.mjs
+
+      - name: Commit if the numbers changed
+        run: |
+          if git diff --quiet -- data/citations.json && [ -z "$(git ls-files --others --exclude-standard data/citations.json)" ]; then
+            echo "No change."
+          else
+            git config user.name  "citation-bot"
+            git config user.email "citation-bot@users.noreply.github.com"
+            git add data/citations.json
+            git commit -m "Update citation counts"
+            git push
+          fi
