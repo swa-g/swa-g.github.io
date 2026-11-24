@@ -62,8 +62,10 @@
           <a href="#about">About</a>
           <a href="#research">Research</a>
           <a href="#publications">Publications</a>
+          <a href="#people">People</a>
           <a href="#experience">Experience</a>
           <a href="#education">Education</a>
+          <a href="#testimonials">Testimonials</a>
           <a href="#contact">Contact</a>
         </nav>
         <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
@@ -206,6 +208,19 @@
           <noscript><p>This list needs JavaScript. See the full list on <a href="https://scholar.google.com/citations?user=B_44F14AAAAJ">Google Scholar</a>.</p></noscript>
         </div>
         <p class="scholar-note">Citation counts and the most recent additions are on <a href="https://scholar.google.com/citations?user=B_44F14AAAAJ" target="_blank" rel="noopener">Google Scholar</a>.</p>
+      </div>
+    </section>
+
+    <!-- ================= PEOPLE ================= -->
+    <section id="people">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="kicker">People</div>
+          <h2>Supervisors, co-authors &amp; students</h2>
+        </div>
+        <div id="people-root">
+          <noscript><p>Co-authors are listed in the author lines of the publications above.</p></noscript>
+        </div>
       </div>
     </section>
 
@@ -361,6 +376,80 @@
       </div>
     </section>
 
+    <!-- ================= TESTIMONIALS ================= -->
+    <section id="testimonials">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="kicker">Testimonials</div>
+          <h2>Kind words from students and colleagues</h2>
+        </div>
+
+        <div class="testi-grid">
+          <div class="reveal">
+            <div id="slider" class="slider" role="region" aria-roledescription="carousel" aria-label="Testimonials">
+              <div id="slides" class="slides" tabindex="0" aria-live="off"></div>
+              <div id="slider-ui" class="slider-ui" hidden>
+                <button id="s-prev" class="icon-btn" type="button" aria-label="Previous testimonial">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <div id="s-dots" class="dots" role="tablist" aria-label="Choose testimonial"></div>
+                <button id="s-play" class="icon-btn" type="button" aria-label="Pause automatic sliding" aria-pressed="false">
+                  <svg id="s-pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                  <svg id="s-play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><path d="M8 5v14l11-7z"/></svg>
+                </button>
+                <button id="s-next" class="icon-btn" type="button" aria-label="Next testimonial">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <form id="testi-form" class="testi-form reveal" novalidate>
+            <h3>Write a testimonial</h3>
+            <p class="form-lede">Worked or studied with me? I'd be glad to hear how it went. Your words open as an email draft to me. I read every one and add it here once I have your OK.</p>
+
+            <div class="field">
+              <label for="t-name">Your name <span aria-hidden="true">*</span></label>
+              <input id="t-name" name="name" type="text" required maxlength="80" autocomplete="name">
+            </div>
+            <div class="field two">
+              <div>
+                <label for="t-rel">How do we know each other? <span aria-hidden="true">*</span></label>
+                <select id="t-rel" name="rel" required>
+                  <option value="">Choose…</option>
+                  <option>Student</option>
+                  <option>Mentee / project student</option>
+                  <option>Colleague</option>
+                  <option>Co-author / collaborator</option>
+                  <option>Supervisor / mentor</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label for="t-org">Institution / role <small>(optional)</small></label>
+                <input id="t-org" name="org" type="text" maxlength="100" placeholder="e.g. MTech 2023, IEM Kolkata">
+              </div>
+            </div>
+            <div class="field">
+              <label for="t-msg">Your testimonial <span aria-hidden="true">*</span></label>
+              <textarea id="t-msg" name="msg" rows="5" required maxlength="1000" aria-describedby="t-count"></textarea>
+              <div id="t-count" class="count" aria-live="polite">0 / 1000</div>
+            </div>
+            <label class="check">
+              <input id="t-ok" type="checkbox" required>
+              <span>I'm happy for my name and these words to be shown on this website. <span aria-hidden="true">*</span></span>
+            </label>
+
+            <div class="form-actions">
+              <button class="btn primary" type="submit">Open email draft</button>
+              <button class="btn" type="button" id="t-copy">Copy text instead</button>
+            </div>
+            <p id="t-status" class="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= CONTACT ================= -->
     <section id="contact">
       <div class="wrap">
@@ -390,6 +479,8 @@
   </footer>
 
   <script src="assets/data.js"></script>
+  <script src="assets/people.js"></script>
+  <script src="assets/testimonials.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>

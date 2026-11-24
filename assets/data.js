@@ -19,10 +19,10 @@ window.PUBLICATIONS = [
     venue: "2nd International Conference on Health Medical Systems and Services (HMSS 2026)", detail: "IEEE Xplore, in press" },
 
   /* ---------- 2025 ---------- */
-  { year: 2025, type: "workshop",
+  { year: 2025, type: "conference",
     title: "HiLEx: Image-Based Hierarchical Layout Extraction from Question Papers",
-    authors: "U Aich, Swarnendu Ghosh, T Saha",
-    venue: "International Conference on Document Analysis and Recognition (ICDAR), workshop", detail: "pp. 485–505 · ACM" },
+    authors: "U Aich, S Chakraborty, D Sadhukhan, Swarnendu Ghosh, T Saha",
+    venue: "Document Analysis and Recognition – ICDAR 2025", detail: "pp. 485–505 · Springer (LNCS)" },
 
   /* ---------- 2024 ---------- */
   { year: 2024, type: "patent",

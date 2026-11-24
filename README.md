@@ -14,3 +14,9 @@ the citation panel stays hidden.
 
 One-time setup: repo **Settings -> Secrets and variables -> Actions -> New repository secret**, name `SERPAPI_KEY`.
 Run it by hand from the **Actions** tab (Update citations -> Run workflow).
+
+## People and testimonials
+
+- `assets/people.js`: supervisors, name overrides and students. Co-author counts are computed from `assets/data.js`.
+- `assets/testimonials.js`: approved testimonials for the slider. Visitors use the "Write a testimonial" form, which opens an
+  email draft to the site owner (no server involved). Review it, then add an entry to the file. Preview the layout with `?demo`.
