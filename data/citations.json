@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24T15:53:35.825Z",
+  "updated": "2026-11-24T16:44:18.435Z",
   "source": "Google Scholar via SerpAPI",
   "total": 1345,
   "h_index": 13,
@@ -95,5 +95,327 @@
     "guidebpguidedbackpropagationinmultioutputneuralnetworksbychannelinggradientsthroughweakerlogits": 0,
     "chapter3deeplearningmodels": 0,
     "captiongenerationfromkeywordsusingprobabilisticduallstmnetworksanddynamicprogramming": 0
-  }
+  },
+  "articles": [
+    {
+      "title": "Understanding deep learning techniques for image segmentation",
+      "authors": "S Ghosh, N Das, I Das, U Maulik",
+      "publication": "ACM computing surveys (CSUR) 52 (4), 1-35, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:IjCSPb-OGe4C",
+      "cited_by": 695
+    },
+    {
+      "title": "The journey of graph kernels through two decades",
+      "authors": "S Ghosh, N Das, T Gonçalves, P Quaresma, M Kundu",
+      "publication": "Computer Science Review 27, 88-111, 2018",
+      "year": 2018,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:qjMakFHDy7sC",
+      "cited_by": 111
+    },
+    {
+      "title": "Reshaping inputs for convolutional neural network: Some common and uncommon methods",
+      "authors": "S Ghosh, N Das, M Nasipuri",
+      "publication": "Pattern Recognition 93, 79-94, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:YOwf2qJgpHMC",
+      "cited_by": 89
+    },
+    {
+      "title": "Improved word-level handwritten indic script identification by integrating small convolutional neural networks",
+      "authors": "S Ukil, S Ghosh, SM Obaidullah, KC Santosh, K Roy, N Das",
+      "publication": "Neural Computing and Applications 32 (7), 2829-2844, 2020",
+      "year": 2020,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:Se3iqnhoufwC",
+      "cited_by": 60
+    },
+    {
+      "title": "SegFast-V2: Semantic image segmentation with less parameters in deep learning for autonomous driving",
+      "authors": "S Ghosh, A Pal, S Jaiswal, KC Santosh, N Das, M Nasipuri",
+      "publication": "International Journal of Machine Learning and Cybernetics 10 (11), 3145-3154, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:W7OEmFMy1HYC",
+      "cited_by": 51
+    },
+    {
+      "title": "Deep Learning Models for Medical Imaging",
+      "authors": "KC Santosh, N Das, S Ghosh",
+      "publication": "Academic Press, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:_FxGoFyzp5QC",
+      "cited_by": 50
+    },
+    {
+      "title": "Chapter 2 - Deep learning: a review",
+      "authors": "KC Santosh, N Das, S Ghosh",
+      "publication": "Deep learning models for medical imaging, 29-63, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:9ZlFYXVOiuMC",
+      "cited_by": 48
+    },
+    {
+      "title": "Deep learning for word-level handwritten Indic script identification",
+      "authors": "S Ukil, S Ghosh, SM Obaidullah, KC Santosh, K Roy, N Das",
+      "publication": "International conference on recent trends in image processing and pattern …, 2020",
+      "year": 2020,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:M3ejUd6NZC8C",
+      "cited_by": 39
+    },
+    {
+      "title": "Handwritten indic character recognition using capsule networks",
+      "authors": "B Mandal, S Dubey, S Ghosh, R Sarkhel, N Das",
+      "publication": "2018 IEEE Applied Signal Processing Conference (ASPCON), 304-308, 2018",
+      "year": 2018,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:UeHWp8X0CEIC",
+      "cited_by": 33
+    },
+    {
+      "title": "Segfast: A faster squeezenet based semantic image segmentation technique using depth-wise separable convolutions",
+      "authors": "A Pal, S Jaiswal, S Ghosh, N Das, M Nasipuri",
+      "publication": "Proceedings of the 11th Indian Conference on Computer Vision, Graphics and …, 2018",
+      "year": 2018,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:KlAtU1dfN6UC",
+      "cited_by": 27
+    },
+    {
+      "title": "Comparison of different graph distance metrics for semantic text based classification",
+      "authors": "N Das, S Ghosh, T Gonçalves, P Quaresma",
+      "publication": "Polibits, 51-58, 2014",
+      "year": 2014,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:roLk4NBRz8UC",
+      "cited_by": 25
+    },
+    {
+      "title": "Two-phase dynamic routing for micro and macro-level equivariance in multi-column capsule networks",
+      "authors": "B Mandal, R Sarkhel, S Ghosh, N Das, M Nasipuri",
+      "publication": "Pattern Recognition 109, 107595, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:UebtZRa9Y70C",
+      "cited_by": 14
+    },
+    {
+      "title": "Using dynamic routing to extract intermediate features for developing scalable capsule networks",
+      "authors": "B Mandal, S Ghosh, R Sarkhel, N Das, M Nasipuri",
+      "publication": "2019 Second International Conference on Advanced Computational and …, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:3fE2CSJIrl8C",
+      "cited_by": 13
+    },
+    {
+      "title": "Combining multilevel contexts of superpixel using convolutional neural networks to perform natural scene labeling",
+      "authors": "A Das, S Ghosh, R Sarkhel, S Choudhuri, N Das, M Nasipuri",
+      "publication": "Recent Developments in Machine Learning and Data Analytics: IC3 2018, 297-306, 2018",
+      "year": 2018,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:8k81kl-MbHgC",
+      "cited_by": 12
+    },
+    {
+      "title": "Using thermal intensities to build conditional random fields for object segmentation at night",
+      "authors": "A Dutta, B Mandal, S Ghosh, N Das",
+      "publication": "2020 4th International Conference on Computational Intelligence and Networks …, 2020",
+      "year": 2020,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:Zph67rFs4hoC",
+      "cited_by": 11
+    },
+    {
+      "title": "SynCGAN: Using learnable class specific priors to generate synthetic data for improving classifier performance on cytological images",
+      "authors": "S Dey, S Das, S Ghosh, S Mitra, S Chakrabarty, N Das",
+      "publication": "National Conference on Computer Vision, Pattern Recognition, Image …, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:YsMSGLbcyi4C",
+      "cited_by": 11
+    },
+    {
+      "title": "GSD-Net: compact network for pixel-level graphical symbol detection",
+      "authors": "S Ghosh, P Shaw, N Das, KC Santosh",
+      "publication": "2019 International Conference on Document Analysis and Recognition Workshops …, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:Tyk-4Ss8FVUC",
+      "cited_by": 10
+    },
+    {
+      "title": "Multi scale mirror connection based encoder decoder network for text localization",
+      "authors": "K Dutta, M Bal, A Basak, S Ghosh, N Das, M Kundu, M Nasipuri",
+      "publication": "Pattern Recognition Letters 135, 64-71, 2020",
+      "year": 2020,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:9yKSN-GCB0IC",
+      "cited_by": 8
+    },
+    {
+      "title": "Using graphs and semantic information to improve text classifiers",
+      "authors": "N Das, S Ghosh, T Gonçalves, P Quaresma",
+      "publication": "International Conference on Natural Language Processing, 324-336, 2014",
+      "year": 2014,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:u5HHmVD_uO8C",
+      "cited_by": 8
+    },
+    {
+      "title": "Chapter 4 - Cytology image analysis",
+      "authors": "KC Santosh, N Das, S Ghosh",
+      "publication": "Deep Learning Models for Medical Imaging, 99-123, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:Wp0gIr-vW9MC",
+      "cited_by": 5
+    },
+    {
+      "title": "Handwritten oriya digit recognition using maximum common subgraph based similarity measures",
+      "authors": "S Ghosh, N Das, M Kundu, M Nasipuri",
+      "publication": "Information Systems Design and Intelligent Applications: Proceedings of …, 2016",
+      "year": 2016,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:u-x6o8ySG0sC",
+      "cited_by": 5
+    },
+    {
+      "title": "Representing image captions as concept graphs using semantic information",
+      "authors": "S Ghosh, N Das, T Gonçalves, P Quaresma",
+      "publication": "2016 International Conference on Advances in Computing, Communications and …, 2016",
+      "year": 2016,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:4TOpqqG69KYC",
+      "cited_by": 4
+    },
+    {
+      "title": "JU-VNT: a multi-spectral dataset of indoor object recognition using visible, near-infrared and thermal spectrum",
+      "authors": "S Ghosh, N Das, P Sarkar, M Nasipuri",
+      "publication": "Multimedia Tools and Applications 80 (12), 17807-17826, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:eQOLeE2rZwMC",
+      "cited_by": 3
+    },
+    {
+      "title": "Chapter 1 - Introduction",
+      "authors": "KC Santosh, N Nibaran Das, S Ghosh",
+      "publication": "Deep Learning Models for Medical Imaging, 1-27, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:QIV2ME_5wuYC",
+      "cited_by": 3
+    },
+    {
+      "title": "Hilex: Image-based hierarchical layout extraction from question papers",
+      "authors": "U Aich, S Chakraborty, D Sadhukhan, S Ghosh, T Saha",
+      "publication": "International Conference on Document Analysis and Recognition, 485-505, 2025",
+      "year": 2025,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:2osOgNQ5qMEC",
+      "cited_by": 2
+    },
+    {
+      "title": "Im2graph: A weakly supervised approach for generating holistic scene graphs from regional dependencies",
+      "authors": "S Ghosh, T Gonçalves, N Das",
+      "publication": "Future Internet 15 (2), 70, 2023",
+      "year": 2023,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:LkGwnXOMwfcC",
+      "cited_by": 2
+    },
+    {
+      "title": "Chapter 5 - COVID-19: prediction, screening, and decision-making",
+      "authors": "KC Santosh, N Das, S Ghosh",
+      "publication": "Deep Learning Models for Medical Imaging, 125-145, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:d1gkVwhDpl0C",
+      "cited_by": 2
+    },
+    {
+      "title": "A multi-cue information based approach to contour detection by utilizing superpixel segmentation",
+      "authors": "S Choudhuri, N Das, S Ghosh, M Nasipuri",
+      "publication": "2016 International Conference on Advances in Computing, Communications and …, 2016",
+      "year": 2016,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:zYLM7Y9cAGgC",
+      "cited_by": 2
+    },
+    {
+      "title": "JU-Evora: A graph based cross-level semantic similarity analysis using discourse information",
+      "authors": "S Ghosh, N Das, T Gonçalves, P Quaresma",
+      "publication": "Proceedings of the 8th International Workshop on Semantic Evaluation …, 2014",
+      "year": 2014,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:0EnyYjriUFMC",
+      "cited_by": 2
+    },
+    {
+      "title": "Multimodal Survival Transformer for Progression Window Estimation of Time to Dementia",
+      "authors": "D Calhas, S Ghosh, B Šter, V Groznik, D Georgiev, A Sadikov",
+      "publication": "2nd International Conference on Health Medical Systems and Services and …, 2026",
+      "year": 2026,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:ZeXyd9-uunAC",
+      "cited_by": 0
+    },
+    {
+      "title": "Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving",
+      "authors": "S Ghosh, B Šter",
+      "publication": "29th International Multiconference, Information Society 2026 (IS 2026) 1, 60-63, 2026",
+      "year": 2026,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:L8Ckcad2t8MC",
+      "cited_by": 0
+    },
+    {
+      "title": "RocketSim: Benchmarking Reinforcement-Learning Hover Control of a Reusable Booster",
+      "authors": "S Ghosh, D Muhič, B Šter",
+      "publication": "29th International Multiconference, Information Society 2026 (IS 2026) 1, 64-67, 2026",
+      "year": 2026,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:7PzlFSSx8tAC",
+      "cited_by": 0
+    },
+    {
+      "title": "RavNet: Conditioning Retinal Vessel Identification Using a Cascaded Multi-objective U-Net",
+      "authors": "S Ghosh, C Das",
+      "publication": "Proceedings of 5th International Conference on Frontiers in Computing and …, 2026",
+      "year": 2026,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:5nxA0vEk-isC",
+      "cited_by": 0
+    },
+    {
+      "title": "AI BASED WRIST BAND FOR HEART ATTACK DETECTION",
+      "authors": "P Maiti, S Chanda, S Chandra, S Ghosh, D Guha Roy",
+      "publication": "GB Patent 6,391,276, 2024",
+      "year": 2024,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:aqlVkmm33-oC",
+      "cited_by": 0
+    },
+    {
+      "title": "MADS: A Multi-modal Academic Document Segmentation Dataset for Smart Question Bank Management",
+      "authors": "U Aich, S Ghosh, T Saha",
+      "publication": "Ceur Workshop Proceedings 3764, 2024",
+      "year": 2024,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:kNdYIx-mwKoC",
+      "cited_by": 0
+    },
+    {
+      "title": "Digital Twins in Healthcare: A forefront for knowledge representation techniques.",
+      "authors": "S Ghosh",
+      "publication": "2nd Symposium on NLP for Social Good (NSG), 25-26 April, 2024, University of …, 2024",
+      "year": 2024,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:WF5omc3nYNoC",
+      "cited_by": 0
+    },
+    {
+      "title": "Acute Lymphoblastic Leukemia Classification using Compact Channel Specific Multi-column CNNs",
+      "authors": "R Satpathi, S Das, M Laha, S Ghosh",
+      "publication": "2023 8th International Conference on Computers and Devices for Communication …, 2023",
+      "year": 2023,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:qxL8FJ1GzNcC",
+      "cited_by": 0
+    },
+    {
+      "title": "GuideBP: Guided Backpropagation in Multi-output Neural Networks by Channeling Gradients Through Weaker Logits",
+      "authors": "S Ghosh, B Mandal, T Gonçalves, P Quaresma, M Nasipuri, N Das",
+      "publication": "International Conference on Frontiers in Computing and Systems, 165-183, 2023",
+      "year": 2023,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:ufrVoPGSRksC",
+      "cited_by": 0
+    },
+    {
+      "title": "Chapter 3 - Deep learning models",
+      "authors": "NDSG KC Santosh",
+      "publication": "Deep Learning Models for Medical Imaging, 65-97, 2021",
+      "year": 2021,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:dhFuZR0502QC",
+      "cited_by": 0
+    },
+    {
+      "title": "Caption Generation from Keywords using Probabilistic Dual-LSTM Networks and Dynamic Programming",
+      "authors": "D Suvam, G Swarnendu, C Sharod, D Nibaran, G Teresa, Q Paulo",
+      "publication": "Proceedings of the International Conference on Emerging Technologies for …, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:4DMP91E08xMC",
+      "cited_by": 0
+    }
+  ]
 }
