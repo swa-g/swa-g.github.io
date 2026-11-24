@@ -234,8 +234,12 @@
       var face = p.photo
         ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="56" height="56" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
         : '<div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div>";
-      return '<div class="person">' + face + "<div><h4>" + esc(p.name) + "</h4>" +
-        affHtml(p.org) + "</div></div>";
+      var body = face + "<div><h4>" + esc(p.name) + "</h4>" + affHtml(p.org) + "</div>";
+      // Only genuine LinkedIn profile addresses become links (anything else in the data is ignored)
+      var ok = typeof p.linkedin === "string" && /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/(in|pub)\/[A-Za-z0-9%_.\/-]+$/.test(p.linkedin);
+      if (!ok) return '<div class="person">' + body + "</div>";
+      return '<a class="person has-link" href="' + esc(p.linkedin) + '" target="_blank" rel="noopener noreferrer" aria-label="' +
+        esc(p.name) + ' on LinkedIn (opens in a new tab)">' + body + '<span class="li-badge" aria-hidden="true">in</span></a>';
     };
 
     var html = "", placed = {};

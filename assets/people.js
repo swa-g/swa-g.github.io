@@ -6,6 +6,7 @@
    Leave `pos` null for people without a position, and leave out `org` when the affiliation is unknown.
    - `rel` only decides WHICH GROUP and in what order the person appears (see `groups`); it is not displayed.
    - `aliases` are the spellings used in the paper author lists, so the same person is merged into one entry.
+   - `linkedin`: profile address (https://www.linkedin.com/in/...). When set, the whole card becomes a link to it.
    - `photo`: put a square-ish picture in assets/people/ named after the person (e.g. nibaran-das.jpg).
    - `hide: true` removes the person from this section completely.
    - Co-authors who are NOT listed with a `rel` appear at the bottom under "Other co-authors". */
@@ -28,7 +29,7 @@ window.PEOPLE = {
     {"name": "Branko Šter", "aliases": ["Branko Šter", "B Šter"], "rel": "Supervisor", "org": {"pos": "Professor", "name": "University of Ljubljana", "abbr": "UL", "city": "Ljubljana", "country": "Slovenia"}, "photo": "assets/people/branko-ster.jpg"},
     {"name": "Mahantapas Kundu", "aliases": ["Mahantapas Kundu", "M Kundu"], "rel": "Senior collaborator", "org": {"pos": "Professor", "name": "Jadavpur University", "abbr": "JU", "city": "Kolkata", "country": "India"}, "photo": "assets/people/mahantapas-kundu.jpg"},
     {"name": "Utathya Aich", "aliases": ["U Aich", "Utathya Aich"], "rel": "Industry / other", "org": {"pos": null, "name": "CNH Industrial ITC", "abbr": null, "city": null, "country": "India"}, "photo": "assets/people/utathya-aich.jpg"},
-    {"name": "Tulika Saha", "aliases": ["T Saha", "Tulika Saha"], "rel": "Collaborator", "org": {"pos": "Assistant Professor", "name": "International Institute of Information Technology Bangalore", "abbr": "IIIT-B", "city": "Bengaluru", "country": "India"}, "photo": "assets/people/tulika-saha.jpg"},
+    {"name": "Tulika Saha", "aliases": ["T Saha", "Tulika Saha"], "rel": "Collaborator", "org": {"pos": "Assistant Professor", "name": "International Institute of Information Technology Bangalore", "abbr": "IIIT-B", "city": "Bengaluru", "country": "India"}, "linkedin": "https://www.linkedin.com/in/tulika-saha-2547a4187/", "photo": "assets/people/tulika-saha.jpg"},
     {"name": "S Das", "aliases": ["S Das"], "rel": ""},
     {"name": "Soumya Ukil", "aliases": ["S Ukil", "Soumya Ukil"], "rel": "Student (UG / project)", "org": {"pos": "Software Engineer", "name": "Google", "abbr": null, "city": "San Francisco", "country": "USA"}, "photo": "assets/people/soumya-ukil.jpg"},
     {"name": "SM Obaidullah", "aliases": ["SM Obaidullah"], "rel": ""},
@@ -36,7 +37,7 @@ window.PEOPLE = {
     {"name": "Anisha Pal", "aliases": ["A Pal", "Anisha Pal"], "rel": "Student (UG / project)", "org": {"pos": "ML Engineer", "name": "Planette AI", "abbr": null, "city": "San Francisco", "country": "USA"}, "photo": "assets/people/anisha-pal.jpg"},
     {"name": "Shourya Jaiswal", "aliases": ["S Jaiswal", "Shourya Jaiswal"], "rel": "Student (UG / project)", "org": {"pos": "Security Engineer", "name": "Rubrik Inc", "abbr": null, "city": null, "country": null}, "photo": "assets/people/shourya-jaiswal.jpg"},
     {"name": "Suvam Dubey", "aliases": ["S Dubey", "Suvam Dubey"], "rel": "Student (UG / project)", "hide": true},
-    {"name": "Sandipan Choudhuri", "aliases": ["S Choudhuri", "Sandipan Choudhuri"], "rel": "Student (Master's)", "org": {"pos": "Senior Data Scientist", "name": "Interbiz Arizona", "abbr": null, "city": null, "country": "USA"}, "photo": "assets/people/sandipan-choudhuri.jpg"},
+    {"name": "Sandipan Choudhuri", "aliases": ["S Choudhuri", "Sandipan Choudhuri"], "rel": "Student (Master's)", "org": {"pos": "Senior Data Scientist", "name": "Interbiz Arizona", "abbr": null, "city": null, "country": "USA"}, "linkedin": "https://www.linkedin.com/in/sandipan-choudhuri-760aa7125", "photo": "assets/people/sandipan-choudhuri.jpg"},
     {"name": "David Muhič", "aliases": ["David Muhič"], "rel": "Student (UG / project)", "org": {"pos": "Student", "name": "University of Ljubljana, Faculty of Computer and Information Science", "abbr": "UL FRI", "city": "Ljubljana", "country": "Slovenia"}, "photo": "assets/people/david-muhic.jpg"},
     {"name": "David Calhas", "aliases": ["David Calhas"], "rel": "Present Colleague", "org": {"pos": "MSCA Postdoctoral Fellow", "name": "University of Ljubljana, Faculty of Computer and Information Science", "abbr": "UL FRI", "city": "Ljubljana", "country": "Slovenia"}, "photo": "assets/people/david-calhas.jpg"},
     {"name": "Vida Groznik", "aliases": ["Vida Groznik"], "rel": ""},
@@ -56,7 +57,7 @@ window.PEOPLE = {
     {"name": "Arnald Dutta", "aliases": ["A Dutta", "Arnald Dutta"], "rel": "Student (UG / project)", "hide": true},
     {"name": "Ishita Das", "aliases": ["I Das", "Ishita Das"], "rel": "Student (Master's)", "org": {"pos": "Software Engineer", "name": "HashedIn by Deloitte", "abbr": null, "city": "Kolkata", "country": "India"}, "photo": "assets/people/ishita-das.jpg"},
     {"name": "Ujjwal Maulik", "aliases": ["Ujjwal Maulik", "U Maulik"], "rel": "Senior collaborator", "org": {"pos": "Professor", "name": "Jadavpur University", "abbr": "JU", "city": "Kolkata", "country": "India"}, "photo": "assets/people/ujjwal-maulik.jpg"},
-    {"name": "Soumyajyoti Dey", "aliases": ["S Dey", "Soumyajyoti Dey"], "rel": "Fellow research scholar", "org": {"pos": "Assistant Professor (Senior Grade 1)", "name": "Vellore Institute of Technology", "abbr": "VIT", "city": "Vellore", "country": "India"}, "photo": "assets/people/soumyajyoti-dey.jpg"},
+    {"name": "Soumyajyoti Dey", "aliases": ["S Dey", "Soumyajyoti Dey"], "rel": "Fellow research scholar", "org": {"pos": "Assistant Professor (Senior Grade 1)", "name": "Vellore Institute of Technology", "abbr": "VIT", "city": "Vellore", "country": "India"}, "linkedin": "https://www.linkedin.com/in/soumyajyoti-dey-24202b136/", "photo": "assets/people/soumyajyoti-dey.jpg"},
     {"name": "S Mitra", "aliases": ["S Mitra"], "rel": "Senior collaborator", "hide": true},
     {"name": "S Chakrabarty", "aliases": ["S Chakrabarty"], "rel": ""},
     {"name": "P Shaw", "aliases": ["P Shaw"], "rel": ""},

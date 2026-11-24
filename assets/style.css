@@ -247,6 +247,10 @@ img.avatar.photo { object-fit: cover; background: var(--chip); border: 1px solid
 .person .prole { display: inline-block; margin: 4px 0 2px; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .person p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.45; }
 .person .together { margin-top: 6px; font-family: var(--mono); font-size: .76rem; color: var(--muted); }
+a.person { color: inherit; text-decoration: none; position: relative; transition: border-color .2s, transform .2s, box-shadow .2s; }
+a.person:hover, a.person:focus-visible { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
+.li-badge { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 5px; background: #0a66c2; color: #fff; font: 700 .72rem/22px var(--sans); text-align: center; letter-spacing: -.02em; opacity: .85; }
+a.person:hover .li-badge, a.person:focus-visible .li-badge { opacity: 1; }
 .person.big { padding: 22px 24px; }
 .person.big .avatar { width: 52px; height: 52px; }
 .people-summary { color: var(--muted); font-size: .95rem; margin: 0 0 18px; max-width: 70ch; }
