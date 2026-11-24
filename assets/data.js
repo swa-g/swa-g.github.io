@@ -191,5 +191,5 @@ window.PUB_TYPES = [
   { key: "conference", label: "Conferences" },
   { key: "workshop",   label: "Workshops" },
   { key: "book",       label: "Book & chapters" },
-  { key: "patent",     label: "Patent & talks" }
+  { key: "patent",     label: "Other" }
 ];

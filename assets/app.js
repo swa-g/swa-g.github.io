@@ -56,15 +56,15 @@
   var list = $("#pub-list"), chipsEl = $("#pub-chips"), q = $("#pub-search"), count = $("#pub-count");
   var state = { type: "all", text: "" };
 
-  var TYPE_LABEL = { journal: "Journal", conference: "Conference", workshop: "Workshop", book: "Book", chapter: "Chapter", patent: "Patent", talk: "Talk" };
-  var GROUP = { all: null, journal: ["journal"], conference: ["conference"], workshop: ["workshop"], book: ["book", "chapter"], patent: ["patent", "talk"] };
+  var TYPE_LABEL = { journal: "Journal", conference: "Conference", workshop: "Workshop", book: "Book", chapter: "Chapter", patent: "Patent", talk: "Talk", preprint: "Preprint", other: "Other" };
+  var GROUP = { all: null, journal: ["journal"], conference: ["conference"], workshop: ["workshop"], book: ["book", "chapter"], patent: ["patent", "talk", "preprint", "other"] };
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function authorsHtml(a) { return esc(a).replace(/Swarnendu Ghosh/g, "<mark>Swarnendu Ghosh</mark>"); }
+  function authorsHtml(a) { return esc(a).replace(/Swarnendu Ghosh|\bS Ghosh\b/g, function (m) { return "<mark>" + m + "</mark>"; }); }
 
   /* Citation data comes from data/citations.json, refreshed daily by a GitHub Action. Optional: no file, no panel. */
   var cites = {};
@@ -77,14 +77,43 @@
     for (var key in cites) { if (key.indexOf(head) === 0 || k.indexOf(key.slice(0, 40)) === 0) return cites[key]; }
     return undefined;
   }
+
+  /* Papers that appear on the Google Scholar profile but not in assets/data.js are added automatically
+     (data/citations.json -> articles, refreshed daily). The curated list always wins when a title matches. */
+  function guessType(venue) {
+    if (/arxiv|preprint|ssrn|biorxiv|medrxiv/i.test(venue)) return "preprint";
+    if (/conference|proceedings|symposium|workshop|congress|\bconf\b|ICDAR|CVPR|ICCV|ECCV|NeurIPS|ICML|AAAI|IJCAI|\bACL\b/i.test(venue)) return "conference";
+    if (/journal|transactions|letters|review|survey|magazine|\baccess\b|bulletin/i.test(venue)) return "journal";
+    return "other";
+  }
+  function addScholarArticles(arts) {
+    if (!Array.isArray(arts)) return;
+    var have = pubs.map(function (p) { return normTitle(p.scholarTitle || p.title); });
+    arts.forEach(function (a) {
+      if (!a || !a.title) return;
+      var k = normTitle(a.title);
+      var dup = have.some(function (h) { return h === k || (h.length >= 25 && k.length >= 25 && h.slice(0, 40) === k.slice(0, 40)); });
+      if (dup) return;
+      var venue = String(a.publication || "");
+      var year = parseInt(a.year, 10) || 0;
+      if (!year) { var m = venue.match(/\b(?:19|20)\d{2}\b/g); if (m) year = parseInt(m[m.length - 1], 10); }
+      var authors = String(a.authors || "");
+      if (/(\.\.\.|…)\s*$/.test(authors)) authors = authors.replace(/\s*(\.\.\.|…)\s*$/, "") + ", et al.";
+      var link = /^https:\/\/scholar\.google\.[a-z.]+\//.test(a.link || "") ? a.link : "";
+      pubs.push({ year: year, type: guessType(venue), title: String(a.title), authors: authors, venue: venue, detail: "", auto: true, link: link });
+      have.push(k);
+    });
+  }
   function loadCitations() {
     fetch("data/citations.json", { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) {
         if (!d || typeof d.total !== "number") return;
         cites = d.papers || {};
+        addScholarArticles(d.articles);
         var fmt = function (n) { return n == null ? "–" : Number(n).toLocaleString("en"); };
         $("#cite-total").textContent = fmt(d.total);
+        setStat("stat-cites", fmt(d.total));
         $("#cite-h").textContent = fmt(d.h_index);
         $("#cite-i10").textContent = fmt(d.i10_index);
         var t = $("#cite-updated");
@@ -96,6 +125,7 @@
         }).join("");
         chart.setAttribute("aria-label", "Citations per year, " + g.map(function (x) { return x.year + ": " + x.citations; }).join(", "));
         $("#cite-panel").hidden = false;
+        updateStats();
         render();
       })
       .catch(function () { /* no data yet: leave the panel hidden */ });
@@ -124,13 +154,15 @@
       var items = shown.filter(function (p) { return p.year === y; }).map(function (p) {
         var c = citesFor(p);
         return '<li class="pub">' +
-          '<div class="t"><span class="badge">' + esc(TYPE_LABEL[p.type] || p.type) + "</span>" + esc(p.title) + "</div>" +
+          '<div class="t"><span class="badge">' + esc(TYPE_LABEL[p.type] || p.type) + "</span>" +
+            (p.auto ? '<span class="badge auto" title="Added automatically from my Google Scholar profile">Scholar</span>' : "") +
+            (p.link ? '<a class="tlink" href="' + esc(p.link) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
           '<div class="a">' + authorsHtml(p.authors) + "</div>" +
           '<div class="v">' + esc(p.venue) + (p.detail ? ' <span>· ' + esc(p.detail) + "</span>" : "") +
           (c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>" +
           "</li>";
       }).join("");
-      return '<div class="year-group"><div class="year">' + y + '</div><ul class="pubs">' + items + "</ul></div>";
+      return '<div class="year-group"><div class="year">' + (y || "Undated") + '</div><ul class="pubs">' + items + "</ul></div>";
     }).join("");
   }
 
@@ -150,12 +182,13 @@
   render();
   loadCitations();
 
-  /* ---------- People (grouped by relationship; counts are computed from the publication list) ---------- */
+  /* ---------- People I have worked with: photo, name, current affiliation, grouped and ordered by relationship ---------- */
   function buildPeople() {
     var root = $("#people-root"), P = window.PEOPLE;
     if (!root || !P) return;
     var nk = function (s) { return String(s).replace(/\./g, "").replace(/\s+/g, " ").trim().toLowerCase(); };
     var initials = function (n) { var t = String(n).trim().split(/\s+/); return (t[0][0] + (t.length > 1 ? t[t.length - 1][0] : "")).toUpperCase(); };
+    var surname = function (n) { return String(n).trim().split(/\s+/).pop().toLowerCase(); };
 
     var canon = {}, info = {};                          // alias -> key ; key -> person record
     (P.people || []).forEach(function (p) {
@@ -163,79 +196,57 @@
       (p.aliases || []).concat([p.name]).forEach(function (a) { canon[nk(a)] = key; });
     });
 
-    var stats = {}, joint = 0;
+    /* Everyone who appears in an author list, merged by alias (hidden people are skipped entirely) */
+    var names = {};
     pubs.forEach(function (p) {
-      var seen = {}, others = 0;
       p.authors.split(",").forEach(function (a) {
         var raw = a.trim();
         if (!raw || nk(raw) === "swarnendu ghosh") return;
         var key = canon[nk(raw)] || "r:" + nk(raw);
-        if (info[key] && info[key].hide) return;         // "Show on site = No"
-        if (seen[key]) return;
-        seen[key] = 1; others++;
-        var s = stats[key] || (stats[key] = { key: key, name: info[key] ? info[key].name : raw, count: 0, first: 9999, last: 0 });
-        s.count++; s.first = Math.min(s.first, p.year); s.last = Math.max(s.last, p.year);
+        if (info[key] && info[key].hide) return;
+        if (!names[key]) names[key] = info[key] ? info[key].name : raw;
       });
-      if (others) joint++;
     });
 
-    var together = function (s) {
-      if (!s) return "";
-      var yrs = s.first === s.last ? s.first : s.first + "–" + s.last;
-      return s.count + (s.count === 1 ? " publication" : " publications") + " together · " + yrs;
-    };
-    var byCountThenName = function (a, b) {
-      var sa = stats["p:" + nk(a.name)], sb = stats["p:" + nk(b.name)];
-      return ((sb ? sb.count : 0) - (sa ? sa.count : 0)) || (a.name < b.name ? -1 : 1);
-    };
-    var card = function (p, big) {
-      var s = stats["p:" + nk(p.name)];
-      return '<div class="person' + (big ? " big" : "") + '"><div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div><div>" +
-        "<h4>" + esc(p.name) + "</h4>" + (p.rel ? '<span class="prole">' + esc(p.rel) + "</span>" : "") +
-        (p.org ? "<p>" + esc(p.org) + "</p>" : "") + (p.note ? "<p>" + esc(p.note) + "</p>" : "") +
-        (s ? '<div class="together">' + esc(together(s)) + "</div>" : "") + "</div></div>";
+    var card = function (p) {
+      var face = p.photo
+        ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="56" height="56" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
+        : '<div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div>";
+      return '<div class="person">' + face + "<div><h4>" + esc(p.name) + "</h4>" +
+        (p.org ? '<p class="aff">' + esc(p.org) + "</p>" : "") + "</div></div>";
     };
 
-    var html = "", grouped = {};
+    var html = "", placed = {};
     (P.groups || []).forEach(function (g) {
       var list = Object.keys(info).map(function (k) { return info[k]; })
-        .filter(function (p) { return !p.hide && g.rels.indexOf(p.rel) !== -1; }).sort(byCountThenName);
-      list.forEach(function (p) { grouped["p:" + nk(p.name)] = 1; });
+        .filter(function (p) { return !p.hide && g.rels.indexOf(p.rel) !== -1; })
+        .sort(function (a, b) {
+          return (g.rels.indexOf(a.rel) - g.rels.indexOf(b.rel)) || (surname(a.name) < surname(b.name) ? -1 : surname(a.name) > surname(b.name) ? 1 : 0);
+        });
+      list.forEach(function (p) { placed["p:" + nk(p.name)] = 1; });
       if (!list.length) return;
-      html += '<div class="people-group"><h3>' + esc(g.title) + " <small>" + list.length + '</small></h3><div class="people-grid">' +
-        list.map(function (p) { return card(p, g.big); }).join("") + "</div></div>";
+      html += '<div class="people-group"><h3>' + esc(g.title) + '</h3><div class="people-grid">' + list.map(card).join("") + "</div></div>";
     });
 
-    /* People who are not co-authors on any paper (optional list in people.js) */
-    if ((P.extraStudents || []).length) {
-      html += '<div class="people-group"><h3>More students &amp; mentees <small>' + P.extraStudents.length + '</small></h3><div class="people-grid">' +
-        P.extraStudents.map(function (s) {
-          var nm = s.link ? '<a href="' + esc(s.link) + '" target="_blank" rel="noopener">' + esc(s.name) + "</a>" : esc(s.name);
-          return '<div class="person"><div class="avatar" aria-hidden="true">' + esc(initials(s.name)) + "</div><div><h4>" + nm + "</h4>" +
-            '<span class="prole">' + esc([s.level, s.years].filter(Boolean).join(" · ")) + "</span>" +
-            (s.topic ? "<p>" + esc(s.topic) + "</p>" : "") + (s.now ? "<p>Now: " + esc(s.now) + "</p>" : "") + "</div></div>";
-        }).join("") + "</div></div>";
+    /* Co-authors without a relationship label yet: plain names */
+    var others = Object.keys(names).filter(function (k) { return !placed[k]; })
+      .map(function (k) { return names[k]; })
+      .sort(function (a, b) { return surname(a) < surname(b) ? -1 : surname(a) > surname(b) ? 1 : a < b ? -1 : 1; });
+    if (others.length) {
+      html += '<div class="people-group"><h3>Other co-authors</h3><ul class="author-list">' +
+        others.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") + "</ul></div>";
     }
 
-    /* Frequent co-authors who have no relationship label yet */
-    var all = Object.keys(stats).map(function (k) { return stats[k]; });
-    var freq = all.filter(function (s) { return s.count >= 3 && !grouped[s.key]; })
-      .sort(function (a, b) { return b.count - a.count || b.last - a.last; }).slice(0, 12);
-    if (freq.length) {
-      html += '<div class="people-group"><h3>Frequent co-authors <small>3 or more publications together</small></h3><div class="people-grid">' +
-        freq.map(function (s) { return card({ name: s.name }, false); }).join("") + "</div></div>";
-    }
+    root.innerHTML = '<p class="people-summary">Everyone here is a co-author on at least one of my publications.</p>' + html;
 
-    /* Everyone, alphabetical by surname */
-    var sorted = all.slice().sort(function (a, b) {
-      var sa = a.name.split(" ").pop().toLowerCase(), sb = b.name.split(" ").pop().toLowerCase();
-      return sa < sb ? -1 : sa > sb ? 1 : a.name < b.name ? -1 : 1;
+    /* If a photo file is missing or broken, fall back to the initials */
+    $$("img.photo", root).forEach(function (img) {
+      img.addEventListener("error", function () {
+        var d = document.createElement("div");
+        d.className = "avatar"; d.setAttribute("aria-hidden", "true"); d.textContent = img.getAttribute("data-initials");
+        img.replaceWith(d);
+      }, { once: true });
     });
-    html += '<details class="all-authors"><summary>All co-authors (' + all.length + ")</summary>" +
-      '<ul class="author-list">' + sorted.map(function (s) { return "<li>" + esc(s.name) + "<b>" + s.count + "</b></li>"; }).join("") + "</ul></details>";
-
-    root.innerHTML = '<p class="people-summary">' + all.length + " co-authors across " + joint +
-      " collaborative publications. The number next to a name is how many publications we share.</p>" + html;
   }
   buildPeople();
 
@@ -372,10 +383,27 @@
 
   /* ---------- Stats (computed from the data so they never go stale) ---------- */
   function setStat(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
-  var n = function (types) { return pubs.filter(function (p) { return types.indexOf(p.type) !== -1; }).length; };
-  setStat("stat-papers", n(["journal", "conference", "workshop"]));
-  setStat("stat-journals", n(["journal"]));
-  setStat("stat-book", n(["book", "chapter"]));
+  function updateStats() {
+    var n = function (types) { return pubs.filter(function (p) { return types.indexOf(p.type) !== -1; }).length; };
+    setStat("stat-papers", n(["journal", "conference", "workshop"]));
+    setStat("stat-journals", n(["journal"]));
+    setStat("stat-book", n(["book", "chapter"]));
+  }
+  updateStats();
+
+  var prof = window.PROFILE || {};
+  if (prof.teaching && prof.teaching.length) {
+    var days = prof.teaching.reduce(function (t, x) { return t + (new Date(x.to) - new Date(x.from)); }, 0) / 864e5;
+    var yrs = days / 365.25, whole = Math.floor(yrs);
+    setStat("stat-teach", whole + (yrs - whole >= 0.1 ? "+" : ""));
+    var tb = $("#stat-teach-box");
+    if (tb) tb.title = prof.teaching.map(function (x) { return x.role + ", " + x.org; }).join("\n");
+  }
+  if (prof.projects && prof.projects.length) {
+    setStat("stat-proj", prof.projects.length);
+    var pb = $("#stat-proj-box");
+    if (pb) pb.title = prof.projects.map(function (x) { return x.title + " (" + x.funder + ", " + x.years + ")"; }).join("\n");
+  }
 
   /* ---------- Active nav link ---------- */
   var sections = $$("main section[id]");

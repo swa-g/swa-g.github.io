@@ -8,7 +8,7 @@
 // Safety: if anything looks wrong the script exits non-zero WITHOUT touching the existing file,
 // so the site keeps showing the last good numbers.
 
-import { writeFile, mkdir } from "node:fs/promises";
+import { writeFile, readFile, mkdir } from "node:fs/promises";
 
 const key = process.env.SERPAPI_KEY;
 const author = process.env.SCHOLAR_AUTHOR_ID;
@@ -55,10 +55,23 @@ try {
   }
 
   const papers = {};
+  const list = [];
   for (const a of articles) {
     if (!a.title) continue;
     papers[norm(a.title)] = a.cited_by?.value ?? 0;
+    list.push({
+      title: a.title,
+      authors: a.authors ?? "",           // Scholar truncates long author lists with "..."
+      publication: a.publication ?? "",   // venue string, e.g. "Pattern Recognition 109, 107595, 2021"
+      year: a.year ? Number(a.year) || null : null,
+      link: a.link ?? "",
+      cited_by: a.cited_by?.value ?? 0,
+    });
   }
+
+  // If this run returned no article list (it happens), keep the last good one instead of wiping the site's list.
+  let previousArticles = [];
+  try { previousArticles = JSON.parse(await readFile("data/citations.json", "utf8")).articles ?? []; } catch {}
 
   const out = {
     updated: new Date().toISOString(),
@@ -68,6 +81,7 @@ try {
     i10_index: i10.all ?? null,
     graph: (first.cited_by?.graph ?? []).map((g) => ({ year: g.year, citations: g.citations })),
     papers,
+    articles: list.length ? list : previousArticles,
   };
 
   await mkdir("data", { recursive: true });
