@@ -1,8 +1,8 @@
 /* Approved testimonials shown in the slider.
 
-   How it works: visitors use the "Write a testimonial" form, which opens an email draft addressed to you.
-   You read it, and if you're happy (and they agreed to publish), paste it here as a new entry and push.
-   Nothing appears on the site until you add it below.
+   Entries listed here are always shown. Once the Google Sheet is connected (assets/testimonials-config.js),
+   submissions go to the sheet and you verify them there, so this list can stay empty.
+   Until the sheet is connected, the form opens an email draft and you can paste approved ones here.
 
    Fields:  quote (required) · name (required) · role (e.g. "MTech student, 2023") · org (optional) · year (optional)
 

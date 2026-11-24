@@ -267,8 +267,24 @@
   (function testimonials() {
     var track = $("#slides"), ui = $("#slider-ui");
     if (!track) return;
-    var items = (window.TESTIMONIALS || []).filter(function (t) { return t && t.quote && t.name; });
+    var cfg = window.TESTIMONIAL_CONFIG || {};
+    var local = (window.TESTIMONIALS || []).filter(function (t) { return t && t.quote && t.name; });
     var demo = /[?&]demo\b/.test(location.search);
+    var showPending = function (n) { var el = $("#pending-note"); if (el) el.hidden = !(n > 0); };
+    if (cfg.endpoint && !demo) {
+      fetch(cfg.endpoint + (cfg.endpoint.indexOf("?") > -1 ? "&" : "?") + "action=list", { cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var v = ((d && d.verified) || []).filter(function (t) { return t && t.quote && t.name; });
+          build(local.concat(v), Number(d && d.pending) || 0);
+        })
+        .catch(function () { build(local, 0); });
+    } else {
+      build(local, /[?&]pending\b/.test(location.search) ? 1 : 0);   // ?demo&pending previews the asterisk
+    }
+
+    function build(items, pending) {
+    showPending(pending);
     if (!items.length && demo) {
       var sample = "This is a sample card to preview the layout. It is not a real testimonial.";
       items = [
@@ -348,6 +364,7 @@
     syncPlay();
     playBtn.addEventListener("click", function () { userPaused = !userPaused; syncPlay(); userPaused ? stop() : start(); });
     start();
+    }
   })();
 
   /* ---------- Testimonials: "write one" form (opens an email draft; nothing is stored on any server) ---------- */
@@ -356,6 +373,13 @@
     if (!form) return;
     var name = $("#t-name"), rel = $("#t-rel"), org = $("#t-org"), msg = $("#t-msg"), ok = $("#t-ok");
     var count = $("#t-count"), status = $("#t-status");
+    var cfg = window.TESTIMONIAL_CONFIG || {};
+    if (cfg.endpoint) {
+      var lede = $(".form-lede");
+      if (lede) lede.textContent = "Worked or studied with me? I'd be glad to hear how it went. Your testimonial is saved privately and appears here only after I have verified it.";
+      var sb = form.querySelector('button[type="submit"]'); if (sb) sb.textContent = "Submit testimonial";
+      var cp = $("#t-copy"); if (cp) cp.hidden = true;
+    }
     var say = function (text, cls) { status.textContent = text; status.className = "form-status" + (cls ? " " + cls : ""); };
     msg.addEventListener("input", function () { count.textContent = msg.value.length + " / " + msg.maxLength; });
 
@@ -375,9 +399,27 @@
         "I agree to my name and these words being shown on swarnendughosh.com.";
       return { subject: "Testimonial for your website from " + name.value.trim(), body: body };
     }
+    function send() {
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true; say("Submitting…");
+      var payload = { name: name.value.trim(), relationship: rel.value, org: org.value.trim(), message: msg.value.trim(), consent: true, website: ($("#t-hp") || {}).value || "" };
+      fetch(cfg.endpoint, { method: "POST", body: JSON.stringify(payload) })   // plain-text body: no CORS preflight
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (!d || !d.ok) throw new Error((d && d.error) || "failed");
+          say("Thank you! Your testimonial has been submitted and is pending review. It will appear here once I have verified it.", "ok");
+          form.reset(); count.textContent = "0 / " + msg.maxLength;
+          var pn = $("#pending-note"); if (pn) pn.hidden = false;
+        })
+        .catch(function (err) {
+          say(/at least 20|confirm|Too many/.test(String(err && err.message)) ? err.message : "Sorry, I couldn't submit that just now. Please try again in a little while.", "err");
+        })
+        .then(function () { btn.disabled = false; });
+    }
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!valid()) return;
+      if (cfg.endpoint) { send(); return; }
       var m = compose();
       var href = "mailto:" + user + "@" + host + "?subject=" + encodeURIComponent(m.subject) + "&body=" + encodeURIComponent(m.body);
       if (href.length > 1900) { say("That's a little long for an email link. Please use “Copy text instead” and paste it into an email.", "err"); return; }

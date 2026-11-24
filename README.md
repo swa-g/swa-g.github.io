@@ -31,3 +31,8 @@ site automatically with a small "Scholar" badge and a link. To polish one, copy 
 
 Title, description, Open Graph/Twitter tags and JSON-LD live in the `<head>` of `index.html`. `robots.txt`, `sitemap.xml`
 and `404.html` are in the repo root. Keep the canonical URL as `https://swarnendughosh.com/` (enable "Enforce HTTPS" in Pages).
+
+## Testimonials
+
+Submissions are saved to a private Google Sheet as "Unverified"; only rows you mark "Verified" appear on the site, and a small
+asterisk note shows while any are pending. Setup (5 minutes): `scripts/testimonials-apps-script/README.md`.
