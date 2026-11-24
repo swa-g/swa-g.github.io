@@ -57,7 +57,7 @@ window.PEOPLE = {
     {"name": "Ishita Das", "aliases": ["I Das", "Ishita Das"], "rel": "Student (Master's)"},
     {"name": "Ujjwal Maulik", "aliases": ["Ujjwal Maulik", "U Maulik"], "rel": "Senior collaborator", "org": {"pos": "Professor", "name": "Jadavpur University", "abbr": "JU", "city": "Kolkata", "country": "India"}},
     {"name": "Soumyajyoti Dey", "aliases": ["S Dey", "Soumyajyoti Dey"], "rel": "Fellow research scholar", "org": {"pos": "Assistant Professor (Senior Grade 1)", "name": "Vellore Institute of Technology", "abbr": "VIT", "city": "Vellore", "country": "India"}, "photo": "assets/people/soumyajyoti-dey.jpg"},
-    {"name": "S Mitra", "aliases": ["S Mitra"], "rel": "Senior collaborator"},
+    {"name": "S Mitra", "aliases": ["S Mitra"], "rel": "Senior collaborator", "hide": true},
     {"name": "S Chakrabarty", "aliases": ["S Chakrabarty"], "rel": ""},
     {"name": "P Shaw", "aliases": ["P Shaw"], "rel": ""},
     {"name": "S Chowdhury", "aliases": ["S Chowdhury"], "rel": ""},

@@ -139,6 +139,20 @@
     return state.text.toLowerCase().split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
   }
 
+
+  /* Publications that belong to the current project (tag a paper in data.js with project: "lancer") */
+  function renderLancer() {
+    var ul = $("#lancer-pubs");
+    if (!ul) return;
+    var items = pubs.filter(function (p) { return p.project === "lancer"; }).sort(function (a, b) { return b.year - a.year; });
+    if (!items.length) { var box = $(".proj-papers"); if (box) box.hidden = true; return; }
+    ul.innerHTML = items.map(function (p) {
+      var href = p.url || p.link;
+      var title = href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title);
+      return "<li>" + title + '<div class="m">' + authorsHtml(p.authors) + " · " + esc(p.venue) + " · " + p.year + "</div></li>";
+    }).join("");
+  }
+
   function render() {
     if (!list) return;
     var shown = pubs.filter(matches);
@@ -156,7 +170,7 @@
         return '<li class="pub">' +
           '<div class="t"><span class="badge">' + esc(TYPE_LABEL[p.type] || p.type) + "</span>" +
             (p.auto ? '<span class="badge auto" title="Added automatically from my Google Scholar profile">Scholar</span>' : "") +
-            (p.link ? '<a class="tlink" href="' + esc(p.link) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
+            ((p.url || p.link) ? '<a class="tlink" href="' + esc(p.url || p.link) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
           '<div class="a">' + authorsHtml(p.authors) + "</div>" +
           '<div class="v">' + esc(p.venue) + (p.detail ? ' <span>· ' + esc(p.detail) + "</span>" : "") +
           (c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>" +
@@ -180,6 +194,7 @@
   }
   if (q) q.addEventListener("input", function () { state.text = q.value.trim(); render(); });
   render();
+  renderLancer();
   loadCitations();
 
   /* ---------- People I have worked with: photo, name, current affiliation, grouped and ordered by relationship ---------- */
