@@ -294,6 +294,10 @@
             <input id="pub-search" type="search" placeholder="Search title, author, venue or year" aria-label="Search publications" autocomplete="off">
           </div>
           <div id="pub-chips" class="chips" role="group" aria-label="Filter by type"></div>
+          <div id="pub-sort" class="chips sorter" role="group" aria-label="Sort publications">
+            <button class="chip" type="button" data-sort="cites" aria-pressed="true">Sort by citations</button>
+            <button class="chip" type="button" data-sort="date" aria-pressed="false">Sort by date</button>
+          </div>
         </div>
         <div id="pub-count" class="result-count" aria-live="polite"></div>
 

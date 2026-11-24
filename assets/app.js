@@ -54,7 +54,7 @@
   var pubs = (window.PUBLICATIONS || []).slice();
   var types = window.PUB_TYPES || [];
   var list = $("#pub-list"), chipsEl = $("#pub-chips"), q = $("#pub-search"), count = $("#pub-count");
-  var state = { type: "all", text: "" };
+  var state = { type: "all", text: "", sort: "cites" };   // default: most cited first
 
   var TYPE_LABEL = { journal: "Journal", conference: "Conference", workshop: "Workshop", book: "Book", chapter: "Chapter", patent: "Patent", talk: "Talk", preprint: "Preprint", other: "Other" };
   var GROUP = { all: null, journal: ["journal"], conference: ["conference"], workshop: ["workshop"], book: ["book", "chapter"], patent: ["patent", "talk", "preprint", "other"] };
@@ -153,6 +153,17 @@
     }).join("");
   }
 
+  /* One publication's text block. Inline "Cited by" is only used in the by-date view (the by-citations view has its own right-hand column). */
+  function pubMain(p, inlineCites) {
+    var c = citesFor(p), href = p.url || p.link;
+    return '<div class="t"><span class="badge">' + esc(TYPE_LABEL[p.type] || p.type) + "</span>" +
+        (p.auto ? '<span class="badge auto" title="Added automatically from my Google Scholar profile">Scholar</span>' : "") +
+        (href ? '<a class="tlink" href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
+      '<div class="a">' + authorsHtml(p.authors) + "</div>" +
+      '<div class="v">' + esc(p.venue) + (p.detail ? ' <span>· ' + esc(p.detail) + "</span>" : "") +
+        (inlineCites && c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>";
+  }
+
   function render() {
     if (!list) return;
     var shown = pubs.filter(matches);
@@ -161,20 +172,29 @@
       list.innerHTML = '<div class="empty">Nothing matches that search. Try fewer words or a different filter.</div>';
       return;
     }
+
+    if (state.sort === "cites") {
+      /* Most cited first. Ties: newer first, then title. Year and citation count sit on the right of each paper. */
+      var loaded = Object.keys(cites).length > 0;
+      var ranked = shown.slice().sort(function (a, b) {
+        return (citesFor(b) || 0) - (citesFor(a) || 0) || (b.year - a.year) || (a.title < b.title ? -1 : 1);
+      });
+      list.innerHTML = '<ul class="pubs flat">' + ranked.map(function (p) {
+        var c = citesFor(p) || 0;
+        var citeTxt = loaded ? '<span class="cites' + (c ? "" : " zero") + '">' + c + (c === 1 ? " citation" : " citations") + "</span>" : "";
+        return '<li class="pub row"><div class="pub-main">' + pubMain(p, false) + '</div>' +
+          '<div class="pub-side"><span class="py">' + (p.year || "n.d.") + "</span>" + citeTxt + "</div></li>";
+      }).join("") + "</ul>";
+      return;
+    }
+
+    /* Sort by date: grouped by year, newest first */
     var years = [];
     shown.forEach(function (p) { if (years.indexOf(p.year) === -1) years.push(p.year); });
     years.sort(function (a, b) { return b - a; });
     list.innerHTML = years.map(function (y) {
       var items = shown.filter(function (p) { return p.year === y; }).map(function (p) {
-        var c = citesFor(p);
-        return '<li class="pub">' +
-          '<div class="t"><span class="badge">' + esc(TYPE_LABEL[p.type] || p.type) + "</span>" +
-            (p.auto ? '<span class="badge auto" title="Added automatically from my Google Scholar profile">Scholar</span>' : "") +
-            ((p.url || p.link) ? '<a class="tlink" href="' + esc(p.url || p.link) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
-          '<div class="a">' + authorsHtml(p.authors) + "</div>" +
-          '<div class="v">' + esc(p.venue) + (p.detail ? ' <span>· ' + esc(p.detail) + "</span>" : "") +
-          (c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>" +
-          "</li>";
+        return '<li class="pub">' + pubMain(p, true) + "</li>";
       }).join("");
       return '<div class="year-group"><div class="year">' + (y || "Undated") + '</div><ul class="pubs">' + items + "</ul></div>";
     }).join("");
@@ -192,6 +212,14 @@
       render();
     });
   }
+  var sortEl = $("#pub-sort");
+  if (sortEl) sortEl.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-sort]");
+    if (!b) return;
+    state.sort = b.getAttribute("data-sort");
+    $$("[data-sort]", sortEl).forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    render();
+  });
   if (q) q.addEventListener("input", function () { state.text = q.value.trim(); render(); });
   render();
   renderLancer();
