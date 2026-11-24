@@ -1,4 +1,7 @@
 /**
+ * @OnlyCurrentDoc
+ * (The line above limits this script's permission to the one spreadsheet it is attached to.)
+ *
  * Testimonials backend for swarnendughosh.com
  *
  * A tiny Google Apps Script web app that lives inside a Google Sheet.

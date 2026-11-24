@@ -7,5 +7,5 @@
              - Empty -> the form falls back to opening an email draft and the slider shows only the entries in
                        assets/testimonials.js. */
 window.TESTIMONIAL_CONFIG = {
-  endpoint: ""
+  endpoint: "https://script.google.com/macros/s/AKfycbyWJ-NVNl9eERAY2ZlhwFt_UOSvB_jVVppv8I6uroeXEQkXE1F7KfWWlOh7DN3eFLcM/exec"
 };

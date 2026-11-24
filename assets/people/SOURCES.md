@@ -12,3 +12,8 @@ Remove any file here at any time and that person simply shows their initials aga
 | subhadip-chandra.jpg | IEM faculty directory: https://faculty.iem.edu.in/faculty/199 |
 
 Photos were downloaded on 24 Nov 2026. It is good practice to tell each person their picture is shown.
+
+## Supplied by the site owner (25 Nov 2026)
+
+The remaining thumbnails were pictures the site owner collected and pasted into `photos-to-confirm.docx`; they are used with the owner's approval.
+Held back until a clearer single-person photo is supplied: soumya-ukil (group selfie), david-muhic (mascot photo).
