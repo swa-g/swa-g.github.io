@@ -16,4 +16,4 @@ Photos were downloaded on 24 Nov 2026. It is good practice to tell each person t
 ## Supplied by the site owner (25 Nov 2026)
 
 The remaining thumbnails were pictures the site owner collected and pasted into `photos-to-confirm.docx`; they are used with the owner's approval.
-Held back until a clearer single-person photo is supplied: soumya-ukil (group selfie), david-muhic (mascot photo).
+soumya-ukil (the person on the left of a group selfie) and david-muhic (the person beside the mascot) are tight crops onto the face, as requested by the owner.
