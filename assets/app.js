@@ -654,7 +654,7 @@
 })();
 
 
-/* ---------- Signature intro: remove it when it has faded; any click, key, scroll or touch skips it ---------- */
+/* ---------- Signature intro: remove it when it has faded; a click/tap or Escape skips it, scrolling works as usual ---------- */
 (function () {
   "use strict";
   var el = document.getElementById("intro"), root = document.documentElement;
@@ -672,6 +672,8 @@
   }
   function skip() { el.classList.add("skip"); setTimeout(finish, 320); }
   el.addEventListener("animationend", function (e) { if (e.animationName === "introClear" || (e.target === el && e.animationName === "introOut")) finish(); });
-  ["click", "keydown", "wheel", "touchstart"].forEach(function (ev) { window.addEventListener(ev, skip, { once: true, passive: true }); });
+  /* scrolling, touch-scrolling and the arrow/space keys must keep working, so only a click/tap or Escape ends it early */
+  window.addEventListener("click", skip, { once: true, passive: true });
+  window.addEventListener("keydown", function (e) { if (e.key === "Escape") skip(); }, { passive: true });
   setTimeout(finish, 10500);   /* failsafe */
 })();
