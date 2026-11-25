@@ -15,7 +15,7 @@ window.PEOPLE = {
   groups: [
     { key: "supervisors", title: "Supervisors & co-supervisors", rels: ["Supervisor", "Co-supervisor"] },
     { key: "senior",      title: "Senior collaborators",         rels: ["Senior collaborator"] },
-    { key: "industry",    title: "Industry & collaborators",     rels: ["Industry / other", "Collaborator", "External collaborator"] },
+    { key: "industry",    title: "Industry and Academic Collaborators",     rels: ["Industry / other", "Collaborator", "External collaborator"] },
     { key: "colleagues",  title: "Present & past colleagues",    rels: ["Present Colleague", "Past Colleague", "Colleague (same institution)"] },
     { key: "students",    title: "Research fellows & students",  rels: ["Fellow research scholar", "Student (PhD)", "Student (Master's)", "Student (UG / project)", "Student (Intern)"] }
   ],

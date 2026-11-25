@@ -318,6 +318,9 @@
   }
   buildPeople();
 
+  /* A testimonial photo is a small JPEG sent as a data URL; anything else is ignored */
+  var PHOTO_OK = /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]{20,40000}$/;
+
   /* ---------- Testimonials: slider ---------- */
   (function testimonials() {
     var track = $("#slides"), ui = $("#slider-ui");
@@ -362,7 +365,7 @@
       return '<div class="slide" role="group" aria-roledescription="slide" aria-label="' + (i + 1) + " of " + items.length + '">' +
         '<figure class="quote-card">' + (t.sample ? '<span class="sample-tag">Sample</span>' : "") +
         "<blockquote>" + esc(t.quote) + "</blockquote>" +
-        '<figcaption><div class="avatar" aria-hidden="true">' + esc(ini(t.name)) + '</div><div class="who"><b>' + esc(t.name) + "</b>" +
+        "<figcaption>" + (PHOTO_OK.test(t.photo || "") ? '<img class="avatar photo" alt="" src="' + t.photo + '">' : '<div class="avatar" aria-hidden="true">' + esc(ini(t.name)) + "</div>") + '<div class="who"><b>' + esc(t.name) + "</b>" +
         (meta ? "<span>" + esc(meta) + "</span>" : "") + "</div></figcaption></figure></div>";
     }).join("");
 
@@ -461,20 +464,54 @@
       $("#t-cancel").addEventListener("click", closeDlg);
     }
     name.addEventListener("input", function () { if (avatar) avatar.textContent = initials(name.value); });
+
+    /* Optional photo: cropped to a small square JPEG in the browser, so only a few KB are ever sent */
+    var photoInput = $("#t-photo"), photoImg = $("#t-avatar-img"), photoClear = $("#t-photo-clear"), photoHint = $("#t-photo-hint"), photoData = "";
+    function showPhoto(url) {
+      photoData = url || "";
+      if (photoImg) { photoImg.hidden = !url; if (url) photoImg.src = url; else photoImg.removeAttribute("src"); }
+      if (avatar) avatar.hidden = !!url;
+      if (photoClear) photoClear.hidden = !url;
+      if (photoHint) photoHint.hidden = !!url;
+    }
+    function clearPhoto() { if (photoInput) photoInput.value = ""; showPhoto(""); }
+    if (photoInput) {
+      if (!cfg.endpoint) { var pp = $(".photo-pick"); if (pp) pp.classList.add("no-photo"); }   // a photo cannot travel in an email draft
+      photoInput.addEventListener("change", function () {
+        var f = photoInput.files && photoInput.files[0];
+        if (!f) return;
+        if (!/^image\/(png|jpe?g|webp)$/i.test(f.type) || f.size > 12 * 1024 * 1024) { say("Please choose a JPG, PNG or WebP picture under 12 MB.", "err"); clearPhoto(); return; }
+        var url = URL.createObjectURL(f), img = new Image();
+        img.onload = function () {
+          var S = 112, cv = document.createElement("canvas"); cv.width = cv.height = S;
+          var side = Math.min(img.naturalWidth, img.naturalHeight), sx = (img.naturalWidth - side) / 2, sy = (img.naturalHeight - side) / 2;
+          var ctx = cv.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, S, S);
+          ctx.drawImage(img, sx, sy, side, side, 0, 0, S, S);
+          URL.revokeObjectURL(url);
+          var out = cv.toDataURL("image/jpeg", 0.82);
+          if (out.length > 28000) out = cv.toDataURL("image/jpeg", 0.6);
+          if (!PHOTO_OK.test(out) || out.length > 28000) { say("That picture could not be used. Please try another one.", "err"); clearPhoto(); return; }
+          showPhoto(out); say("");
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); say("That file could not be read as a picture.", "err"); clearPhoto(); };
+        img.src = url;
+      });
+      if (photoClear) photoClear.addEventListener("click", clearPhoto);
+    }
     if (location.hash === "#testi-form" || location.hash === "#write-testimonial") openDlg();
     msg.addEventListener("input", function () { count.textContent = msg.value.length + " / " + msg.maxLength; });
 
     function valid() {
-      var bad = [name, rel, msg].filter(function (el) { return !el.value.trim(); });
-      [name, rel, msg].forEach(function (el) { el.classList.toggle("invalid", !el.value.trim()); el.setAttribute("aria-invalid", String(!el.value.trim())); });
-      if (bad.length) { say("Please choose how you know me, write your testimonial and add the name you want shown.", "err"); bad[0].focus(); return false; }
+      var bad = [msg, name].filter(function (el) { return !el.value.trim(); });
+      [name, msg].forEach(function (el) { el.classList.toggle("invalid", !el.value.trim()); el.setAttribute("aria-invalid", String(!el.value.trim())); });
+      if (bad.length) { say("Please write your testimonial and add the name you want shown.", "err"); bad[0].focus(); return false; }
       if (!ok.checked) { say("Please tick the box to confirm you're happy for this to be shown.", "err"); ok.focus(); return false; }
       return true;
     }
     function compose() {
       var body = "Testimonial for swarnendughosh.com\n\n" +
         "Name: " + name.value.trim() + "\n" +
-        "Relationship: " + rel.value + "\n" +
+        (rel.value.trim() ? "Relation to Swarnendu: " + rel.value.trim() + "\n" : "") +
         (org.value.trim() ? "Institution / role: " + org.value.trim() + "\n" : "") +
         "\nTestimonial:\n" + msg.value.trim() + "\n\n" +
         "I agree to my name and these words being shown on swarnendughosh.com.";
@@ -509,7 +546,7 @@
     function send() {
       var btn = form.querySelector('button[type="submit"]');
       btn.disabled = true; say("Submitting…");
-      var payload = { name: name.value.trim(), relationship: rel.value, org: org.value.trim(), message: msg.value.trim(), consent: true, website: ($("#t-hp") || {}).value || "" };
+      var payload = { name: name.value.trim(), relationship: rel.value.trim(), org: org.value.trim(), message: msg.value.trim(), photo: photoData, consent: true, website: ($("#t-hp") || {}).value || "" };
       fetch(cfg.endpoint, { method: "POST", body: JSON.stringify(payload) })   // plain-text body: no CORS preflight
         .then(function (r) { return r.json(); })
         .then(function (d) {
@@ -522,7 +559,7 @@
             say("Thank you! Your testimonial has been verified and published. Reload the page to see it in the slider.", "ok");
           }
           rememberMine(d.id);
-          form.reset(); count.textContent = "0 / " + msg.maxLength; if (avatar) avatar.textContent = "?";
+          form.reset(); count.textContent = "0 / " + msg.maxLength; if (avatar) avatar.textContent = "?"; clearPhoto();
           var box = $("#my-status");
           if (box) { box.textContent = pending ? "Thank you! Your testimonial is pending verification. It will appear here once it has been checked." : "Thank you! Your testimonial has been verified and published. Reload the page to see it in the slider."; box.hidden = false; }
           setTimeout(closeDlg, 2200);

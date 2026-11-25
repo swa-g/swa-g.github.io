@@ -548,22 +548,23 @@
 
             <figure class="quote-card preview">
               <div class="rel-pick">
-                <select id="t-rel" name="rel" required aria-label="Your relation to me">
-                  <option value="" selected>Your relation to me</option>
-                  <option>Student</option>
-                  <option>Mentee / project student</option>
-                  <option>Colleague</option>
-                  <option>Co-author / collaborator</option>
-                  <option>Supervisor / mentor</option>
-                  <option>Other</option>
-                </select>
+                <input id="t-rel" name="rel" type="text" maxlength="80" placeholder="Your relation to me" aria-label="Your relation to me">
               </div>
               <div class="pv-text">
                 <textarea id="t-msg" name="msg" rows="5" required maxlength="1000" placeholder="TESTIMONIAL TEXT GOES HERE" aria-label="Your testimonial" aria-describedby="t-count"></textarea>
                 <div id="t-count" class="count" aria-live="polite">0 / 1000</div>
               </div>
               <figcaption>
-                <div id="t-avatar" class="avatar" aria-hidden="true">?</div>
+                <div class="photo-pick">
+                  <label class="avatar-btn" for="t-photo" title="Add a photo (optional)">
+                    <span id="t-avatar" class="avatar" aria-hidden="true">?</span>
+                    <img id="t-avatar-img" class="avatar photo" alt="" hidden>
+                    <span class="cam" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
+                  </label>
+                  <input id="t-photo" type="file" accept="image/png,image/jpeg,image/webp" class="visually-hidden" aria-label="Add a photo (optional)">
+                  <button type="button" id="t-photo-clear" class="photo-clear" hidden>Remove photo</button>
+                  <span id="t-photo-hint" class="photo-hint">Add photo <small>(optional)</small></span>
+                </div>
                 <div class="who">
                   <div class="dash-row"><span class="dash" aria-hidden="true">&mdash;</span><input id="t-name" class="nm" name="name" type="text" required maxlength="80" autocomplete="name" placeholder="How you want your name to be shown" aria-label="How you want your name to be shown"></div>
                   <div class="dash-row"><span class="dash" aria-hidden="true">&mdash;</span><input id="t-org" name="org" type="text" maxlength="100" placeholder="Your current designation and affiliation" aria-label="Your current designation and affiliation (optional)"></div>

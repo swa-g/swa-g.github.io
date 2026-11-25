@@ -43,8 +43,12 @@ Excel at any time: in the sheet use **File > Download > Microsoft Excel (.xlsx)*
 - Auto-verified rows arrive in green, held rows in yellow (Status **Unverified**, reason in Notes).
 - To approve a held row, change Status to **Verified**. To hide any row, change it to **Rejected** (grey).
 - Nothing to publish or push; the site reads the sheet live.
-- Columns: Timestamp, Name, Relationship, Institution / role, Testimonial, Status, Notes (private), Sentiment, Score, ID.
+- Columns: Timestamp, Name, Relationship, Institution / role, Testimonial, Status, Notes (private), Sentiment, Score, ID, Photo.
   Notes, Sentiment, Score and ID are never sent to the website.
+- Relationship is free text, exactly as the visitor typed it.
+- Photo is optional. The browser crops it to a small square JPEG (about 112 px, a few KB) and the sheet stores it as text in the Photo column.
+  **A testimonial that comes with a photo is never auto-verified**: it is held as Unverified (Notes say "includes a photo") so you can look at
+  the picture first. Set Status to Verified to publish it, or Rejected to hide it. Delete the Photo cell's text if you want to publish the words only.
 
 ## What visitors are told
 
@@ -54,7 +58,7 @@ Excel at any time: in the sheet use **File > Download > Microsoft Excel (.xlsx)*
 
 ## What the public can and cannot see
 
-- The public endpoint returns only Verified rows (name, relationship, institution, testimonial, year).
+- The public endpoint returns only Verified rows (name, relationship, institution, testimonial, year, photo).
 - Unverified text is never returned, only the count (that is what drives the asterisk).
 - Spam brakes: hidden honeypot field, length limits, at most 30 submissions per hour.
 - Text starting with `= + - @` is stored as plain text so it cannot run as a spreadsheet formula.
