@@ -667,7 +667,7 @@
     if (el.parentNode) el.parentNode.removeChild(el);
   }
   function skip() { el.classList.add("skip"); setTimeout(finish, 320); }
-  el.addEventListener("animationend", function (e) { if (e.target === el && e.animationName === "introOut") finish(); });
+  el.addEventListener("animationend", function (e) { if (e.animationName === "introClear" || (e.target === el && e.animationName === "introOut")) finish(); });
   ["click", "keydown", "wheel", "touchstart"].forEach(function (ev) { window.addEventListener(ev, skip, { once: true, passive: true }); });
-  setTimeout(finish, 4000);   /* failsafe */
+  setTimeout(finish, 7500);   /* failsafe */
 })();
