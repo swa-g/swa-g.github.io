@@ -481,12 +481,18 @@ body.modal-open { overflow: hidden; }
 #intro { display: none; }
 .intro #intro { display: grid; place-items: center; position: fixed; inset: 0; z-index: 9999; }
 .intro body { overflow: hidden; }
-#intro .glass { position: absolute; inset: 0; background: var(--bg); -webkit-backdrop-filter: blur(26px) saturate(1.2); backdrop-filter: blur(26px) saturate(1.2); }
+#intro .glass { position: absolute; inset: -90px; background: var(--bg); -webkit-backdrop-filter: blur(26px) saturate(1.2); backdrop-filter: blur(26px) saturate(1.2); }
 #intro img { position: relative; width: min(62vw, 440px); height: auto; will-change: transform, opacity; }
 [data-theme="dark"] #intro img { filter: invert(1) hue-rotate(180deg) brightness(.95); }
 .intro #intro.go .glass { animation: introClear 3.2s linear 3.18s forwards; }
 .intro #intro.go img { animation: introRecede 1.2s cubic-bezier(.5, 0, .75, .4) 3.18s forwards; }
 .intro #intro.skip { animation: introOut .35s ease forwards; }
+/* The sticky header has its own blur, so the glass cannot soften it: keep it out of sight until the glass clears,
+   otherwise it shows as a sharp pale band with a hairline under it. */
+.intro .nav { opacity: 0; transition: opacity .3s ease; }
+.intro #intro.go ~ .nav { animation: introNav 3.2s linear 3.18s forwards; }
+.intro #intro.skip ~ .nav { animation: none; opacity: 1; }
+@keyframes introNav { to { opacity: 1; } }
 @keyframes introRecede { 0% { transform: scale(1); opacity: 1; } 65% { opacity: .2; } 100% { transform: scale(.45); opacity: 0; } }
 @keyframes introClear {
   0%   { opacity: 1; }
