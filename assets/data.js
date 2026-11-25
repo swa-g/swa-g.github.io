@@ -26,15 +26,15 @@ window.PUBLICATIONS = [
 
   /* ---------- 2024 ---------- */
   { year: 2024, type: "patent",
-    title: "AI Based Wrist Band for Heart Attack Detection",
+    title: "AI Based Wrist Band for Heart Attack Detection", url: "https://www.tmdn.org/tmdsview-web/#/dsview/detail/GB702024006391276-0001",
     authors: "P Maiti, S Chanda, S Chandra, Swarnendu Ghosh, D Guha Roy",
     venue: "UK Design Patent", detail: "No. 6391276" },
   { year: 2024, type: "workshop",
-    title: "MADS: A Multi-modal Academic Document Segmentation Dataset for Smart Question Bank Management", url: "https://ceur-ws.org/Vol-3764/paper1.pdf",
+    title: "MADS: A Multi-modal Academic Document Segmentation Dataset for Smart Question Bank Management", url: "https://ceur-ws.org/Vol-3764/#paper1",
     authors: "U Aich, Swarnendu Ghosh, T Saha",
     venue: "2nd Symposium on NLP for Social Good (NSG)", detail: "CEUR-WS, Vol. 3764" },
   { year: 2024, type: "talk",
-    title: "Digital Twins in Healthcare: A forefront for knowledge representation techniques",
+    title: "Digital Twins in Healthcare: A forefront for knowledge representation techniques", url: "https://ceur-ws.org/Vol-3764/#invited1",
     authors: "Swarnendu Ghosh",
     venue: "2nd Symposium on NLP for Social Good (NSG)", detail: "CEUR-WS, Vol. 3764" },
   { year: 2024, type: "conference",

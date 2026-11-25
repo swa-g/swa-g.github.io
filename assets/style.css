@@ -231,6 +231,9 @@ h3 { font-family: var(--display); font-size: 1.15rem; letter-spacing: -.01em; ma
 .proj-list mark { background: none; color: var(--ink); font-weight: 650; }
 .proj-fund { color: var(--muted); font-size: .84rem; margin: 14px 0 0; max-width: 90ch; }
 @media (max-width: 860px) { .project { grid-template-columns: 1fr; } .proj-papers { border-left: 0; border-top: 1px solid var(--line); } }
+.req-row { margin-top: 8px; }
+.reqpdf { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent; border-radius: 999px; padding: 3px 11px; text-decoration: none; }
+.reqpdf:hover, .reqpdf:focus-visible { border-color: var(--accent); }
 .pub .tlink::after { content: " \2197"; font-size: .8em; color: var(--muted); font-weight: 400; }
 
 /* ---------- Citation tracker ---------- */

@@ -153,6 +153,21 @@
     }).join("");
   }
 
+  /* "Request full PDF": an email draft to me that names the paper. Assembled here so the address is not in the HTML. */
+  function reqHref(p) {
+    var plain = function (x) { return String(x || "").replace(/\s+/g, " ").trim(); };
+    var link = p.url || p.link || "";
+    var lines = ["Dear Dr. Ghosh,", "", "I would like to request a copy of the full text (PDF) of this publication:", "",
+      "Title: " + plain(p.title),
+      "Authors: " + plain(p.authors),
+      "Type: " + (TYPE_LABEL[p.type] || p.type) + ", " + (p.year || "n.d."),
+      "Published in: " + plain(p.venue) + (p.detail ? " (" + plain(p.detail) + ")" : "")];
+    if (link) lines.push("Link: " + link);
+    lines.push("", "My name and affiliation:", "What I need it for (optional):", "", "Thank you,");
+    return "mailto:" + user + "@" + host + "?subject=" + encodeURIComponent("Request for full PDF: " + plain(p.title)) +
+      "&body=" + encodeURIComponent(lines.join("\r\n"));
+  }
+
   /* One publication's text block. Inline "Cited by" is only used in the by-date view (the by-citations view has its own right-hand column). */
   function pubMain(p, inlineCites) {
     var c = citesFor(p), href = p.url || p.link;
@@ -161,7 +176,10 @@
         (href ? '<a class="tlink" href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
       '<div class="a">' + authorsHtml(p.authors) + "</div>" +
       '<div class="v">' + esc(p.venue) + (p.detail ? ' <span>· ' + esc(p.detail) + "</span>" : "") +
-        (inlineCites && c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>";
+        (inlineCites && c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>" +
+      '<div class="req-row"><a class="reqpdf" href="' + esc(reqHref(p)) + '" title="Opens an email draft to me asking for the PDF of this paper">' +
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' +
+        "Request full PDF</a></div>";
   }
 
   function render() {
