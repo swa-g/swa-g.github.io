@@ -137,7 +137,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
                 Check latest project
               </a>
-              <a class="btn" href="#testi-form">
+              <a class="btn" href="#testimonials" data-open-testi>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
                 Write a testimonial
               </a>
@@ -526,20 +526,30 @@
             <p id="pending-note" class="pending-note" hidden>* Some testimonials are pending verification.</p>
           </div>
 
-          <form id="testi-form" class="testi-form reveal" novalidate>
-            <h3>Write a testimonial</h3>
+          <div class="testi-cta reveal">
+            <h3>Worked or studied with me?</h3>
+            <p id="testi-lede" class="form-lede">I'd be glad to hear how it went. Write a few lines and see how they will look before you send them.</p>
             <p id="my-status" class="my-status" role="status" hidden></p>
-            <p class="form-lede">Worked or studied with me? I'd be glad to hear how it went. Your words open as an email draft to me. I read every one and add it here once I have your OK.</p>
+            <button class="btn primary" type="button" id="open-testi" aria-haspopup="dialog">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Write a testimonial
+            </button>
+          </div>
+        </div>
 
-            <div class="field">
-              <label for="t-name">Your name <span aria-hidden="true">*</span></label>
-              <input id="t-name" name="name" type="text" required maxlength="80" autocomplete="name">
+        <dialog id="testi-dialog" class="testi-dialog" aria-labelledby="testi-title">
+          <form id="testi-form" class="testi-form" novalidate>
+            <div class="dlg-head">
+              <div><h3 id="testi-title">Write a testimonial</h3><p class="dlg-sub">Fill in the card below. This is how it will look.</p></div>
+              <button type="button" class="dlg-close" id="testi-close" aria-label="Close">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+              </button>
             </div>
-            <div class="field two">
-              <div>
-                <label for="t-rel">How do we know each other? <span aria-hidden="true">*</span></label>
-                <select id="t-rel" name="rel" required>
-                  <option value="">Choose…</option>
+
+            <figure class="quote-card preview">
+              <div class="rel-pick">
+                <select id="t-rel" name="rel" required aria-label="Your relation to me">
+                  <option value="" selected>Your relation to me</option>
                   <option>Student</option>
                   <option>Mentee / project student</option>
                   <option>Colleague</option>
@@ -548,16 +558,19 @@
                   <option>Other</option>
                 </select>
               </div>
-              <div>
-                <label for="t-org">Institution / role <small>(optional)</small></label>
-                <input id="t-org" name="org" type="text" maxlength="100" placeholder="e.g. MTech 2023, IEM Kolkata">
+              <div class="pv-text">
+                <textarea id="t-msg" name="msg" rows="5" required maxlength="1000" placeholder="TESTIMONIAL TEXT GOES HERE" aria-label="Your testimonial" aria-describedby="t-count"></textarea>
+                <div id="t-count" class="count" aria-live="polite">0 / 1000</div>
               </div>
-            </div>
-            <div class="field">
-              <label for="t-msg">Your testimonial <span aria-hidden="true">*</span></label>
-              <textarea id="t-msg" name="msg" rows="5" required maxlength="1000" aria-describedby="t-count"></textarea>
-              <div id="t-count" class="count" aria-live="polite">0 / 1000</div>
-            </div>
+              <figcaption>
+                <div id="t-avatar" class="avatar" aria-hidden="true">?</div>
+                <div class="who">
+                  <div class="dash-row"><span class="dash" aria-hidden="true">&mdash;</span><input id="t-name" class="nm" name="name" type="text" required maxlength="80" autocomplete="name" placeholder="How you want your name to be shown" aria-label="How you want your name to be shown"></div>
+                  <div class="dash-row"><span class="dash" aria-hidden="true">&mdash;</span><input id="t-org" name="org" type="text" maxlength="100" placeholder="Your current designation and affiliation" aria-label="Your current designation and affiliation (optional)"></div>
+                </div>
+              </figcaption>
+            </figure>
+
             <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" id="t-hp" name="website" tabindex="-1" autocomplete="off"></label></div>
             <label class="check">
               <input id="t-ok" type="checkbox" required>
@@ -567,10 +580,11 @@
             <div class="form-actions">
               <button class="btn primary" type="submit">Open email draft</button>
               <button class="btn" type="button" id="t-copy">Copy text instead</button>
+              <button class="btn ghost" type="button" id="t-cancel">Cancel</button>
             </div>
             <p id="t-status" class="form-status" role="status" aria-live="polite"></p>
           </form>
-        </div>
+        </dialog>
       </div>
     </section>
 

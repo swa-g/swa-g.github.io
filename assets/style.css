@@ -389,3 +389,46 @@ footer .row { display: flex; flex-wrap: wrap; justify-content: space-between; ga
   .js .reveal { opacity: 1; transform: none; }
   body { font-size: 12pt; }
 }
+
+
+/* ---------- Testimonial: call-to-action card and the preview window ---------- */
+.testi-cta { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(22px, 3vw, 32px); }
+.testi-cta h3 { font-size: 1.35rem; margin-bottom: 8px; }
+.testi-cta .btn { cursor: pointer; font: inherit; font-weight: 600; font-size: .97rem; display: inline-flex; align-items: center; gap: 8px; }
+.testi-dialog { width: min(94vw, 680px); max-height: 92vh; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); color: var(--ink); box-shadow: 0 30px 80px rgba(0, 0, 0, .35); overflow: auto; margin: auto; }
+.testi-dialog:not([open]) { display: none; }
+.testi-dialog::backdrop { background: rgba(8, 10, 16, .62); backdrop-filter: blur(3px); }
+body.modal-open { overflow: hidden; }
+.testi-dialog .testi-form { background: none; border: 0; border-radius: 0; padding: clamp(18px, 3vw, 28px); }
+.dlg-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.dlg-head h3 { font-size: 1.3rem; margin: 0 0 2px; }
+.dlg-sub { margin: 0; color: var(--muted); font-size: .9rem; }
+.dlg-close { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.dlg-close:hover { border-color: var(--accent); color: var(--accent); }
+.testi-form .quote-card.preview { min-height: 0; gap: 14px; padding: clamp(22px, 3.5vw, 34px); margin-bottom: 16px; }
+.preview .rel-pick { margin-left: 44px; align-self: flex-start; max-width: calc(100% - 44px); }
+.testi-form .preview select { width: auto; max-width: 100%; font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; padding: 6px 30px 6px 12px; border-radius: 999px; background-color: var(--accent-soft); color: var(--accent); border: 1px dashed var(--accent); cursor: pointer; }
+.preview .pv-text { margin-top: 2px; }
+.testi-form .preview textarea { display: block; width: 100%; min-height: 150px; padding: 8px 0; border: 0; border-bottom: 1px dashed var(--line); border-radius: 0; background: transparent; box-shadow: none; color: var(--ink); font-family: var(--display); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.5; letter-spacing: -.01em; resize: vertical; }
+.testi-form .preview textarea::placeholder, .testi-form .preview .who input::placeholder { color: var(--muted); opacity: .75; }
+.testi-form .preview textarea::placeholder { letter-spacing: .06em; font-family: var(--mono); font-size: .9rem; }
+.testi-form .preview textarea:focus, .testi-form .preview .who input:focus { outline: none; border-bottom: 1px solid var(--accent); box-shadow: none; }
+.preview .count { text-align: right; font-size: .78rem; color: var(--muted); margin-top: 4px; }
+.preview figcaption { align-items: flex-start; }
+.preview .who { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.dash-row { display: flex; align-items: baseline; gap: 8px; }
+.dash { color: var(--muted); }
+.testi-form .preview .who input[type="text"] { flex: 1; min-width: 0; width: 100%; padding: 3px 0; border: 0; border-bottom: 1px dashed var(--line); border-radius: 0; background: transparent; box-shadow: none; color: var(--ink); font: inherit; font-size: .92rem; }
+.testi-form .preview .who input.nm { font-family: var(--display); font-weight: 700; font-size: 1rem; }
+.testi-form .preview input.invalid, .testi-form .preview textarea.invalid { border-bottom-color: #c2410c; }
+.testi-form .preview select.invalid { border-color: #c2410c; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.form-actions .btn.ghost:hover { color: var(--ink); }
+@media (max-width: 560px) { .testi-dialog { width: 100vw; max-width: 100vw; max-height: 100dvh; height: auto; border-radius: 16px 16px 0 0; margin: auto 0 0; } .preview .rel-pick { margin-left: 36px; } }
+@media (max-width: 560px) {
+  .preview figcaption { gap: 10px; }
+  .preview figcaption .avatar { width: 40px; height: 40px; font-size: .9rem; }
+  .testi-form .preview .who input[type="text"] { font-size: .8rem; }
+  .testi-form .preview .who input.nm { font-size: .76rem; letter-spacing: -.01em; }
+  .testi-form .quote-card.preview { padding: 20px 16px; }
+}

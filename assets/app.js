@@ -353,7 +353,7 @@
     if (!items.length) {
       track.removeAttribute("tabindex");
       track.style.display = "block";
-      track.innerHTML = '<div class="slides-empty"><b>Be the first to leave a note.</b><p>If we have worked or studied together, a few honest lines would mean a lot. Use the form to send me yours.</p></div>';
+      track.innerHTML = '<div class="slides-empty"><b>Be the first to leave a note.</b><p>If we have worked or studied together, a few honest lines would mean a lot. Use the “Write a testimonial” button to send me yours.</p></div>';
       return;
     }
 
@@ -430,18 +430,44 @@
     var count = $("#t-count"), status = $("#t-status");
     var cfg = window.TESTIMONIAL_CONFIG || {};
     if (cfg.endpoint) {
-      var lede = $(".form-lede");
-      if (lede) lede.textContent = "Worked or studied with me? I'd be glad to hear how it went. Your testimonial is saved privately and checked before it appears here. You will be told straight away if it is waiting for review.";
+      var lede = $("#testi-lede");
+      if (lede) lede.textContent = "I'd be glad to hear how it went. Write a few lines and see how they will look before you send them. Your testimonial is checked before it appears here, and you will be told straight away if it is waiting for review.";
       var sb = form.querySelector('button[type="submit"]'); if (sb) sb.textContent = "Submit testimonial";
       var cp = $("#t-copy"); if (cp) cp.hidden = true;
     }
     var say = function (text, cls) { status.textContent = text; status.className = "form-status" + (cls ? " " + cls : ""); };
+
+    /* The form lives in a small window that shows the finished card as a preview */
+    var dlg = $("#testi-dialog"), openers = $$("#open-testi, [data-open-testi]"), avatar = $("#t-avatar"), lastFocus = null;
+    function initials(n) { var p = String(n).trim().split(/\s+/).filter(Boolean); return p.length ? (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : "")).toUpperCase() : "?"; }
+    function openDlg() {
+      if (!dlg) return;
+      lastFocus = document.activeElement; say("");
+      if (typeof dlg.showModal === "function") { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute("open", "");
+      document.body.classList.add("modal-open");
+      setTimeout(function () { (rel || name).focus(); }, 30);
+    }
+    function closeDlg() {
+      if (!dlg) return;
+      if (typeof dlg.close === "function") { if (dlg.open) dlg.close(); } else dlg.removeAttribute("open");
+      document.body.classList.remove("modal-open");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    openers.forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); openDlg(); }); });
+    if (dlg) {
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) closeDlg(); });   // click on the dimmed backdrop
+      dlg.addEventListener("close", function () { document.body.classList.remove("modal-open"); });
+      $("#testi-close").addEventListener("click", closeDlg);
+      $("#t-cancel").addEventListener("click", closeDlg);
+    }
+    name.addEventListener("input", function () { if (avatar) avatar.textContent = initials(name.value); });
+    if (location.hash === "#testi-form" || location.hash === "#write-testimonial") openDlg();
     msg.addEventListener("input", function () { count.textContent = msg.value.length + " / " + msg.maxLength; });
 
     function valid() {
       var bad = [name, rel, msg].filter(function (el) { return !el.value.trim(); });
       [name, rel, msg].forEach(function (el) { el.classList.toggle("invalid", !el.value.trim()); el.setAttribute("aria-invalid", String(!el.value.trim())); });
-      if (bad.length) { say("Please fill in the starred fields.", "err"); bad[0].focus(); return false; }
+      if (bad.length) { say("Please choose how you know me, write your testimonial and add the name you want shown.", "err"); bad[0].focus(); return false; }
       if (!ok.checked) { say("Please tick the box to confirm you're happy for this to be shown.", "err"); ok.focus(); return false; }
       return true;
     }
@@ -496,7 +522,10 @@
             say("Thank you! Your testimonial has been verified and published. Reload the page to see it in the slider.", "ok");
           }
           rememberMine(d.id);
-          form.reset(); count.textContent = "0 / " + msg.maxLength;
+          form.reset(); count.textContent = "0 / " + msg.maxLength; if (avatar) avatar.textContent = "?";
+          var box = $("#my-status");
+          if (box) { box.textContent = pending ? "Thank you! Your testimonial is pending verification. It will appear here once it has been checked." : "Thank you! Your testimonial has been verified and published. Reload the page to see it in the slider."; box.hidden = false; }
+          setTimeout(closeDlg, 2200);
         })
         .catch(function (err) {
           say(/at least 20|confirm|Too many/.test(String(err && err.message)) ? err.message : "Sorry, I couldn't submit that just now. Please try again in a little while.", "err");
