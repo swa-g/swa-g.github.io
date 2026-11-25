@@ -5,8 +5,8 @@ organisations and are used only to indicate affiliation. Remove any file and the
 
 | File | Organisation | Source |
 |---|---|---|
-| iem.png | Institute of Engineering & Management | Institute of Engineering & Management website (iem.edu.in) |
-| jadavpur-university.png | Jadavpur University | Wikipedia/Wikimedia Commons |
+| iem.png | Institute of Engineering & Management | Supplied by Swarnendu Ghosh |
+| jadavpur-university.png | Jadavpur University | Supplied by Swarnendu Ghosh (full logo with Bengali and English name) |
 | university-of-evora.png | Universidade de Évora | Wikipedia/Wikimedia Commons |
 | university-of-ljubljana.png | University of Ljubljana | Wikipedia/Wikimedia Commons |
 | university-of-south-dakota.png | University of South Dakota | Wikipedia/Wikimedia Commons |
