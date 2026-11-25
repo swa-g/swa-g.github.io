@@ -660,6 +660,10 @@
   var el = document.getElementById("intro"), root = document.documentElement;
   if (!el) return;
   if (!root.classList.contains("intro")) { el.parentNode.removeChild(el); return; }
+  /* start the exit timeline once the self-drawing signature has loaded (or after 1.5s regardless) */
+  var pic = el.querySelector("img");
+  function go() { el.classList.add("go"); }
+  if (pic && !pic.complete) { pic.addEventListener("load", go); pic.addEventListener("error", go); setTimeout(go, 1500); } else go();
   var finished = false;
   function finish() {
     if (finished) return; finished = true;
@@ -669,5 +673,5 @@
   function skip() { el.classList.add("skip"); setTimeout(finish, 320); }
   el.addEventListener("animationend", function (e) { if (e.animationName === "introClear" || (e.target === el && e.animationName === "introOut")) finish(); });
   ["click", "keydown", "wheel", "touchstart"].forEach(function (ev) { window.addEventListener(ev, skip, { once: true, passive: true }); });
-  setTimeout(finish, 7500);   /* failsafe */
+  setTimeout(finish, 10500);   /* failsafe */
 })();

@@ -48,7 +48,10 @@
         var skip = inside || location.hash || sessionStorage.getItem("introSeen") ||
           window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
           navigator.webdriver || /bot|crawl|spider|slurp|lighthouse|headless|facebookexternalhit/i.test(navigator.userAgent);
-        if (!skip) { d.classList.add("intro"); sessionStorage.setItem("introSeen", "1"); }
+        if (!skip) {
+          d.classList.add("intro"); sessionStorage.setItem("introSeen", "1");
+          var pl = document.createElement("link"); pl.rel = "preload"; pl.as = "image"; pl.href = "assets/brand/signature-write.svg"; document.head.appendChild(pl);
+        }
       } catch (e) {}
     })();
   </script>
@@ -104,7 +107,7 @@
 </head>
 
 <body>
-  <div id="intro" aria-hidden="true"><div class="glass"></div><img src="assets/brand/signature-nav.svg" alt="" width="420" height="300"></div>
+  <div id="intro" aria-hidden="true"><div class="glass"></div><img src="assets/brand/signature-write.svg" alt="" width="420" height="304"></div>
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="nav">
