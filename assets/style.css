@@ -475,17 +475,17 @@ body.modal-open { overflow: hidden; }
 
 
 /* ---------- Signature intro (only when <html> carries .intro: set once per session for outside visitors) ----------
-   The signature file draws itself in three pen strokes (S, then w, then the triangle; ~0.35s-3.1s, timed inside the SVG).
-   When it has loaded, JS adds .go: from 3.6s the signature shrinks back and fades while the page shows through frosted
-   glass, which then slowly loses its tint and blur (done at ~6.8s). */
+   The signature file draws itself in three pen strokes (S, then w, then the triangle; 0.35s-3.08s with 0.02s between strokes, timed inside the SVG).
+   When it has loaded, JS adds .go: from 3.18s (0.1s after the last stroke) the signature shrinks back and fades while the page shows through frosted
+   glass, which then slowly loses its tint and blur (done at ~6.4s). */
 #intro { display: none; }
 .intro #intro { display: grid; place-items: center; position: fixed; inset: 0; z-index: 9999; }
 .intro body { overflow: hidden; }
 #intro .glass { position: absolute; inset: 0; background: var(--bg); -webkit-backdrop-filter: blur(26px) saturate(1.2); backdrop-filter: blur(26px) saturate(1.2); }
 #intro img { position: relative; width: min(62vw, 440px); height: auto; will-change: transform, opacity; }
 [data-theme="dark"] #intro img { filter: invert(1) hue-rotate(180deg) brightness(.95); }
-.intro #intro.go .glass { animation: introClear 3.2s linear 3.6s forwards; }
-.intro #intro.go img { animation: introRecede 1.2s cubic-bezier(.5, 0, .75, .4) 3.6s forwards; }
+.intro #intro.go .glass { animation: introClear 3.2s linear 3.18s forwards; }
+.intro #intro.go img { animation: introRecede 1.2s cubic-bezier(.5, 0, .75, .4) 3.18s forwards; }
 .intro #intro.skip { animation: introOut .35s ease forwards; }
 @keyframes introRecede { 0% { transform: scale(1); opacity: 1; } 65% { opacity: .2; } 100% { transform: scale(.45); opacity: 0; } }
 @keyframes introClear {
