@@ -25,5 +25,7 @@ organisations and are used only to indicate affiliation. Remove any file and the
 | deloitte.png | HashedIn by Deloitte | Wikipedia/Wikimedia (Deloitte); HashedIn is a Deloitte company |
 | vit.png | Vellore Institute of Technology | Wikipedia/Wikimedia Commons |
 | c-dot.png | Centre for Development of Telematics | Wikipedia/Wikimedia Commons |
+| adamas-university.png | Adamas University (timeline) | Wikipedia/Wikimedia Commons |
+| rcc-institute.png | RCC Institute of Information Technology (timeline) | Wikipedia/Wikimedia Commons |
 
 No logo: Interbiz Arizona (none found).

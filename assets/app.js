@@ -271,18 +271,18 @@
 
     var affHtml = function (o) {
       if (!o) return "";
-      if (typeof o === "string") return '<p class="aff"><span class="pos">' + esc(o) + "</span></p>";
+      if (typeof o === "string") return '<p class="aff"><span class="aff-text"><span class="pos">' + esc(o) + "</span></span></p>";
       var inst = [o.name ? o.name + (o.abbr ? " (" + o.abbr + ")" : "") : "", o.city, o.country].filter(Boolean).join(", ");
-      return '<p class="aff">' + (o.pos ? '<span class="pos">' + esc(o.pos) + "</span>" : "") +
-        (inst ? '<span class="inst">' + esc(inst) + "</span>" : "") + "</p>";
+      var logo = /^assets\/logos\/[a-z0-9-]+\.png$/.test(o.logo || "")
+        ? '<img class="org-logo" src="' + esc(o.logo) + '" alt="' + esc(o.name || "Organisation") + ' logo" title="' + esc(o.name || "") + '" loading="lazy" width="64" height="46">' : "";
+      return '<p class="aff' + (logo ? " has-logo" : "") + '">' + logo + '<span class="aff-text">' + (o.pos ? '<span class="pos">' + esc(o.pos) + "</span>" : "") +
+        (inst ? '<span class="inst">' + esc(inst) + "</span>" : "") + "</span></p>";
     };
     var card = function (p) {
       var face = p.photo
         ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="56" height="56" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
         : '<div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div>";
-      var logo = (p.org && typeof p.org === "object" && /^assets\/logos\/[a-z0-9-]+\.png$/.test(p.org.logo || ""))
-        ? '<img class="org-logo" src="' + esc(p.org.logo) + '" alt="' + esc(p.org.name || "Organisation") + ' logo" title="' + esc(p.org.name || "") + '" loading="lazy">' : "";
-      var body = '<div class="face">' + face + logo + "</div><div><h4>" + esc(p.name) + "</h4>" + affHtml(p.org) + "</div>";
+      var body = '<div class="p-head"><div class="face">' + face + "</div><h4>" + esc(p.name) + "</h4></div>" + affHtml(p.org);
       // Only genuine LinkedIn profile addresses become links (anything else in the data is ignored)
       var ok = typeof p.linkedin === "string" && /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/(in|pub)\/[A-Za-z0-9%_.\/-]+$/.test(p.linkedin);
       if (!ok) return '<div class="person">' + body + "</div>";
