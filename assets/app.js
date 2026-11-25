@@ -262,7 +262,9 @@
       var face = p.photo
         ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="56" height="56" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
         : '<div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div>";
-      var body = face + "<div><h4>" + esc(p.name) + "</h4>" + affHtml(p.org) + "</div>";
+      var logo = (p.org && typeof p.org === "object" && /^assets\/logos\/[a-z0-9-]+\.png$/.test(p.org.logo || ""))
+        ? '<img class="org-logo" src="' + esc(p.org.logo) + '" alt="' + esc(p.org.name || "Organisation") + ' logo" title="' + esc(p.org.name || "") + '" loading="lazy">' : "";
+      var body = '<div class="face">' + face + logo + "</div><div><h4>" + esc(p.name) + "</h4>" + affHtml(p.org) + "</div>";
       // Only genuine LinkedIn profile addresses become links (anything else in the data is ignored)
       var ok = typeof p.linkedin === "string" && /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/(in|pub)\/[A-Za-z0-9%_.\/-]+$/.test(p.linkedin);
       if (!ok) return '<div class="person">' + body + "</div>";
@@ -283,6 +285,9 @@
     });
 
     root.innerHTML = '<p class="people-summary">Everyone here is a co-author on at least one of my publications.</p>' + html;
+
+    /* A logo that fails to load is simply dropped */
+    $$("img.org-logo", root).forEach(function (img) { img.addEventListener("error", function () { img.remove(); }, { once: true }); });
 
     /* If a photo file is missing or broken, fall back to the initials */
     $$("img.photo", root).forEach(function (img) {
