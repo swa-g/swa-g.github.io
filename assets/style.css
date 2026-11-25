@@ -255,27 +255,35 @@ h3 { font-family: var(--display); font-size: 1.15rem; letter-spacing: -.01em; ma
 .people-group + .people-group { margin-top: 44px; }
 .people-group > h3 { font-family: var(--mono); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px; }
 .people-group > h3 small { font-size: .78rem; letter-spacing: 0; text-transform: none; font-family: var(--sans); font-weight: 400; }
-.people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
-.person { display: flex; flex-direction: column; gap: 12px; align-items: stretch; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
 .avatar { flex: none; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 1.05rem; background: var(--accent-soft); color: var(--accent); letter-spacing: .02em; }
-.face { flex: none; width: 56px; display: flex; flex-direction: column; align-items: center; }
-.org-logo { flex: none; display: block; width: 64px; height: 46px; box-sizing: border-box; object-fit: contain; background: #fff; border-radius: 9px; padding: 5px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .07); }
 img.avatar.photo { object-fit: cover; background: var(--chip); border: 1px solid var(--line); }
-.person .aff { display: flex; align-items: center; gap: 12px; margin: 0; padding: 8px 12px 8px 8px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); line-height: 1.35; }
-.person .aff:not(.has-logo) { padding-left: 12px; }
-.person .aff-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.person .aff .pos { font-weight: 700; font-size: .9rem; }
-.person .aff .inst { font-weight: 500; font-size: .74rem; opacity: .92; }
-.person h4 { margin: 0; font-family: var(--display); font-size: 1.02rem; line-height: 1.3; letter-spacing: -.005em; }
-.person .prole { display: inline-block; margin: 4px 0 2px; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
-.person p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.45; }
-.person .together { margin-top: 6px; font-family: var(--mono); font-size: .76rem; color: var(--muted); }
-a.person { color: inherit; text-decoration: none; position: relative; transition: border-color .2s, transform .2s, box-shadow .2s; }
-a.person:hover, a.person:focus-visible { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
-.li-badge { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 5px; background: #0a66c2; color: #fff; font: 700 .72rem/22px var(--sans); text-align: center; letter-spacing: -.02em; opacity: .85; }
-a.person:hover .li-badge, a.person:focus-visible .li-badge { opacity: 1; }
-.person.big { padding: 22px 24px; }
-.person.big .avatar { width: 52px; height: 52px; }
+/* ---------- People: photo + name + logo tiles; hover or focus expands the card with the full affiliation ---------- */
+.people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 16px; }
+.pcell { position: relative; height: 226px; }
+.person { position: absolute; top: 0; left: 0; right: 0; min-height: 100%; box-sizing: border-box; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 18px 12px 14px; text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: inherit; text-decoration: none; outline: none; transition: left .22s ease, right .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.person:hover, .person:focus-visible, .person:focus-within { z-index: 20; left: -14px; right: -14px; border-color: var(--accent); box-shadow: 0 18px 44px rgba(10, 14, 30, .22); }
+.person .avatar, .person img.avatar.photo { width: 84px; height: 84px; font-size: 1.45rem; }
+.person h4 { margin: 0; min-height: 2.5em; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: .96rem; line-height: 1.25; letter-spacing: -.005em; }
+.org-logo { flex: none; display: block; width: 116px; height: 46px; box-sizing: border-box; object-fit: contain; background: #fff; border-radius: 9px; padding: 6px 10px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); }
+.org-text { flex: none; width: 116px; min-height: 46px; box-sizing: border-box; display: grid; place-items: center; padding: 4px 8px; border-radius: 9px; border: 1px dashed var(--line); color: var(--muted); font-size: .72rem; line-height: 1.25; }
+.p-more { display: grid; grid-template-rows: 0fr; width: 100%; transition: grid-template-rows .25s ease; }
+.p-more-in { overflow: hidden; min-height: 0; }
+.person:hover .p-more, .person:focus-visible .p-more, .person:focus-within .p-more { grid-template-rows: 1fr; }
+.person .aff { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 0; padding: 9px 10px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); line-height: 1.35; }
+.person .aff .pos { font-weight: 700; font-size: .86rem; }
+.person .aff .inst { font-weight: 500; font-size: .75rem; opacity: .95; }
+.li-badge { position: absolute; top: 9px; right: 9px; width: 22px; height: 22px; border-radius: 5px; background: #0a66c2; color: #fff; font: 700 .72rem/22px var(--sans); text-align: center; letter-spacing: -.02em; opacity: .85; }
+.person:hover .li-badge, .person:focus-visible .li-badge { opacity: 1; }
+.person:focus-visible { box-shadow: 0 0 0 3px var(--accent), 0 18px 44px rgba(10, 14, 30, .22); }
+/* Touch screens have no hover: show everything, in a plain grid */
+@media (hover: none) {
+  .people-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+  .pcell { height: auto; }
+  .person { position: relative; left: 0 !important; right: 0 !important; min-height: 0; height: 100%; }
+  .p-more { grid-template-rows: 1fr; }
+}
+@media (max-width: 420px) { .people-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .org-logo, .org-text { width: 100%; max-width: 116px; } }
+@media (prefers-reduced-motion: reduce) { .person, .p-more { transition: none; } }
 .people-summary { color: var(--muted); font-size: .95rem; margin: 0 0 18px; max-width: 70ch; }
 details.all-authors { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 details.all-authors summary { cursor: pointer; padding: 14px 20px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
@@ -463,5 +471,3 @@ body.modal-open { overflow: hidden; }
 .entry .has-ico { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; align-items: start; }
 .org-ico { display: block; width: 96px; height: 58px; box-sizing: border-box; object-fit: contain; background: #fff; border-radius: 11px; padding: 7px 9px; box-shadow: 0 0 0 1px var(--line); }
 @media (max-width: 700px) { .entry .has-ico { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; } .org-ico { width: 72px; height: 46px; padding: 5px 7px; } }
-.p-head { display: flex; align-items: center; gap: 14px; padding-right: 26px; }
-.p-head h4 { min-width: 0; }

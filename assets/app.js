@@ -271,23 +271,33 @@
 
     var affHtml = function (o) {
       if (!o) return "";
-      if (typeof o === "string") return '<p class="aff"><span class="aff-text"><span class="pos">' + esc(o) + "</span></span></p>";
+      if (typeof o === "string") return '<p class="aff"><span class="pos">' + esc(o) + "</span></p>";
       var inst = [o.name ? o.name + (o.abbr ? " (" + o.abbr + ")" : "") : "", o.city, o.country].filter(Boolean).join(", ");
-      var logo = /^assets\/logos\/[a-z0-9-]+\.png$/.test(o.logo || "")
-        ? '<img class="org-logo" src="' + esc(o.logo) + '" alt="' + esc(o.name || "Organisation") + ' logo" title="' + esc(o.name || "") + '" loading="lazy" width="64" height="46">' : "";
-      return '<p class="aff' + (logo ? " has-logo" : "") + '">' + logo + '<span class="aff-text">' + (o.pos ? '<span class="pos">' + esc(o.pos) + "</span>" : "") +
-        (inst ? '<span class="inst">' + esc(inst) + "</span>" : "") + "</span></p>";
+      return '<p class="aff">' + (o.pos ? '<span class="pos">' + esc(o.pos) + "</span>" : "") +
+        (inst ? '<span class="inst">' + esc(inst) + "</span>" : "") + "</p>";
+    };
+    var affPlain = function (o) {
+      if (!o) return "";
+      if (typeof o === "string") return o;
+      return [o.pos, [o.name ? o.name + (o.abbr ? " (" + o.abbr + ")" : "") : "", o.city, o.country].filter(Boolean).join(", ")].filter(Boolean).join(", ");
     };
     var card = function (p) {
       var face = p.photo
-        ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="56" height="56" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
+        ? '<img class="avatar photo" src="' + esc(p.photo) + '" alt="Photo of ' + esc(p.name) + '" width="84" height="84" loading="lazy" data-initials="' + esc(initials(p.name)) + '">'
         : '<div class="avatar" aria-hidden="true">' + esc(initials(p.name)) + "</div>";
-      var body = '<div class="p-head"><div class="face">' + face + "</div><h4>" + esc(p.name) + "</h4></div>" + affHtml(p.org);
+      var o = p.org && typeof p.org === "object" ? p.org : null;
+      var logo = (o && /^assets\/logos\/[a-z0-9-]+\.png$/.test(o.logo || ""))
+        ? '<img class="org-logo" src="' + esc(o.logo) + '" alt="' + esc(o.name || "Organisation") + ' logo" loading="lazy" width="116" height="46">'
+        : (o && (o.abbr || o.name) ? '<span class="org-text">' + esc(o.abbr || o.name) + "</span>" : "");
+      var body = '<div class="p-face">' + face + "</div><h4>" + esc(p.name) + "</h4>" + logo +
+        '<div class="p-more"><div class="p-more-in">' + affHtml(p.org) + "</div></div>";
       // Only genuine LinkedIn profile addresses become links (anything else in the data is ignored)
       var ok = typeof p.linkedin === "string" && /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/(in|pub)\/[A-Za-z0-9%_.\/-]+$/.test(p.linkedin);
-      if (!ok) return '<div class="person">' + body + "</div>";
-      return '<a class="person has-link" href="' + esc(p.linkedin) + '" target="_blank" rel="noopener noreferrer" aria-label="' +
-        esc(p.name) + ' on LinkedIn (opens in a new tab)">' + body + '<span class="li-badge" aria-hidden="true">in</span></a>';
+      var tile = !ok
+        ? '<div class="person" tabindex="0" role="group" aria-label="' + esc(p.name + (affPlain(p.org) ? ": " + affPlain(p.org) : "")) + '">' + body + "</div>"
+        : '<a class="person has-link" href="' + esc(p.linkedin) + '" target="_blank" rel="noopener noreferrer" aria-label="' +
+          esc(p.name + (affPlain(p.org) ? ", " + affPlain(p.org) : "")) + ' (LinkedIn profile, opens in a new tab)">' + body + '<span class="li-badge" aria-hidden="true">in</span></a>';
+      return '<div class="pcell">' + tile + "</div>";
     };
 
     var html = "", placed = {};
