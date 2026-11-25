@@ -40,6 +40,16 @@
       try { t = localStorage.getItem("theme"); } catch (e) {}
       if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       d.setAttribute("data-theme", t);
+      /* Signature intro: once per browser session, only for visitors arriving from outside the site
+         (not for in-site navigation, reloads, section deep links, reduced-motion users or crawlers). */
+      try {
+        var ref = document.referrer, inside = false;
+        if (ref) { try { inside = new URL(ref).origin === location.origin; } catch (e) {} }
+        var skip = inside || location.hash || sessionStorage.getItem("introSeen") ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+          navigator.webdriver || /bot|crawl|spider|slurp|lighthouse|headless|facebookexternalhit/i.test(navigator.userAgent);
+        if (!skip) { d.classList.add("intro"); sessionStorage.setItem("introSeen", "1"); }
+      } catch (e) {}
     })();
   </script>
   <link rel="stylesheet" href="assets/style.css">
@@ -94,6 +104,7 @@
 </head>
 
 <body>
+  <div id="intro" aria-hidden="true"><img src="assets/brand/signature-nav.svg" alt="" width="420" height="300"></div>
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="nav">

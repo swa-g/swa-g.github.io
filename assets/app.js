@@ -652,3 +652,22 @@
 
   var yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
 })();
+
+
+/* ---------- Signature intro: remove it when it has faded; any click, key, scroll or touch skips it ---------- */
+(function () {
+  "use strict";
+  var el = document.getElementById("intro"), root = document.documentElement;
+  if (!el) return;
+  if (!root.classList.contains("intro")) { el.parentNode.removeChild(el); return; }
+  var finished = false;
+  function finish() {
+    if (finished) return; finished = true;
+    root.classList.remove("intro");
+    if (el.parentNode) el.parentNode.removeChild(el);
+  }
+  function skip() { el.classList.add("skip"); setTimeout(finish, 320); }
+  el.addEventListener("animationend", function (e) { if (e.target === el && e.animationName === "introOut") finish(); });
+  ["click", "keydown", "wheel", "touchstart"].forEach(function (ev) { window.addEventListener(ev, skip, { once: true, passive: true }); });
+  setTimeout(finish, 4000);   /* failsafe */
+})();
