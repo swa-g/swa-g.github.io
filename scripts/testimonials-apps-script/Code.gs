@@ -17,9 +17,9 @@
  */
 
 var SHEET_NAME = "Testimonials";
-var HEADERS = ["Timestamp", "Name", "Relationship", "Institution / role", "Testimonial", "Status", "Notes (private)", "Sentiment", "Score", "ID"];
-var COL = { TS: 0, NAME: 1, REL: 2, ORG: 3, MSG: 4, STATUS: 5, NOTES: 6, SENT: 7, SCORE: 8, ID: 9 };
-var RELATIONSHIPS = ["Student", "Mentee / project student", "Colleague", "Co-author / collaborator", "Supervisor / mentor", "Other"];
+var HEADERS = ["Timestamp", "Name", "Relationship", "Institution / role", "Testimonial", "Status", "Notes (private)", "Sentiment", "Score", "ID", "Photo"];
+var COL = { TS: 0, NAME: 1, REL: 2, ORG: 3, MSG: 4, STATUS: 5, NOTES: 6, SENT: 7, SCORE: 8, ID: 9, PHOTO: 10 };
+var MAX_PHOTO_CHARS = 30000;              // a small square JPEG (about 112 px) as a data URL; a sheet cell holds up to 50,000 characters
 var MAX_PER_HOUR = 30;                    // simple spam brake for the whole site
 var AUTO_VERIFY_MIN_SCORE = 2;            // net positive points needed for automatic verification
 
@@ -39,8 +39,9 @@ function setup() {
     SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=$F2="Unverified"').setBackground("#FFF2CC").setRanges([area]).build(),
     SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=$F2="Rejected"').setBackground("#EDEDED").setRanges([area]).build()
   ]);
-  [160, 160, 170, 200, 520, 100, 260, 110, 70, 150].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
+  [160, 160, 170, 200, 520, 100, 260, 110, 70, 150, 90].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
   sh.getRange(2, COL.MSG + 1, 2000, 1).setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP);
+  sh.getRange(2, COL.PHOTO + 1, 2000, 1).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);   // keep the long photo text from stretching rows
   Logger.log("Sheet ready. Now deploy as a web app (see README).");
 }
 
@@ -49,6 +50,19 @@ function sheet_() {
   var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
   if (!sh) throw new Error("Run setup() first.");
   return sh;
+}
+/** Older sheets have no "Photo" column header yet: add it the first time it is needed. */
+function ensureHeaders_(sh) {
+  if (!String(sh.getRange(1, COL.PHOTO + 1).getValue()).trim()) {
+    sh.getRange(1, COL.PHOTO + 1).setValue("Photo").setFontWeight("bold").setBackground("#1F3864").setFontColor("#FFFFFF");
+    sh.setColumnWidth(COL.PHOTO + 1, 90);
+    sh.getRange(2, COL.PHOTO + 1, 2000, 1).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
+  }
+}
+/** Accept only a small base64 JPEG data URL; anything else is dropped. */
+function photo_(value) {
+  var s = String(value == null ? "" : value).trim();
+  return (s.length <= MAX_PHOTO_CHARS && /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(s)) ? s : "";
 }
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
@@ -118,15 +132,15 @@ function doPost(e) {
     var data = JSON.parse(e.postData.contents);
     if (data.website) return json_({ ok: true, status: "Unverified" });             // honeypot: bots fill this; pretend it worked
     var name = clean_(data.name, 80), org = clean_(data.org, 100), msg = clean_(data.message, 1000);
-    var rel = clean_(data.relationship, 60);
+    var rel = clean_(data.relationship, 80), photo = photo_(data.photo);
     if (!name || msg.length < 20) return json_({ ok: false, error: "Please give your name and a testimonial of at least 20 characters." });
     if (data.consent !== true) return json_({ ok: false, error: "Please confirm you are happy for this to be shown." });
-    if (RELATIONSHIPS.indexOf(rel) === -1) rel = "Other";
 
-    var verdict = analyze_(msg, [name, org]);
-    var status = verdict.verify ? "Verified" : "Unverified";
-    var note = verdict.verify ? "Auto-verified: positive (score " + verdict.score + ")"
-      : "Held for review: " + (verdict.flags.length ? verdict.flags.join("; ") : verdict.label.toLowerCase() + " (score " + verdict.score + ")");
+    var verdict = analyze_(msg, [name, org, rel]);
+    var autoOk = verdict.verify && !photo;            // a photo is never shown without you looking at it first
+    var status = autoOk ? "Verified" : "Unverified";
+    var note = autoOk ? "Auto-verified: positive (score " + verdict.score + ")"
+      : "Held for review: " + (photo && verdict.verify ? "includes a photo (text was positive, score " + verdict.score + ")" : (verdict.flags.length ? verdict.flags.join("; ") : verdict.label.toLowerCase() + " (score " + verdict.score + ")") + (photo ? "; includes a photo" : ""));
     var id = Utilities.getUuid().replace(/-/g, "").slice(0, 16);
 
     var lock = LockService.getScriptLock();
@@ -137,7 +151,8 @@ function doPost(e) {
       var used = Number(cache.get(key) || 0);
       if (used >= MAX_PER_HOUR) return json_({ ok: false, error: "Too many submissions right now. Please try again later." });
       cache.put(key, String(used + 1), 3700);
-      sheet_().appendRow([new Date(), name, rel, org, msg, status, note, verdict.label, verdict.score, id]);
+      var sh = sheet_(); ensureHeaders_(sh);
+      sh.appendRow([new Date(), name, rel, org, msg, status, note, verdict.label, verdict.score, id, photo]);
     } finally {
       lock.releaseLock();
     }
@@ -165,7 +180,8 @@ function doGet(e) {
     if (status === "verified") {
       verified.push({
         name: String(r[COL.NAME]), role: String(r[COL.REL]), org: String(r[COL.ORG]), quote: String(r[COL.MSG]),
-        year: (r[COL.TS] instanceof Date) ? r[COL.TS].getFullYear() : ""
+        year: (r[COL.TS] instanceof Date) ? r[COL.TS].getFullYear() : "",
+        photo: photo_(r[COL.PHOTO])
       });
     } else if (status === "unverified") {
       pending++;
