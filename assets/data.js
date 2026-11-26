@@ -2,15 +2,19 @@
    Add a new paper by adding one object to the top of the right list below.
    type: book | chapter | journal | conference | workshop | patent | talk
    "me" is highlighted automatically in author lists.
+   url (optional): the paper's page (a relative address such as LANCER/... stays in the same tab).
+   pdf (optional): an openly available PDF; shown as "Open PDF" instead of "Request full PDF".
    scholarTitle (optional): the title as Google Scholar spells it, only needed when it differs enough to break matching. */
 window.PUBLICATIONS = [
   /* ---------- 2026 ---------- */
   { year: 2026, type: "conference",
     title: "RocketSim: Benchmarking Reinforcement-Learning Hover Control of a Reusable Booster", project: "lancer",
+    url: "LANCER/paper-rocketsim.html", pdf: "LANCER/papers/rocketsim-is2026.pdf",
     authors: "Swarnendu Ghosh, David Muhič, Branko Šter",
     venue: "29th International Multiconference Information Society (IS 2026)", detail: "Vol. 1, pp. 64–67" },
   { year: 2026, type: "conference",
     title: "Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving", project: "lancer",
+    url: "LANCER/paper-posthoc-corruptions.html", pdf: "LANCER/papers/posthoc-corruptions-is2026.pdf",
     authors: "Swarnendu Ghosh, Branko Šter",
     venue: "29th International Multiconference Information Society (IS 2026)", detail: "Vol. 1, pp. 60–63" },
   { year: 2026, type: "conference",

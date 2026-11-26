@@ -140,6 +140,9 @@
   }
 
 
+  /* Addresses on this site open in the same tab; everything else in a new one */
+  function linkAttrs(href) { return /^(https?:)?\/\//.test(href) ? ' target="_blank" rel="noopener"' : ""; }
+
   /* Publications that belong to the current project (tag a paper in data.js with project: "lancer") */
   function renderLancer() {
     var ul = $("#lancer-pubs");
@@ -148,7 +151,7 @@
     if (!items.length) { var box = $(".proj-papers"); if (box) box.hidden = true; return; }
     ul.innerHTML = items.map(function (p) {
       var href = p.url || p.link;
-      var title = href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title);
+      var title = href ? '<a href="' + esc(href) + '"' + linkAttrs(href) + ">" + esc(p.title) + "</a>" : esc(p.title);
       return "<li>" + title + '<div class="m">' + authorsHtml(p.authors) + " · " + esc(p.venue) + " · " + p.year + "</div></li>";
     }).join("");
   }
@@ -173,13 +176,17 @@
     var c = citesFor(p), href = p.url || p.link;
     return '<div class="t"><span class="badge">' + esc(TYPE_LABEL[p.type] || p.type) + "</span>" +
         (p.auto ? '<span class="badge auto" title="Added automatically from my Google Scholar profile">Scholar</span>' : "") +
-        (href ? '<a class="tlink" href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
+        (href ? '<a class="tlink" href="' + esc(href) + '"' + linkAttrs(href) + ">" + esc(p.title) + "</a>" : esc(p.title)) + "</div>" +
       '<div class="a">' + authorsHtml(p.authors) + "</div>" +
       '<div class="v">' + esc(p.venue) + (p.detail ? ' <span>· ' + esc(p.detail) + "</span>" : "") +
         (inlineCites && c ? ' <span class="cites">Cited by ' + c + "</span>" : "") + "</div>" +
-      '<div class="req-row"><a class="reqpdf" href="' + esc(reqHref(p)) + '" title="Opens an email draft to me asking for the PDF of this paper">' +
-        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' +
-        "Request full PDF</a></div>";
+      '<div class="req-row">' + (p.pdf
+        ? '<a class="reqpdf" href="' + esc(p.pdf) + '" title="Opens the PDF of this paper">' +
+          '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>' +
+          "Open PDF</a>"
+        : '<a class="reqpdf" href="' + esc(reqHref(p)) + '" title="Opens an email draft to me asking for the PDF of this paper">' +
+          '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' +
+          "Request full PDF</a>") + "</div>";
   }
 
   function render() {
