@@ -476,7 +476,7 @@ body.modal-open { overflow: hidden; }
 
 /* ---------- Signature intro (only when <html> carries .intro: set once per session for outside visitors) ----------
    The page underneath is the real, live page: visible from the first frame through a frosted-glass overlay, and it scrolls as usual
-   (the overlay ignores the pointer). The signature writes itself on the glass (S, w, triangle; 0.35s-3.08s, timed inside the SVG file).
+   (the overlay ignores the pointer). The signature writes itself on the glass (S, u, u, then the g in one unbroken stroke; 0.35s-3.08s, timed inside the SVG file).
    When the file has loaded JS adds .go: at 3.18s (0.1s after the last stroke) the signature starts to zoom out and fade;
    at 3.6s, once it is already receding, the glass starts to lose its tint and blur (done at 6.0s). The header, which has its
    own blur and so cannot be frosted by the glass, is blurred and washed out in step with it. */
