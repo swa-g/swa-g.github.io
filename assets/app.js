@@ -669,7 +669,18 @@
   if (!root.classList.contains("intro")) { el.parentNode.removeChild(el); return; }
   /* start the exit timeline once the self-drawing signature has loaded (or after 1.5s regardless) */
   var pic = el.querySelector("img");
-  function go() { el.classList.add("go"); }
+  var started = false;
+  function go() {
+    if (started) return; started = true;
+    /* aim the zoom-out at the mark in the top bar: measure both boxes while the signature is still at scale 1 */
+    var mark = document.querySelector(".nav .brand .mark"), a = mark && mark.getBoundingClientRect(), b = pic && pic.getBoundingClientRect();
+    if (a && b && a.width && b.width) {
+      el.style.setProperty("--s", (a.width / b.width).toFixed(4));
+      el.style.setProperty("--dx", (a.left + a.width / 2 - (b.left + b.width / 2)).toFixed(1) + "px");
+      el.style.setProperty("--dy", (a.top + a.height / 2 - (b.top + b.height / 2)).toFixed(1) + "px");
+    }
+    el.classList.add("go");
+  }
   if (pic && !pic.complete) { pic.addEventListener("load", go); pic.addEventListener("error", go); setTimeout(go, 1500); } else go();
   var finished = false;
   function finish() {

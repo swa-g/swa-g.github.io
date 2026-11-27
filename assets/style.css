@@ -477,8 +477,9 @@ body.modal-open { overflow: hidden; }
 /* ---------- Signature intro (only when <html> carries .intro: set once per session for outside visitors) ----------
    The page underneath is the real, live page: visible from the first frame through a frosted-glass overlay, and it scrolls as usual
    (the overlay ignores the pointer). The signature writes itself on the glass (S, u, u, then the g in one unbroken stroke; 0.35s-3.08s, timed inside the SVG file).
-   When the file has loaded JS adds .go: at 3.18s (0.1s after the last stroke) the signature starts to zoom out and fade;
-   at 3.6s, once it is already receding, the glass starts to lose its tint and blur (done at 6.0s). The header, which has its
+   When the file has loaded JS adds .go: at 3.18s (0.1s after the last stroke) the signature starts to zoom out and travel onto
+   the mark in the top bar, where it stays (sharp, above the still-blurred header) until the overlay is removed and the real mark shows;
+   at 3.6s, once it is already moving, the glass starts to lose its tint and blur (done at 6.0s). The header, which has its
    own blur and so cannot be frosted by the glass, is blurred and washed out in step with it. */
 #intro { display: none; }
 .intro #intro { display: grid; place-items: center; position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
@@ -486,13 +487,17 @@ body.modal-open { overflow: hidden; }
 #intro img { position: relative; width: min(62vw, 440px); height: auto; will-change: transform, opacity; }
 [data-theme="dark"] #intro img { filter: invert(1) hue-rotate(180deg) brightness(.95); }
 .intro #intro.go .glass { animation: introClear 2.4s linear 3.6s forwards; }
-.intro #intro.go img { animation: introRecede 1.2s cubic-bezier(.5, 0, .75, .4) 3.18s forwards; }
+/* the signature zooms out and settles exactly on the mark in the top bar (JS sets --dx/--dy/--s from the mark's measured box);
+   the real mark stays hidden until the overlay is removed, so it looks as if the signature was placed there */
+.intro #intro.go img { animation: introLand 1.15s cubic-bezier(.6, 0, .2, 1) 3.18s forwards; }
+.intro .nav .brand .mark { opacity: 0; }
+.intro #intro.skip ~ .nav .brand .mark { opacity: 1; transition: opacity .3s ease; }
 .intro #intro.skip { animation: introOut .35s ease forwards; }
 .intro .nav { filter: blur(18px); opacity: .55; transition: filter .3s ease, opacity .3s ease; }
 .intro #intro.go ~ .nav { animation: introNav 2.4s linear 3.6s forwards; }
 .intro #intro.skip ~ .nav { animation: none; filter: none; opacity: 1; }
 @keyframes introNav { to { filter: blur(0); opacity: 1; } }
-@keyframes introRecede { 0% { transform: scale(1); opacity: 1; } 65% { opacity: .2; } 100% { transform: scale(.45); opacity: 0; } }
+@keyframes introLand { from { transform: translate(0, 0) scale(1); } to { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--s, .14)); } }
 @keyframes introClear {
   0%   { opacity: .8; -webkit-backdrop-filter: blur(24px) saturate(1.2); backdrop-filter: blur(24px) saturate(1.2); }
   50%  { opacity: .42; -webkit-backdrop-filter: blur(12px) saturate(1.1); backdrop-filter: blur(12px) saturate(1.1); }
