@@ -75,16 +75,163 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "The benefit of thermal information depends on the time of day. In the daytime, sunlight and shadows make thermal images very noisy compared with the information in the visible spectrum, and the colour CRF has the edge. Averaged over the four networks, the day-time accuracy was 0.5642 with the colour CRF and 0.5575 with the thermal one (Table I). For our network, the day-time mean IoU even fell from 0.5259 without a CRF to 0.4601 and 0.4510 with the colour and thermal versions (Table II)."
+   "p": "The comparison networks were SegNet, MFNet and RTFNet. SegNet was given a four-channel input, the three colour channels plus the thermal one. MFNet and RTFNet were two earlier works that had already been run on this data set, and we re-ran them with their official code. We then applied the conditional random field to all four networks, once with the colour image (called CRF RGB in the tables) and once with the thermal image (CRF TH). The first table gives the average accuracy for each combination, by day and by night. A higher value is better, and the Mean row averages the four networks."
   },
   {
-   "p": "Results also vary by network. Across the four networks at night, the thermal CRF beat the colour CRF on average (0.7135 against 0.6942 in accuracy). But for RTFNet and SegNet individually, the colour CRF scored slightly higher (Table I)."
+   "table": {
+    "caption": "Average accuracy of each network without a CRF, with the colour CRF and with the thermal CRF, on day and night images",
+    "source": "Table I",
+    "head": [
+     "Model",
+     "Day: no CRF",
+     "Day: CRF RGB",
+     "Day: CRF TH",
+     "Night: no CRF",
+     "Night: CRF RGB",
+     "Night: CRF TH"
+    ],
+    "rows": [
+     [
+      "MFNet",
+      "0.4887",
+      "0.6886",
+      "0.6422",
+      "0.6388",
+      "0.7303",
+      "0.7536"
+     ],
+     [
+      "RTFNet",
+      "0.4933",
+      "0.5363",
+      "0.5452",
+      "0.7149",
+      "0.7775",
+      "0.7687"
+     ],
+     [
+      "SegNet",
+      "0.3952",
+      "0.4959",
+      "0.4977",
+      "0.5055",
+      "0.5351",
+      "0.5130"
+     ],
+     [
+      "Proposed",
+      "0.4320",
+      "0.5361",
+      "0.5449",
+      "0.6119",
+      "0.7340",
+      "0.8185"
+     ],
+     [
+      "Mean",
+      "0.4523",
+      "0.5642",
+      "0.5575",
+      "0.6178",
+      "0.6942",
+      "0.7135"
+     ]
+    ],
+    "note": "The columns for the day-and-night total of Table I are left out; the proposed network's total values are given in the text."
+   }
   },
   {
-   "p": "The next step we suggest is a more efficient way of extracting features from several spectra, which would give the CRF better starting predictions."
+   "p": "In accuracy, every network scores higher with either CRF than with none, by day and by night. For our network at night, accuracy goes from 0.6119 with no CRF to 0.7340 with the colour CRF and 0.8185 with the thermal CRF. The network-by-network picture at night is mixed. MFNet does best with the thermal CRF (0.7536), while RTFNet (0.7775 against 0.7687) and SegNet (0.5351 against 0.5130) do slightly better with the colour one (Table I)."
+  },
+  {
+   "p": "The second table gives mean intersection over union (IoU), which scores how well each predicted region overlaps the true region. Here 1 would be a perfect overlap."
+  },
+  {
+   "table": {
+    "caption": "Mean intersection over union of each network without a CRF, with the colour CRF and with the thermal CRF, on day and night images",
+    "source": "Table II",
+    "head": [
+     "Model",
+     "Day: no CRF",
+     "Day: CRF RGB",
+     "Day: CRF TH",
+     "Night: no CRF",
+     "Night: CRF RGB",
+     "Night: CRF TH"
+    ],
+    "rows": [
+     [
+      "MFNet",
+      "0.5682",
+      "0.6259",
+      "0.5012",
+      "0.5690",
+      "0.5888",
+      "0.5637"
+     ],
+     [
+      "RTFNet",
+      "0.5563",
+      "0.5771",
+      "0.5892",
+      "0.6409",
+      "0.6420",
+      "0.6293"
+     ],
+     [
+      "SegNet",
+      "0.3026",
+      "0.3220",
+      "0.3222",
+      "0.3924",
+      "0.4206",
+      "0.4225"
+     ],
+     [
+      "Proposed",
+      "0.5259",
+      "0.4601",
+      "0.4510",
+      "0.5681",
+      "0.5784",
+      "0.6438"
+     ],
+     [
+      "Mean",
+      "0.4883",
+      "0.4963",
+      "0.4659",
+      "0.5426",
+      "0.5575",
+      "0.5648"
+     ]
+    ],
+    "note": "The columns for the day-and-night total of Table II are left out. Higher is better."
+   }
+  },
+  {
+   "p": "At night our network has the highest value in the table, 0.6438 with the thermal CRF, and the Mean row rises from 0.5426 without a CRF to 0.5575 and then 0.5648 (Table II). On the whole data set our network gets 0.5168 accuracy without a CRF, 0.6408 with the colour CRF and 0.7398 with the thermal CRF. Its mean IoU there is 0.5553, 0.5930 and 0.6333 (Table I and Table II)."
+  },
+  {
+   "p": "In the day images the picture is different. MFNet has the highest accuracy with the colour CRF (0.6886), and for our network the day-time IoU is highest with no CRF at all (0.5259 against 0.4601 and 0.4510). SegNet has the lowest IoU in every column (Table II)."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that the proposed network performs better than many other state-of-the-art models, especially at night. Using the thermal image to define the pairwise potentials gave the best results on the night set and on the whole data set. On average, the thermal-based CRF is better than the colour-based one on both of those sets, while the colour-based CRF has the edge on the day set. The same trend appears with mean IoU."
+  },
+  {
+   "p": "We explain the pattern like this. In the daytime, sunlight and shadows make the thermal intensity maps very noisy compared with what the visible spectrum encodes. At night the tables turn: the visible spectrum fails to separate boundaries, but the thermodynamic properties of objects help to tell the types of object apart."
+  },
+  {
+   "p": "The results also show the limits of the method. The benefit depends on the time of day. It varies by network too: for RTFNet and SegNet individually the colour CRF scored slightly higher at night. Our network is much smaller than SegNet and RTFNet, but slightly larger than MFNet. The data set has 1,563 street images, of which 820 were taken by day and 743 at night, and we kept the split used by the original data set."
+  },
+  {
+   "p": "For future work we suggest more efficient ways of extracting features from several spectra, because that should produce better predictions for the CRF to start from."
   }
  ],
  "acknowledgements": "",

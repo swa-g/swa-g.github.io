@@ -66,21 +66,120 @@
    "callout": "Mean judge scores for the generated sentences were 4.90 for fit to the keywords and 4.89 for describing the image. The original captions scored 2.72 (Table I)."
   },
   {
-   "p": "The third score, comparing our best sentence with the actual caption, had a mean of 4.65 (Table I). From these scores we conclude that the system generates sentences that are quite acceptable by human standards. In our conclusion, the generated sentences are much better logically and grammatically than the original captions, and they describe the image in a more generic way than the original captions, which \"suffer from the whims of the human mind\"."
+   "h2": "Results in more detail"
   },
   {
-   "h2": "What it does not do"
+   "p": "The two LSTMs were trained for 200 epochs (passes over the training sentences). We kept the epoch with the lowest perplexity, a standard score of how well a language model predicts text, where lower is better. That was epoch 88 for the forward network and epoch 77 for the reverse one. Before training, the sentences were split into words and stray whitespace and punctuation were removed."
   },
   {
-   "p": "The evaluation is small and relies on people. It covers 500 images, the keywords were annotated by hand, and the scores come from three human judges rather than from an automatic metric. We tested the method on image captioning only, so the question of how it works for other tasks is still open."
+   "p": "At test time we gave the program each image's hand-written keywords, which mostly name things like objects, places, actions or attributes in the image. It tried every possible keyword order and returned ranked sentences. The judges looked at the top five sentences for each order and picked the best. The table below lists what each of the three judges gave, then the mean and the standard deviation (how far the judges' marks spread around the mean). Score 1 is how good the sentence is given the keywords, score 2 how well the best sentence describes the image, score 3 how the top sentence fares against the actual caption, and score 4 how well the original caption describes the image. All are out of 5."
   },
   {
-   "p": "The paper names as future work extending the method to tasks other than image captioning, such as human-computer dialogue and question answering, and trying it in other languages."
+   "table": {
+    "caption": "Average scores (out of 5) given by the judges for the generated sentences",
+    "source": "Table I",
+    "head": [
+     "",
+     "Score 1: fit to keywords",
+     "Score 2: describes image",
+     "Score 3: vs actual caption",
+     "Score 4: original caption describes image"
+    ],
+    "rows": [
+     [
+      "Judge 1",
+      "4.98",
+      "4.97",
+      "4.96",
+      "3.42"
+     ],
+     [
+      "Judge 2",
+      "4.99",
+      "4.97",
+      "4.96",
+      "3.43"
+     ],
+     [
+      "Judge 3",
+      "4.73",
+      "4.74",
+      "4.04",
+      "1.30"
+     ],
+     [
+      "Mean score",
+      "4.90",
+      "4.89",
+      "4.65",
+      "2.72"
+     ],
+     [
+      "Standard deviation",
+      "0.14",
+      "0.14",
+      "0.52",
+      "1.23"
+     ]
+    ],
+    "note": "Higher is better in every column."
+   }
+  },
+  {
+   "p": "The first two judges gave nearly the same marks, and the third was stricter on every score, most of all on score 4, where the printed values are 3.42, 3.43 and 1.30. The original captions got the lowest mean (2.72) and the widest spread (1.23), so the judges disagreed most about them. The generated sentences were rated 4.90 for fit to the keywords and 4.89 for describing the image, with a spread of 0.14 for both (Table I)."
+  },
+  {
+   "p": "The paper also shows sample results for three test images. Each image has two or three keywords, an original caption and five of the generated sentences. They change only in small ways, such as “with a bottle” against “holding a bottle”, or “in a room” against “in a living room”."
+  },
+  {
+   "table": {
+    "caption": "Sample results: keywords given to the system, the original caption of the image, and the five sentences generated",
+    "source": "Table II",
+    "head": [
+     "Keywords",
+     "Original caption",
+     "Generated sentences"
+    ],
+    "rows": [
+     [
+      "person, bottle, room",
+      "mad at my water bottle",
+      "a person with a bottle in a room / a person with a bottle in a living room / a person with a bottle in a small room / a person holding a bottle in a room / a person holding a bottle in a living room"
+     ],
+     [
+      "cat, box",
+      "cat in box",
+      "a cat sitting in a box / a cat in a box / a cat sitting in the box / a black cat sitting in a box / a black cat in a box"
+     ],
+     [
+      "woman, babies, hospital",
+      "Larkin in the lavendar hat and Ruby in the pink",
+      "a woman and two babies in a hospital / a woman and two babies are in a hospital / a woman and two babies in the hospital / a woman and her babies in a hospital / a woman and her babies are in a hospital"
+     ]
+    ],
+    "note": "The images of the paper's Table II are not reproduced here. Sentences are separated by slashes."
+   }
+  },
+  {
+   "p": "In the third example, the original caption names two people by first name, and says nothing about the hospital or the babies. The generated sentences are built from the three keywords (Table II)."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that the algorithm is quite effective for the task. The generated sentences scored well with human judges, and in our conclusion they are much better logically and grammatically than the original captions. They also describe the image in a more generic way than the original captions, which “suffer from the whims of the human mind”."
+  },
+  {
+   "p": "We think two ingredients matter. The Word2Vec vectors take similarities between words into account, and the LSTMs can hold long contexts, so together they let the algorithm work out the intermediate phrases between two keywords. A further point is that the method is not bound to one corpus. We trained on COCO captions and tested on a different data set, SBU, and read that as evidence of its general nature."
+  },
+  {
+   "p": "The test itself was small. It used 500 images, keywords annotated by hand, and three human judges instead of an automatic score. We evaluated only image captioning. For the future we plan to extend the algorithm to other tasks, such as human-computer dialogue and question answering, to see how well it works there, and to try it in other languages."
   }
  ],
  "acknowledgements": "This work was partially supported by the project sponsored by SERB, Government of India (order no. SB/S3/EECE/054/2016, dated 25/11/2016). The work was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
  "links": [],
  "tables_used": [
-  "Table I: mean scores from the human judges for the generated sentences and for the original captions"
+  "Table I: scores from each human judge, with the mean and standard deviation, for the generated sentences and for the original captions",
+  "Table II: sample results with keywords, original caption and generated sentences for three images"
  ]
 }

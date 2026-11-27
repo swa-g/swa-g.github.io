@@ -93,13 +93,361 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "The convolutional connection needs more memory and is prone to over-fitting the training data. The datasets are small, with 100 to 1,255 training images (Table 2). The network also only says where text is. It does not read it. The paper points to splitting text into single characters as a natural next step."
+   "p": "Table 3 holds the full comparison of the merged models. For each dataset it lists precision, recall and F-score for our three kinds of mirror connection and for three well-known segmentation networks, SegNet, U-Net and PSPNet. Within each dataset the first three rows are ours and the last three are the comparison networks. The first table below covers SVT and ICDAR 2003, and the second covers ICDAR 2015 and Total-Text."
   },
   {
-   "p": "Finding the text is the first step before reading it. The paper's introduction names reading shop names and street signs for navigation systems as one use."
+   "table": {
+    "caption": "Merged models against SegNet, UNet and PSPNet on SVT and ICDAR 2003",
+    "source": "Table 3",
+    "head": [
+     "Dataset",
+     "Mirror skip",
+     "Precision",
+     "Recall",
+     "F-score"
+    ],
+    "rows": [
+     [
+      "SVT",
+      "proposed (linear)",
+      "0.76",
+      "0.69",
+      "0.72"
+     ],
+     [
+      "SVT",
+      "proposed (parametric)",
+      "0.85",
+      "0.83",
+      "0.84"
+     ],
+     [
+      "SVT",
+      "proposed (convolution)",
+      "0.82",
+      "0.83",
+      "0.81"
+     ],
+     [
+      "SVT",
+      "SegNet",
+      "0.58",
+      "0.55",
+      "0.51"
+     ],
+     [
+      "SVT",
+      "UNet",
+      "0.60",
+      "0.49",
+      "0.49"
+     ],
+     [
+      "SVT",
+      "PSPNet",
+      "0.60",
+      "0.57",
+      "0.53"
+     ],
+     [
+      "ICDAR2003",
+      "proposed (linear)",
+      "0.69",
+      "0.71",
+      "0.72"
+     ],
+     [
+      "ICDAR2003",
+      "proposed (parametric)",
+      "0.78",
+      "0.88",
+      "0.87"
+     ],
+     [
+      "ICDAR2003",
+      "proposed (convolution)",
+      "0.75",
+      "0.81",
+      "0.80"
+     ],
+     [
+      "ICDAR2003",
+      "SegNet",
+      "0.70",
+      "0.62",
+      "0.59"
+     ],
+     [
+      "ICDAR2003",
+      "UNet",
+      "0.62",
+      "0.53",
+      "0.51"
+     ],
+     [
+      "ICDAR2003",
+      "PSPNet",
+      "0.72",
+      "0.72",
+      "0.68"
+     ]
+    ],
+    "note": "The SVT and ICDAR2003 rows of Table 3, as printed. Higher values are better."
+   }
+  },
+  {
+   "p": "On both datasets the parametric version has the highest F-score of its block, and all three of our versions are above the three comparison networks."
+  },
+  {
+   "table": {
+    "caption": "Merged models against SegNet, UNet and PSPNet on ICDAR 2015 and Total-Text",
+    "source": "Table 3",
+    "head": [
+     "Dataset",
+     "Mirror skip",
+     "Precision",
+     "Recall",
+     "F-score"
+    ],
+    "rows": [
+     [
+      "ICDAR2015",
+      "proposed (linear)",
+      "0.72",
+      "0.68",
+      "0.73"
+     ],
+     [
+      "ICDAR2015",
+      "proposed (parametric)",
+      "0.81",
+      "0.79",
+      "0.79"
+     ],
+     [
+      "ICDAR2015",
+      "proposed (convolution)",
+      "0.71",
+      "0.69",
+      "0.71"
+     ],
+     [
+      "ICDAR2015",
+      "SegNet",
+      "0.59",
+      "0.58",
+      "0.60"
+     ],
+     [
+      "ICDAR2015",
+      "UNet",
+      "0.62",
+      "0.69",
+      "0.62"
+     ],
+     [
+      "ICDAR2015",
+      "PSPNet",
+      "0.71",
+      "0.72",
+      "0.72"
+     ],
+     [
+      "Total-Text",
+      "proposed (linear)",
+      "0.84",
+      "0.84",
+      "0.84"
+     ],
+     [
+      "Total-Text",
+      "proposed (parametric)",
+      "0.88",
+      "0.88",
+      "0.89"
+     ],
+     [
+      "Total-Text",
+      "proposed (convolution)",
+      "0.89",
+      "0.87",
+      "0.90"
+     ],
+     [
+      "Total-Text",
+      "SegNet",
+      "0.70",
+      "0.70",
+      "0.71"
+     ],
+     [
+      "Total-Text",
+      "UNet",
+      "0.75",
+      "0.74",
+      "0.75"
+     ],
+     [
+      "Total-Text",
+      "PSPNet",
+      "0.75",
+      "0.72",
+      "0.75"
+     ]
+    ],
+    "note": "The ICDAR2015 and Total-Text rows of Table 3, as printed. Higher values are better."
+   }
+  },
+  {
+   "p": "On ICDAR 2015 the parametric version again has the highest F-score, and PSPNet is the closest of the comparison networks. On Total-Text even the plain linear version scores 0.84. The paper points out that these three comparison networks already use encoder-decoder layouts, feature fusion across layers and multi-scale analysis, the same ideas our model builds on."
+  },
+  {
+   "p": "Table 4 lists the nine individual networks on SVT before merging. L, P and C stand for the linear, parametric and convolutional connection, and the digit is the window size. The numbers are noisy: P7 reaches 0.7254 while P3 and P5 stay below 0.60."
+  },
+  {
+   "table": {
+    "caption": "Each single network on SVT, before merging",
+    "source": "Table 4",
+    "head": [
+     "Model",
+     "Kernel size",
+     "Mirror skip",
+     "Precision",
+     "Recall",
+     "F score"
+    ],
+    "rows": [
+     [
+      "L3",
+      "3×3",
+      "Linear",
+      "0.7392",
+      "0.7384",
+      "0.7388"
+     ],
+     [
+      "L5",
+      "5×5",
+      "Linear",
+      "0.5753",
+      "0.5592",
+      "0.5660"
+     ],
+     [
+      "L7",
+      "7×7",
+      "Linear",
+      "0.7234",
+      "0.7176",
+      "0.7260"
+     ],
+     [
+      "L mean",
+      "-",
+      "Linear",
+      "0.6793",
+      "0.6717",
+      "0.6769"
+     ],
+     [
+      "P3",
+      "3×3",
+      "Parametric",
+      "0.5771",
+      "0.6505",
+      "0.5988"
+     ],
+     [
+      "P5",
+      "5×5",
+      "Parametric",
+      "0.5620",
+      "0.6356",
+      "0.5808"
+     ],
+     [
+      "P7",
+      "7×7",
+      "Parametric",
+      "0.7202",
+      "0.7128",
+      "0.7254"
+     ],
+     [
+      "P mean",
+      "-",
+      "Parametric",
+      "0.6197",
+      "0.6683",
+      "0.6350"
+     ],
+     [
+      "C3",
+      "3×3",
+      "Convolutional",
+      "0.6934",
+      "0.7096",
+      "0.7011"
+     ],
+     [
+      "C5",
+      "5×5",
+      "Convolutional",
+      "0.7563",
+      "0.6873",
+      "0.7159"
+     ],
+     [
+      "C7",
+      "7×7",
+      "Convolutional",
+      "0.5937",
+      "0.5790",
+      "0.5856"
+     ],
+     [
+      "C mean",
+      "-",
+      "Convolutional",
+      "0.6811",
+      "0.6586",
+      "0.6675"
+     ],
+     [
+      "Overall Mean",
+      "-",
+      "-",
+      "0.6601",
+      "0.6655",
+      "0.6598"
+     ]
+    ],
+    "note": "All rows of Table 4, as printed."
+   }
+  },
+  {
+   "p": "The other datasets look similar (Table 5, Table 6 and Table 7). The best single network on ICDAR 2003 was C3 with an F-score of 0.8133, on ICDAR 2015 it was P5 with 0.8428, and on Total-Text it was C7 with 0.9341. The mean over all nine networks was 0.7563 on ICDAR 2003, 0.7663 on ICDAR 2015 and 0.8896 on Total-Text. Total-Text produced the highest single-network scores, from 0.8178 up to 0.9341 (Table 7). All nine networks shared the same layout: encoder widths of 16, 64, 128, 256 and 512 channels, two convolutional blocks per layer, internal skips and a batch size of 16 (Table 1). We trained on one Nvidia GTX 1660 with 6 GB of memory."
+  },
+  {
+   "p": "The sample masks (Figs. 6 to 9 of the paper) tell the same story. The linear and convolutional models fail to detect text in several places where the parametric one succeeds, and the paper reports that our model behaves much more consistently across samples than the other networks."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that the ensemble of three networks with 3×3, 5×5 and 7×7 windows and the parametric mirror connection works best. It beat the linear connection and the more memory-hungry convolutional one on three of the four datasets."
+  },
+  {
+   "p": "Our explanation starts with the plain bridge. In a U-Net style bridge every layer feeds the decoder with equal preference, and nothing controls the total flow, so one layer can overpower the others. A single trainable number per bridge keeps that in check. The linear connection helps gradients travel through a network, but for multi-scale features it did not do as well as the weighted versions. The convolutional version is more expressive and suits curved masks, yet it needs more memory and can over-fit the training data, which de-regularizes the network."
+  },
+  {
+   "p": "No window size or connection type won everywhere, and the pattern only became visible after merging. The training sets hold between 100 and 1,255 images (Table 2). The network only marks where text is and does not read it. As future work we name other domains, such as character-level text segmentation."
+  },
+  {
+   "p": "Finding text is the first step toward reading it. The paper's introduction names reading shop names and street signs for navigation systems as one use."
   }
  ],
  "acknowledgements": "This work is sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -110,8 +458,12 @@
   }
  ],
  "tables_used": [
+  "Table 1: layout shared by the nine networks",
   "Table 2: size and type of the four datasets",
-  "Table 3: F-scores of the merged models and of SegNet, U-Net and PSPNet",
-  "Table 4: F-scores of each single network on SVT"
+  "Table 3: precision, recall and F-score of the merged models and of SegNet, U-Net and PSPNet",
+  "Table 4: each single network on SVT",
+  "Table 5: each single network on ICDAR 2003",
+  "Table 6: each single network on ICDAR 2015",
+  "Table 7: each single network on Total-Text"
  ]
 }

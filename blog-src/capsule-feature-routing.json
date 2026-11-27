@@ -75,19 +75,193 @@
    "callout": "With six feature capsules on the 199-class compound characters, accuracy went from 79.34% to 87.44% while training time per epoch fell from 1,206.99 to 59.65 seconds (Tables X and XI)."
   },
   {
-   "p": "The paper's explanation is that the major speed-up comes from memory, not from faster arithmetic per sample. The standard network needed 2,057 MB per sample on the compound set, while ours needed between 667 and 801 MB, whichever number of feature capsules we used from 2 to 20 (Table VIII). The largest possible batch size grew from 16 to as many as 1,520 images (Table IX), which makes much better use of a GPU's parallel hardware."
+   "p": "The major speed-up comes from memory, not from faster arithmetic per sample. The standard network needed 2,057 MB per sample on the compound set, while ours needed between 667 and 801 MB, whichever number of feature capsules we used from 2 to 20 (Table VIII). The largest possible batch size grew from 16 to as many as 1,520 images (Table IX), which makes much better use of a GPU's parallel hardware."
   },
   {
-   "p": "We also compared our best results with other published methods. On compound characters we reached 87.44% against 86.64% for the best earlier method in our list, and on basic characters 93.23% against 92.15% (Table XII). We conclude that the network beats many other popular works on these Indic data sets."
+   "h2": "Results in more detail"
   },
   {
-   "h2": "What it does not do"
+   "p": "The two larger data sets are where the idea is tested, so we start with accuracy there. In the table below, the first number column is the standard capsule network. Each later column is our network with that many feature capsules. Higher is better. Bangla basic characters has 50 classes and Bangla compound characters has 199."
   },
   {
-   "p": "On the numerals, we saw no real accuracy gain, only the time saving. The speed advantage also disappears when N<sub>features</sub> goes beyond the number of classes, so the number of feature capsules should stay below the number of classes. We chose the number of feature capsules for each data set, and we did not use a separate validation set: we kept the model with the best training performance and reported its test accuracy."
+   "table": {
+    "caption": "Test accuracy (%) on the two higher-class data sets, for the standard capsule network and for our network with different numbers of feature capsules",
+    "source": "Table X",
+    "head": [
+     "Data set",
+     "Standard capsule network",
+     "2 features",
+     "4 features",
+     "6 features",
+     "8 features",
+     "10 features",
+     "20 features"
+    ],
+    "rows": [
+     [
+      "Bangla basic (50 classes)",
+      "90.6",
+      "91.07",
+      "91.73",
+      "92.7",
+      "93.23",
+      "92.1",
+      "92.1"
+     ],
+     [
+      "Bangla compound (199 classes)",
+      "79.34",
+      "79",
+      "85.53",
+      "87.44",
+      "87.11",
+      "87.04",
+      "87.24"
+     ]
+    ],
+    "note": "A selection of the columns of Table X (the column for 15 feature capsules is left out)."
+   }
   },
   {
-   "p": "Because the decoder sees all feature capsules at once, the network can no longer produce a reconstruction of one specific class. We also have not yet studied how feature capsules relate to equivariance, the property that motivated capsules in the first place. The paper names both as directions for future work."
+   "p": "On the compound characters, two feature capsules gave 79, just under the 79.34 of the standard network. From four feature capsules upward, every setting printed in the table is above it, and the best is 87.44 with six. On the basic characters, every setting is above 90.6, with the best at eight feature capsules (Table X)."
+  },
+  {
+   "p": "Speed is the other half. The next table gives the time for one pass over the training data, with the largest batch size that fits in memory for each model."
+  },
+  {
+   "table": {
+    "caption": "Training time per epoch (seconds) on the two higher-class data sets, with the highest possible batch size",
+    "source": "Table XI",
+    "head": [
+     "Data set",
+     "Standard capsule network",
+     "2 features",
+     "4 features",
+     "6 features",
+     "8 features",
+     "10 features",
+     "20 features"
+    ],
+    "rows": [
+     [
+      "Bangla basic (50 classes)",
+      "120.61",
+      "14.15",
+      "18.19",
+      "22.03",
+      "25.74",
+      "29.87",
+      "50.727"
+     ],
+     [
+      "Bangla compound (199 classes)",
+      "1206.99",
+      "36.92",
+      "47.57",
+      "59.65",
+      "70.11",
+      "81.91",
+      "149.58"
+     ]
+    ],
+    "note": "A selection of the columns of Table XI (the column for 15 feature capsules is left out). Lower is better."
+   }
+  },
+  {
+   "p": "Time grows as we add feature capsules, but even with twenty on the compound set one epoch takes 149.58 seconds against 1,206.99 (Table XI). Per single sample the difference is small: 0.0823 seconds for the standard network on the compound set, and between 0.0662 and 0.0699 for ours (Table VII). On the basic characters the standard network needed 1,001 MB per sample and could fit a batch of 70 images, while ours used between 667 and 801 MB and fitted from 172 to 1,520 (Table VIII and Table IX)."
+  },
+  {
+   "p": "Our memory figure hardly changes with the number of classes. The only extra cost is the last fully connected layer. With ten feature capsules it adds 0.006 MiB for the digit data sets, 0.031 MiB for Bangla basic and 0.123 MiB for Bangla compound, which we consider negligible next to the total."
+  },
+  {
+   "p": "On the three ten-class numeral sets, accuracy is mixed, as we said above. Bangla numerals scored 97.4% with the standard network and between 97.1% and 97.3% with ours. Devanagari numerals scored 94.8% with the standard network, and with ours 92.4% for two feature capsules, 94.8% for four and eight, and 93.3% for ten. Telugu numerals went from 96.2% to 96.9% with two feature capsules, and fell to 95.3% with ten (Table V). The standard network on these sets used 719 MB per sample and a batch of 432 images. Ours used 667 to 719 MB and batches of 432 to 1,520 (Table III and Table IV)."
+  },
+  {
+   "p": "The last table compares our best result for each of the two larger data sets with other published methods."
+  },
+  {
+   "table": {
+    "caption": "Accuracy (%) of our network and of other published methods on the two larger data sets",
+    "source": "Table XII",
+    "head": [
+     "Data set",
+     "Method",
+     "Accuracy"
+    ],
+    "rows": [
+     [
+      "Bangla basic",
+      "Proposed (8 feature capsules)",
+      "93.23"
+     ],
+     [
+      "Bangla basic",
+      "LeNet",
+      "63"
+     ],
+     [
+      "Bangla basic",
+      "CapsNet",
+      "90.6"
+     ],
+     [
+      "Bangla basic",
+      "LeNet+CapsNet",
+      "88.4"
+     ],
+     [
+      "Bangla basic",
+      "Sarkhel et al.",
+      "86.53"
+     ],
+     [
+      "Bangla basic",
+      "Bhattacharya et al.",
+      "92.15"
+     ],
+     [
+      "Bangla compound",
+      "Proposed (6 feature capsules)",
+      "87.44"
+     ],
+     [
+      "Bangla compound",
+      "LeNet",
+      "75.4"
+     ],
+     [
+      "Bangla compound",
+      "CapsNet",
+      "79.3"
+     ],
+     [
+      "Bangla compound",
+      "LeNet+CapsNet",
+      "79.9"
+     ],
+     [
+      "Bangla compound",
+      "Sarkhel et al.",
+      "86.64"
+     ]
+    ],
+    "note": "The rows for the three numeral data sets in Table XII are left out."
+   }
+  },
+  {
+   "p": "In the paper's words, the proposed approach beats the classic capsule networks on several occasions, and the difference is more prominent for problems with a higher number of classes. On compound characters we reached 87.44% against 86.64% for the best earlier method in the list, and on basic characters 93.23% against 92.15% (Table XII). On the numerals the picture is closer: for Bangla digits the paper lists 97.3 for ours and 97.4 for CapsNet, and for Telugu digits 96.9 against 96.2 (Table XII)."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "The concern we started from is that capsule networks scale badly with the number of classes. By using routing to produce feature capsules rather than class capsules, we removed the link between the routing step and the number of classes. Because memory per sample stays almost the same whatever the class count, the same large batch size works across data sets, and a GPU's parallel hardware is used much better. That is where the speed-up comes from."
+  },
+  {
+   "p": "For the accuracy gain, our explanation is that agreement between capsules gets more complicated when there are many classes, so the standard network tends to overfit. Intermediate features of lower dimension give a more general learning setup, and that shows up as better accuracy on the 50-class and 199-class problems. We conclude that the network beats many other popular works on these Indic data sets."
+  },
+  {
+   "p": "There are limits. The number of feature capsules should stay below the number of classes, and we saw saturation beyond twenty. We did not use a separate validation set, since the network already has regularisation built in. We kept the model with the best training performance and reported its test accuracy. Because the decoder works from all feature capsules, class-specific reconstruction is not possible, which is one avenue we name for future work. The other is to study the effect of feature capsules on equivariance, which we have not yet done."
   },
   {
    "p": "The practical result is that a character set with 199 classes took 59.65 seconds per epoch with six feature capsules, where the standard capsule network took 1,206.99 seconds (Table XI)."
@@ -101,8 +275,11 @@
   }
  ],
  "tables_used": [
+  "Table III: memory per sample on the numeral data sets",
+  "Table IV: largest batch size on the numeral data sets",
   "Table V: accuracy on the three numeral data sets",
   "Table VI: training time per epoch on the numeral data sets",
+  "Table VII: training time per sample per epoch on the two larger data sets",
   "Table VIII: memory per sample on the two larger data sets",
   "Table IX: largest batch size on the two larger data sets",
   "Table X: accuracy on the two larger data sets",

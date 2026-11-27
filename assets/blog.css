@@ -14,10 +14,10 @@
 .tag-chip:hover { color: var(--ink); border-color: var(--muted); }
 .tag-chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .post-count { color: var(--muted); font-size: .9rem; margin: 6px 0 22px; }
-.year-block { margin-top: 36px; }
+.year-block { margin-top: 22px; }
 .year-block > h2 { max-width: none; line-height: 1.4; font-family: var(--mono); font-size: .9rem; letter-spacing: .08em; color: var(--muted); font-weight: 500; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 .posts { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
-.post-card { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s, box-shadow .15s; }
+.post-card { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 0; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s, box-shadow .15s; }
 .post-card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-2px); box-shadow: var(--shadow); }
 .post-card .meta { font-family: var(--mono); font-size: .76rem; color: var(--muted); }
 .post-card h3 { font-family: var(--display); font-size: 1.12rem; line-height: 1.3; margin: 0; letter-spacing: -.01em; }
@@ -75,3 +75,32 @@
 .sources p { margin: 0 0 .5em; }
 .sources ul { margin: 0; padding-left: 1.1em; }
 .sources b { color: var(--ink); font-weight: 600; }
+
+/* index thumbnails */
+.post-card .thumb { aspect-ratio: 16 / 9; background: #fff; border-bottom: 1px solid var(--line); overflow: hidden; }
+.post-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.post-card:hover .thumb img { transform: scale(1.03); }
+.post-card .pc-body { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 18px; flex: 1; }
+@media (prefers-reduced-motion: reduce) { .post-card .thumb img { transition: none; } }
+
+/* cite */
+.cite-btn { appearance: none; cursor: pointer; font: inherit; font-size: .9rem; font-weight: 600; padding: 8px 14px; border: 1px solid var(--accent); border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+.cite-btn:hover { background: var(--accent); color: var(--accent-ink); }
+.cite-btn.done { background: #1a7f4b; border-color: #1a7f4b; color: #fff; }
+.cite-box { margin-top: 2.2em; padding-top: 18px; border-top: 1px solid var(--line); font-size: .92rem; color: var(--muted); line-height: 1.6; }
+.cite-box h2 { max-width: none; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; margin: 0 0 8px; color: var(--muted); }
+.cite-box p { margin: 0 0 12px; }
+.cite-box .bib-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+.cite-box .cite-btn { font-size: .8rem; padding: 6px 12px; }
+.cite-box pre { white-space: pre-wrap; word-break: break-word; background: var(--chip); border-radius: 10px; padding: 12px 14px; font-family: var(--mono); font-size: .78rem; line-height: 1.55; color: var(--ink); margin: 8px 0 0; }
+
+/* result tables */
+.prose figure.tbl { margin: 1.9em 0; }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.tbl table { border-collapse: collapse; width: 100%; font-size: .9rem; line-height: 1.45; min-width: 420px; }
+.tbl caption { caption-side: top; text-align: left; padding: 12px 14px 8px; font-weight: 600; font-size: .94rem; color: var(--ink); }
+.tbl th, .tbl td { padding: 8px 14px; text-align: left; border-top: 1px solid var(--line); vertical-align: top; }
+.tbl thead th { background: var(--chip); font-size: .8rem; letter-spacing: .02em; color: var(--muted); font-weight: 600; }
+.tbl td.num, .tbl th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tbl tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--chip) 45%, transparent); }
+.prose figure.tbl figcaption { margin-top: 10px; }

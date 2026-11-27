@@ -77,10 +77,261 @@
    "p": "Topic by topic, the picture is mixed. For the gold topic, the F-measure (a single score that balances finding the right documents against picking wrong ones) rose from 0.25 with word counts to 0.71 with the best graph distance (Table 3). Words such as \"ounces\" and \"carat\" are rare, so counting overlooks them, while the graph ties them to \"gold\". For carcass it went the other way, 0.95 against 0.32, because \"beef\" and \"pork\" are enough on their own. Averaged over all topics the two methods tie at 0.51 (Table 3)."
   },
   {
-   "h2": "What it does not show"
+   "h2": "Results in more detail"
   },
   {
-   "p": "We tested on ten documents per topic, and the graph method came out about equal to bag-of-words, not clearly ahead of it. We did not study how much the summarising step helps or hurts, and we list that as future work, along with trying other learning methods such as support vector machines on graph kernels."
+   "p": "Table 2 holds the numbers behind the headline. Each row is one of the five distance formulas, counted either on nodes (V) or on edges (E), and the last row is bag-of-words. The columns give k, the number of neighbours that vote on each test document. All of these runs use three-sentence summaries."
+  },
+  {
+   "table": {
+    "caption": "Test accuracy with three-sentence summaries, for each distance formula (1 to 5) counted on vertices (V) or edges (E), and for bag-of-words (bow)",
+    "source": "Table 2",
+    "head": [
+     "Distance",
+     "k = 3",
+     "k = 5",
+     "k = 7"
+    ],
+    "rows": [
+     [
+      "V1",
+      "45.50%",
+      "45.50%",
+      "48.00%"
+     ],
+     [
+      "E1",
+      "47.50%",
+      "49.50%",
+      "50.00%"
+     ],
+     [
+      "V2",
+      "48.00%",
+      "48.50%",
+      "48.50%"
+     ],
+     [
+      "E2",
+      "47.50%",
+      "50.50%",
+      "50.50%"
+     ],
+     [
+      "V3",
+      "45.00%",
+      "46.00%",
+      "45.50%"
+     ],
+     [
+      "E3",
+      "48.00%",
+      "49.50%",
+      "49.50%"
+     ],
+     [
+      "V4",
+      "46.00%",
+      "46.00%",
+      "45.00%"
+     ],
+     [
+      "E4",
+      "49.00%",
+      "51.00%",
+      "49.50%"
+     ],
+     [
+      "V5",
+      "47.50%",
+      "48.00%",
+      "49.00%"
+     ],
+     [
+      "E5",
+      "47.00%",
+      "51.00%",
+      "51.50%"
+     ],
+     [
+      "bow",
+      "49.50%",
+      "49.50%",
+      "49.00%"
+     ]
+    ],
+    "note": "All rows of Table 2 of the paper. Higher is better."
+   }
+  },
+  {
+   "p": "Bag-of-words hardly changes with k: 49.50% at k = 3 and k = 5, and 49.00% at k = 7. The best graph row, E5, climbs from 47.00% at k = 3 to 51.50% at k = 7. Four of the five edge-based rows reach 50% or more for some k, while the highest node-based value is 49.00% (V5 at k = 7) (Table 2)."
+  },
+  {
+   "p": "Two-sentence summaries give a different picture. There bag-of-words scores 50.50%, 50.00% and 48.50% for k = 3, 5 and 7, and the best graph values are 45.00%, 51.00% and 50.50% (Table 1). The two methods trade places depending on k, and on this small test set neither is clearly ahead."
+  },
+  {
+   "p": "For each of the five formulas, the paper also gives the three-sentence edge-based accuracy averaged over k: 49.00 ± 1.00%, 49.50 ± 1.41%, 49.00 ± 0.87%, 49.83 ± 0.85% and 49.83 ± 2.01%. Formulas 4 and 5 therefore have the same average."
+  },
+  {
+   "figure": {
+    "src": "img/graph-distances-text-classification/accuracy-plots.png",
+    "alt": "Two line charts of recognition accuracy for the five distance formulas dmcs, dwgu, dugu, dMMCS and dMMCSN. On the left a lighter line for three-sentence summaries lies above a darker line for two-sentence summaries. On the right a lighter line for edge-based measures lies above a darker line for vertex-based ones.",
+    "caption": "Accuracy for each of the five formulas. Left: two-sentence against three-sentence summaries. Right: vertex-based against edge-based measures. In both charts the lighter line is higher for every formula.",
+    "source": "Fig. 4 and Fig. 5"
+   }
+  },
+  {
+   "p": "To look at single topics we also computed recall (the share of a topic's documents that were found), precision (the share of the documents given a topic label that really belong to it) and the F-measure, which balances the two. We did this for bag-of-words and for the best graph distance, E5. Table 3 shows a selection of the 20 topics."
+  },
+  {
+   "table": {
+    "caption": "Recall, precision and F-measure per topic for bag-of-words (BoW) and the best graph distance (graph)",
+    "source": "Table 3",
+    "head": [
+     "Topic",
+     "Recall BoW",
+     "Recall graph",
+     "Precision BoW",
+     "Precision graph",
+     "F BoW",
+     "F graph"
+    ],
+    "rows": [
+     [
+      "acq",
+      "0.10",
+      "0.60",
+      "0.20",
+      "0.60",
+      "0.13",
+      "0.60"
+     ],
+     [
+      "alum",
+      "0.50",
+      "0.30",
+      "1.00",
+      "0.38",
+      "0.67",
+      "0.33"
+     ],
+     [
+      "bop",
+      "0.50",
+      "0.80",
+      "0.46",
+      "0.67",
+      "0.48",
+      "0.73"
+     ],
+     [
+      "carcass",
+      "0.90",
+      "0.30",
+      "1.00",
+      "0.33",
+      "0.95",
+      "0.32"
+     ],
+     [
+      "cocoa",
+      "0.60",
+      "0.60",
+      "0.86",
+      "0.86",
+      "0.71",
+      "0.71"
+     ],
+     [
+      "corn",
+      "0.40",
+      "0.20",
+      "0.80",
+      "0.40",
+      "0.53",
+      "0.27"
+     ],
+     [
+      "cotton",
+      "0.80",
+      "0.40",
+      "0.47",
+      "0.27",
+      "0.59",
+      "0.32"
+     ],
+     [
+      "dlr",
+      "0.30",
+      "0.80",
+      "0.75",
+      "0.62",
+      "0.43",
+      "0.70"
+     ],
+     [
+      "earn",
+      "0.40",
+      "0.80",
+      "1.00",
+      "0.89",
+      "0.57",
+      "0.84"
+     ],
+     [
+      "fuel",
+      "0.30",
+      "0.50",
+      "0.19",
+      "0.39",
+      "0.23",
+      "0.44"
+     ],
+     [
+      "gold",
+      "0.20",
+      "0.60",
+      "0.33",
+      "0.86",
+      "0.25",
+      "0.71"
+     ],
+     [
+      "ipi",
+      "0.90",
+      "0.80",
+      "0.75",
+      "0.80",
+      "0.82",
+      "0.80"
+     ],
+     [
+      "Average",
+      "0.51",
+      "0.52",
+      "0.60",
+      "0.54",
+      "0.51",
+      "0.51"
+     ]
+    ],
+    "note": "A selection of 12 of the 20 topics in Table 3, plus the average over all 20."
+   }
+  },
+  {
+   "p": "On the F-measure the graph is ahead on acq, bop, dlr, earn, fuel and gold, bag-of-words is ahead on alum, carcass, corn and cotton, and the two are equal on cocoa (Table 3). For acq, bag-of-words found only 0.10 of the documents, against 0.60 for the graph (Table 3). Over all 20 topics the F-measure averages 0.51 for both methods, and the paper notes that the graph distance sometimes gives clearly better results than bag-of-words (Table 3)."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We read these results as saying that the graph approach is nearly equivalent to word counting on this task, and in some cases does better. The edge-based results are the part we find most telling. Edges carry the labels, such as agent and patient, that say who did what to whom. When edge-based measures beat their node-based twins, the relations must be adding information. We conclude that semantic information is essential for text categorisation, and that the results are a good sign that it is adequate for representing texts."
+  },
+  {
+   "p": "The topics where one method wins show how. The word \"gold\" also turns up in the copper and alum topics, \"reserves\" occurs in many topics, and \"ounces\" and \"carat\" are too rare for word counting to notice. The graph ties these words together in a way that is specific to the gold topic. In the carcass topic, plain words such as \"beef\" and \"pork\" are enough to identify it, and the extra structure has little to add."
+  },
+  {
+   "p": "The paper's open points are short. Finding the exact common subgraph is NP-hard, so we shortened every document to two or three sentences and used an approximate matching that stays within polynomial time. Each topic had only 10 test documents. We have not yet measured how much the summarising step helps or hurts, and that is the first item of future work. We also want to try other learners, such as a multi-layer perceptron and support vector machines with a graph kernel."
   },
   {
    "p": "A companion paper mixed these graph measures with word counts, and the combination gave better accuracy than either alone."

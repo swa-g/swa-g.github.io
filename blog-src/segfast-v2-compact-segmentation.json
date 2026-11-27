@@ -82,18 +82,303 @@
    "p": "The paper suggests a different variant for each need. SegFast uses the least memory, 703 MB (Table 2). SegFast-V2_3 is the network of choice where speed matters most. When accuracy matters most, SegFast-Mobile seems the strongest: it reaches 87.63% mean pixel accuracy with 4,637,526 parameters (Table 2 and Table 4), still far fewer than the large networks."
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "SegFast-V2 may not beat most of the larger networks on accuracy, and we say so in the paper. We argue that the trade-off may be acceptable in certain low-risk scenarios. Kernel factorization cuts parameters but needs more activation maps, so SegFast-V2_3 uses 1101 MB of memory against 703 MB for SegFast (Table 2). Using larger factorized kernels did not improve the results significantly, so the smallest 3×3 kernels already do well enough for their size."
+   "p": "The five datasets differ a lot in size. CamVid is the smallest, with 12 classes and 367 training and 101 test images. Mapillary is the largest, with 66 classes and 18,000 training and 2000 test images. BDD has 20 classes (7000 training and 1000 test images), Cityscapes has 30 (2975 and 500) and Synthia has 13 (10,786 and 2621) (Table 1). Every network was trained and tested on each dataset, so the tables below have one column per dataset."
   },
   {
-   "p": "All timings in the paper come from the CPU. We expect that even low-end GPUs could reach real-time performance, since the smallest model has a memory footprint of only about 700 MB. We close by suggesting that the same compression idea can be applied to SegNet, UNet and PSPNet."
+   "p": "Table 2 puts the size of each network next to its memory use, measured for a single input image. SegFast-Basic is the ablation, the same network with ordinary convolutions. It has 2,965,976 parameters and needs 1232 MB, while SegFast needs 703 MB (Table 2)."
+  },
+  {
+   "table": {
+    "caption": "Number of parameters and memory use of each network",
+    "source": "Table 2",
+    "head": [
+     "Architecture",
+     "Parameters",
+     "Memory (MB)"
+    ],
+    "rows": [
+     [
+      "FCN",
+      "134,507,010",
+      "3447"
+     ],
+     [
+      "SegNet",
+      "29,455,702",
+      "1515"
+     ],
+     [
+      "UNet",
+      "31,033,110",
+      "1471"
+     ],
+     [
+      "PSPNet",
+      "65,606,764",
+      "2357"
+     ],
+     [
+      "SegFast-Mobile",
+      "4,637,526",
+      "829"
+     ],
+     [
+      "SegFast-Basic",
+      "2,965,976",
+      "1232"
+     ],
+     [
+      "SegFast",
+      "603,288",
+      "703"
+     ],
+     [
+      "SegFast-V2_3",
+      "599,380",
+      "1101"
+     ],
+     [
+      "SegFast-V2_5",
+      "606,676",
+      "1199"
+     ]
+    ],
+    "note": "Lower is smaller. The paper reports the memory footprint for a single input image."
+   }
+  },
+  {
+   "p": "Speed tells a similar story. The paper reports the time for one forward pass (labelling one image) and one backward pass (one learning step) on the CPU. SegFast-Mobile needs 0.66 s for the forward pass, SegFast-Basic 0.419 s, SegFast 0.389 s and SegFast-V2_5 0.409 s. For the backward pass SegFast-V2_3 needs 0.858 s, against 3.25 s for SegNet and 5.23 s for FCN (Table 3). The total training time is the backward-pass time multiplied by the number of samples and epochs. The fastest times came from the versions with kernel factorization, which the paper puts down to fewer floating-point operations. On strong GPUs the differences in time are much smaller, because a GPU runs so much in parallel, but that defeats the purpose of a network meant for low-end hardware."
+  },
+  {
+   "p": "Table 4 gives pixel accuracy on each dataset. The last column is the mean over the five datasets, with its standard deviation. Every network scores highest on Synthia."
+  },
+  {
+   "table": {
+    "caption": "Pixel-level accuracy on each dataset (%)",
+    "source": "Table 4",
+    "head": [
+     "Architecture",
+     "BDD",
+     "CamVid",
+     "CityScape",
+     "Synthia",
+     "Mapillary",
+     "Mean (± SD)"
+    ],
+    "rows": [
+     [
+      "FCN",
+      "75.31",
+      "74.22",
+      "84.28",
+      "91.81",
+      "79.62",
+      "81.05 (± 7.21)"
+     ],
+     [
+      "SegNet",
+      "82.79",
+      "88.70",
+      "86.08",
+      "92.05",
+      "82.46",
+      "86.42 (± 4.06)"
+     ],
+     [
+      "UNet",
+      "81.77",
+      "87.70",
+      "87.39",
+      "95.43",
+      "84.11",
+      "87.28 (± 5.17)"
+     ],
+     [
+      "PSPNet",
+      "85.17",
+      "90.79",
+      "87.84",
+      "93.64",
+      "85.98",
+      "88.68 (± 3.51)"
+     ],
+     [
+      "SegFast-Mobile",
+      "85.12",
+      "89.24",
+      "86.51",
+      "93.48",
+      "83.81",
+      "87.63 (± 3.84)"
+     ],
+     [
+      "SegFast-Basic",
+      "80.45",
+      "86.31",
+      "82.69",
+      "91.65",
+      "82.10",
+      "84.64 (± 4.46)"
+     ],
+     [
+      "SegFast",
+      "83.48",
+      "85.08",
+      "83.71",
+      "93.58",
+      "81.63",
+      "85.50 (± 4.68)"
+     ],
+     [
+      "SegFast-V2_3",
+      "81.46",
+      "85.95",
+      "84.13",
+      "93.48",
+      "82.10",
+      "85.42 (± 4.84)"
+     ],
+     [
+      "SegFast-V2_5",
+      "80.92",
+      "86.70",
+      "83.86",
+      "93.63",
+      "82.70",
+      "85.56 (± 4.97)"
+     ]
+    ],
+    "note": "Higher is better. SD is the standard deviation across the five datasets."
+   }
+  },
+  {
+   "p": "The SegFast models are not behind everywhere. On BDD, SegFast-Mobile reaches 85.12% and PSPNet 85.17%. On Synthia, SegFast-V2_5 reaches 93.63% and SegNet 92.05%. On Mapillary, the dataset with the most classes, the five SegFast models score between 81.63% and 83.81%, while the four large networks range from 79.62% to 85.98% (Table 4)."
+  },
+  {
+   "p": "Table 5 repeats the comparison with mean intersection over union, which averages over the classes so that small classes count as much as large ones. Mapillary gives the lowest value for every network and Synthia the highest."
+  },
+  {
+   "table": {
+    "caption": "Mean intersection over union on each dataset",
+    "source": "Table 5",
+    "head": [
+     "Architecture",
+     "BDD",
+     "CamVid",
+     "CityScape",
+     "Synthia",
+     "Mapillary",
+     "Mean (± SD)"
+    ],
+    "rows": [
+     [
+      "FCN",
+      "0.3076",
+      "0.3342",
+      "0.3503",
+      "0.5346",
+      "0.1910",
+      "0.3435 (± 0.1237)"
+     ],
+     [
+      "SegNet",
+      "0.3475",
+      "0.5174",
+      "0.3702",
+      "0.5430",
+      "0.2234",
+      "0.4003 (± 0.1314)"
+     ],
+     [
+      "UNet",
+      "0.3473",
+      "0.5003",
+      "0.3970",
+      "0.6767",
+      "0.2527",
+      "0.4348 (± 0.1621)"
+     ],
+     [
+      "PSPNet",
+      "0.4099",
+      "0.5632",
+      "0.4190",
+      "0.6040",
+      "0.2739",
+      "0.4540 (± 0.1323)"
+     ],
+     [
+      "SegFast-Mobile",
+      "0.3773",
+      "0.5030",
+      "0.3810",
+      "0.5810",
+      "0.2420",
+      "0.4169 (± 0.1302)"
+     ],
+     [
+      "SegFast-Basic",
+      "0.3434",
+      "0.4431",
+      "0.3210",
+      "0.5317",
+      "0.2206",
+      "0.3720 (± 0.1193)"
+     ],
+     [
+      "SegFast",
+      "0.3576",
+      "0.5000",
+      "0.3400",
+      "0.5910",
+      "0.2108",
+      "0.3999 (± 0.1481)"
+     ],
+     [
+      "SegFast-V2_3",
+      "0.3360",
+      "0.4236",
+      "0.3500",
+      "0.5730",
+      "0.2160",
+      "0.3797 (± 0.1312)"
+     ],
+     [
+      "SegFast-V2_5",
+      "0.3390",
+      "0.5012",
+      "0.3471",
+      "0.5919",
+      "0.2218",
+      "0.4002 (± 0.1461)"
+     ]
+    ],
+    "note": "Higher is better."
+   }
+  },
+  {
+   "p": "Averaged over the datasets, SegFast scores 0.3999 and SegFast-V2_3 scores 0.3797, SegFast-Mobile 0.4169, UNet 0.4348 and FCN 0.3435 (Table 5)."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "Our conclusion is that a compact network can come close to the big ones. In the paper's words, the SegFast family performs better than FCN and competes quite closely with SegNet, UNet and PSPNet, while using far fewer parameters, less memory and less time per image. We also say plainly that the proposed network may not beat most of the larger networks on accuracy, and we argue that the trade-off may be acceptable in certain low-risk scenarios."
+  },
+  {
+   "p": "Each variant answers a different need. SegFast suits cases where memory matters most, SegFast-V2_3 cases where speed matters most, and SegFast-Mobile cases where performance cannot be compromised, since it seems the strongest while still being much smaller than the large networks. Kernel factorization cuts the parameter count but raises the memory footprint, because more activation maps have to be stored. The larger factorized 5 × 5 kernels did not improve the results significantly. We read this as a sign that the smallest kernels already work well enough for their size."
+  },
+  {
+   "p": "The comparison has limits. We left DeepLab out because its large field of view and conditional random fields add heavy overhead. Images were resized to 360 × 480 and no augmentation was used. The paper reports timings on a CPU only. We expect that even low-end GPUs could reach real-time performance, since the smallest model has a footprint of only about 700 MB. As a next step we suggest applying the same compression idea to SegNet, UNet and PSPNet."
   }
  ],
  "tables_used": [
+  "Table 1: classes and number of training and test images in each dataset",
   "Table 2: parameters and memory use of each network",
-  "Table 3: forward-pass time of each network on a CPU",
+  "Table 3: forward-pass and backward-pass time of each network on a CPU",
   "Table 4: pixel accuracy of each network on the five datasets",
   "Table 5: mean intersection over union of each network on the five datasets"
  ],

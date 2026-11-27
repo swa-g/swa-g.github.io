@@ -80,13 +80,186 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "The mountain class almost failed: accuracy was 2.56% with Dempster-Shafer and about 4% with the other two methods (Table 2). Segments with mountains are scarce in the dataset, so the networks had little to learn from. Water and foreground objects were also weaker than sky or ground (Table 2). We tested only on ICCV09."
+   "p": "First the three single networks. Table 1 shows what each one looks at, how big its input is, how it is built and its test accuracy. The labels 0N, 1N and 2N stand for the patch alone, the patch with its first neighbours and the patch with its second neighbours. In the architecture code, nCk means n filters of size k×k, mP means max-pooling over an m×m window, and FCp means a fully connected layer with p units. The networks that see neighbours use larger filters, 7×7 and 5×5, than the one that sees the patch alone, 5×5 and 3×3."
   },
   {
-   "p": "We saw video segmentation as the natural next step, since a fast method built on relatively small networks suits it."
+   "table": {
+    "caption": "The three single networks and their test accuracy",
+    "source": "Table 1",
+    "head": [
+     "Input",
+     "Input size",
+     "Network architecture",
+     "Test accuracy (%)"
+    ],
+    "rows": [
+     [
+      "0N",
+      "24 × 24",
+      "32C5-2P-64C3-2P-FC256",
+      "72.32"
+     ],
+     [
+      "1N",
+      "32 × 32",
+      "32C7-2P-64C5-2P-FC256",
+      "72.45"
+     ],
+     [
+      "2N",
+      "48 × 48",
+      "32C7-2P-64C5-2P-FC256",
+      "72.24"
+     ]
+    ],
+    "note": "Higher accuracy is better."
+   }
+  },
+  {
+   "p": "The three scores are almost the same. As we wrote in the paper, it may seem that the choice of neighbours makes no difference, but the ensembles show a different story."
+  },
+  {
+   "p": "Table 2 gives accuracy class by class for the three ways of merging. The paper prints it with the classes as columns. Here the classes are rows so that it fits the page. Each cell is the test accuracy for that class, and the last row is the average accuracy."
+  },
+  {
+   "table": {
+    "caption": "Accuracy (%) of the three merging methods, class by class",
+    "source": "Table 2",
+    "head": [
+     "Class",
+     "Dempster–Shafer",
+     "Max-voting",
+     "Weighted average"
+    ],
+    "rows": [
+     [
+      "Sky",
+      "<b>88.07</b>",
+      "84.05",
+      "87.75"
+     ],
+     [
+      "Tree",
+      "76.74",
+      "73.37",
+      "<b>77.17</b>"
+     ],
+     [
+      "Grass",
+      "<b>80.29</b>",
+      "73.65",
+      "79.69"
+     ],
+     [
+      "Ground",
+      "<b>86.59</b>",
+      "80.80",
+      "85.43"
+     ],
+     [
+      "Building",
+      "<b>77.8</b>",
+      "69.90",
+      "75.85"
+     ],
+     [
+      "Mountain",
+      "2.56",
+      "4.15",
+      "<b>4.16</b>"
+     ],
+     [
+      "Water",
+      "59.41",
+      "63.90",
+      "<b>64.69</b>"
+     ],
+     [
+      "Object",
+      "59.18",
+      "60.79",
+      "<b>63.24</b>"
+     ],
+     [
+      "Average",
+      "77.07",
+      "72.88",
+      "<b>77.14</b>"
+     ]
+    ],
+    "note": "Higher is better. Bold marks the best value in each row. The paper has the classes as columns and the methods as rows."
+   }
+  },
+  {
+   "p": "Dempster–Shafer is ahead on sky, grass, ground and building, and the weighted average is ahead on tree, mountain, water and object. On the average the two are close, 77.14 against 77.07. Max-voting trails on the average, though it beats Dempster–Shafer on water and on foreground objects. In the Dempster–Shafer step we only gave extra belief to pairs of classes that the network often mixes up, because larger groups of classes added computation without adding much information. The weighted average used each network's training performance as its weight, and in max-voting a tie went to the prediction with the highest score."
+  },
+  {
+   "p": "The last table sets our weighted average beside five earlier methods tested on the same ICCV09 dataset. Each is described by the paper in a word or two: the ICCV 2009 baseline is a pixel-level conditional random field (pixel CRF), and the others use region-based energy, a probabilistic model, a CNN with superpixels, and features with superpixels."
+  },
+  {
+   "table": {
+    "caption": "Our approach compared with other approaches on the ICCV09 dataset",
+    "source": "Table 3",
+    "head": [
+     "Approach",
+     "Methodology",
+     "Accuracy (%)"
+    ],
+    "rows": [
+     [
+      "Baseline (ICCV 09) [7]",
+      "Pixel CRF",
+      "74.3"
+     ],
+     [
+      "Gould et al. (ICCV 09) [7]",
+      "Region-based energy",
+      "76.4"
+     ],
+     [
+      "Munoz et al. (ECCV 10) [11]",
+      "Probabilistic model",
+      "76.9"
+     ],
+     [
+      "Farabet et al. (PAMI 13) [6]",
+      "CNN + superpixel",
+      "74.56"
+     ],
+     [
+      "Tighe et al. (ECCV 10) [17]",
+      "Features + superpixel",
+      "76.3"
+     ],
+     [
+      "Our approach",
+      "Superpixel + CNN + ensemble",
+      "<b>77.14</b>"
+     ]
+    ],
+    "note": "Bracketed numbers are the paper's reference numbers."
+   }
+  },
+  {
+   "p": "Our 77.14% is the highest number in the table. The closest are Munoz et al. at 76.9% and Gould et al. at 76.4%. Farabet et al., who also combined a CNN with superpixels, got 74.56%. Figure 3 shows some of our outputs."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that superpixel-level labelling with small networks is a fast way to create decent segments, and that on ICCV09 it compares well with the methods in Table 3. The single networks all performed at almost the same level, so it was the merging step that brought the improvement."
+  },
+  {
+   "p": "We also wanted to deal with uncertainty. A network gives poor predictions on some superpixels, for reasons that include a skewed dataset, similar-looking patches from different classes and wrong ground-truth labels. That is why we tried the Dempster–Shafer theory, which reached 77.07%, almost as good as the weighted average at 77.14% (Table 2)."
+  },
+  {
+   "p": "The limits are clear in Table 2. The mountain class almost failed, at 2.56% with Dempster–Shafer and about 4% with the others. Mountain segments are scarce in the dataset, so the networks had little to learn from. Water and foreground objects were also weaker than sky or ground. We tested only on ICCV09."
+  },
+  {
+   "p": "Taken together, we believe the speed of the algorithm and the relatively small size of the networks make it promising. Testing took 25 to 30 milliseconds on a GTX 1080 graphics card, which we took as meeting real-time needs. In future we think the work could be extended to video segmentation."
   }
  ],
  "acknowledgements": "This work is partially supported by the project entitled “Development of knowledge graph from images using deep learning”, sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",

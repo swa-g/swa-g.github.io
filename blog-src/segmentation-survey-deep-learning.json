@@ -74,7 +74,170 @@
    }
   },
   {
-   "h2": "What we concluded"
+   "h2": "Results in more detail"
+  },
+  {
+   "p": "A survey runs no experiments of its own. The scores below are the ones the original works reported for their methods, which the survey quotes in its text. Its Table 2 lists the methods and its Table 1 the datasets. The methods were tested on different datasets and test sets, so these numbers show what each work reported and are not a ranking. We did not re-run any of them."
+  },
+  {
+   "ul": [
+    "<b>Sharper masks.</b> SharpMask combines the masks from every layer from the top down. It scored an average recall of 39.3 on the MS COCO segmentation dataset, against 36.6 for DeepMask. In the DeepLab versions, a conditional random field (CRF), a module that pushes nearby pixels of similar colour towards the same class, raised the mean IoU on Pascal 2012 by up to 4% in some cases.",
+    "<b>Several scales at once.</b> PSPNet pools the features at several sizes. It scored a mean IoU of 57.21 on the ImageNet Scene Parsing Challenge, with 44.80 for FCN and 40.79 for SegNet. RefineNet obtained an IOU of 68.6 on the Person-Part dataset, against 64.9 for DeepLab-v2, both using ResNet-101 as the feature extractor.",
+    "<b>Encoder-decoder networks.</b> On the CamVid dataset, SegNet scored a mean IoU of 60.10, against 53.88 for DeepLab-LargeFOV, 49.83 for FCN and 59.77 for Deconvnet. U-Net won an ISBI cell-tracking challenge, with a mean IoU of 0.9203 on the PhC-U373 dataset where the second best was 0.83, and 0.7756 on DIC-HeLa where the second best was 0.46.",
+    "<b>Interactive and efficient methods.</b> Deep Extreme Cut, which asks for four clicks on the object, attained a mean IOU of 80.3 on the PASCAL test set. Deep Layer Cascade reached 82.7 on the VOC12 test set, with DeepLab-V2 and Deep Parsing Network the nearest competitors at 79.7 and 77.5. A superpixel method with several levels of context reached a pixel accuracy of 77.14%, against 74.56% for an earlier superpixel network."
+   ]
+  },
+  {
+   "p": "Table 2 of the survey gives the year of each method and ticks that show how it is supervised, how it learns, what kind of segmentation it does and which modules it uses. The selection below keeps the year, the kind of supervision and the short description. Supervised methods learn from pixel-level labels. Weakly supervised ones use coarser labels such as bounding boxes, and interactive ones take input from a user."
+  },
+  {
+   "table": {
+    "caption": "A selection of the major deep-learning segmentation methods",
+    "source": "Table 2",
+    "head": [
+     "Method",
+     "Year",
+     "Supervision",
+     "Description"
+    ],
+    "rows": [
+     [
+      "FCN",
+      "2015",
+      "Supervised",
+      "Fully convolutional layers"
+     ],
+     [
+      "U-Net",
+      "2015",
+      "Supervised",
+      "Encoder-decoder with multi-scale feature concatenation"
+     ],
+     [
+      "SegNet",
+      "2015",
+      "Supervised",
+      "Encoder-decoder with forwarding pooling indices"
+     ],
+     [
+      "BoxSup",
+      "2015",
+      "Weakly supervised",
+      "Using bounding box for weak supervision"
+     ],
+     [
+      "Semantic Segmentation",
+      "2016",
+      "Supervised",
+      "Adversarial training for image segmentation"
+     ],
+     [
+      "ENet",
+      "2016",
+      "Supervised",
+      "Compact network for real-time segmentation"
+     ],
+     [
+      "Mask R-CNN",
+      "2017",
+      "Supervised",
+      "Using region proposal network for segmentation"
+     ],
+     [
+      "PSPNet",
+      "2017",
+      "Supervised",
+      "Multi-scale pooling for scale-agnostic segmentation"
+     ],
+     [
+      "W-Net",
+      "2017",
+      "Unsupervised",
+      "Unsupervised segmentation using normalized cut loss"
+     ],
+     [
+      "Deep Layer Cascade",
+      "2017",
+      "Supervised",
+      "Multi-level approach to handle pixels of different complexity"
+     ],
+     [
+      "DeepLab",
+      "2018",
+      "Supervised",
+      "Atrous convolution, spatial pooling pyramid, DenseCRF"
+     ],
+     [
+      "Deep Extreme Cut",
+      "2018",
+      "Interactive",
+      "Using extreme points for interactive segmentation"
+     ],
+     [
+      "Two Stream Fusion",
+      "2019",
+      "Interactive",
+      "Using image stream and interaction stream simultaneously"
+     ],
+     [
+      "SegFast",
+      "2019",
+      "Supervised",
+      "Using depthwise separable convolution in SqueezeNet encoder"
+     ]
+    ],
+    "note": "A selection of the rows of Table 2, with the columns for year, supervision and description. The survey marks supervision with ticks; the words here spell out its legend."
+   }
+  },
+  {
+   "p": "Most methods in the full table are supervised. The weakly supervised, unsupervised and interactive ones are in the minority, and the survey says that unsupervised and weakly supervised methods are still far from reaching saturation."
+  },
+  {
+   "p": "Segmentation methods need data, and Table 1 groups the public datasets by application. Natural scenes include PASCAL VOC, Microsoft COCO and ADE20K. The driving group includes CamVid, Cityscapes, Mapillary Vistas, SYNTHIA, KITTI, Berkeley Deep Drive and the India Driving Dataset. There are also aerial, video, saliency and scene-text groups, and a medical group with sets for retinal vessels, brain tumours, liver tumours and stroke lesions."
+  },
+  {
+   "table": {
+    "caption": "Public datasets in the image segmentation domain, by category",
+    "source": "Table 1",
+    "head": [
+     "Category",
+     "Datasets"
+    ],
+    "rows": [
+     [
+      "Natural scenes",
+      "Berkeley Segmentation Dataset; PASCAL VOC; Stanford Background Dataset; Microsoft COCO; MIT Scene Parsing Data (ADE20K); Semantic Boundaries Dataset; MSRC"
+     ],
+     [
+      "Video segmentation",
+      "DAVIS; VSB100; YouTube-Video Object Segmentation"
+     ],
+     [
+      "Autonomous driving",
+      "CamVid; Cityscapes; Mapillary Vistas; SYNTHIA; KITTI Vision Benchmark Suite; Berkeley Deep Drive; India Driving Dataset (IDD)"
+     ],
+     [
+      "Aerial imaging",
+      "Inria Aerial Image Labeling Dataset; Aerial Image Segmentation Dataset; ISPRS Dataset Collection; Google Open Street Map; DeepGlobe"
+     ],
+     [
+      "Medical imaging",
+      "DRIVE; Sunnybrook Cardiac Data; Multiple Sclerosis Database; IMT; SCR; BRATS; LITS; BACH; IDRiD; ISLES"
+     ],
+     [
+      "Saliency detection",
+      "MSRA Salient Object Database; ECSSD; PASCAL-S Dataset; THUR15K; JuddDB; DUT-OMRON Image Dataset"
+     ],
+     [
+      "Scene text segmentation",
+      "KAIST Scene Text Database; COCO-Text; SVT: Street View Text Dataset"
+     ]
+    ],
+    "note": "Dataset names as listed in Table 1 of the survey, with the citation numbers left out and some long names shortened."
+   }
+  },
+  {
+   "h2": "Discussion"
   },
   {
    "callout": "Unsupervised and weakly supervised methods are still far from reaching saturation, and annotating pixels perfectly requires manual labour."
@@ -83,16 +246,16 @@
    "p": "Choosing a method means weighing several things. One is how much labelled data you have. Another is whether you can start from a pre-trained network. A third is whether you need instances or only classes, and how much speed matters. Encoder-decoder networks and fully convolutional ones are the most common choice for semantic segmentation. Instance-level work often couples these with detection, attention or recurrent parts. For speed, depth-wise separable convolutions and kernel factorization can cut the number of parameters to a great extent without reducing performance too much. GANs have risen sharply in popularity, yet only a handful of segmentation approaches use them, so we see room there."
   },
   {
-   "p": "The survey also covers applications: image retrieval, medical imaging, object detection, forensics and surveillance. A table groups public datasets by category, among them natural scenes, autonomous driving, aerial imaging, medical imaging, saliency detection and scene text (Table 1)."
+   "p": "Data is the main constraint. On small datasets it is common to pre-train a network on a larger dataset from a similar domain. Sometimes many images exist but pixel-level labels do not, because making them is a taxing job. Pre-training parts of a network on related problems such as classification or localisation can still help. Encoder-decoder networks have a further benefit. If the down-sampling and up-sampling are designed carefully, the output has the same size as the input, which removes the dependency on input size and makes the system more scalable than simple convolutional approaches like FCN or DeepMask."
   },
   {
-   "h2": "What it does not do"
+   "p": "For the future we expect progress to depend largely on the quality and quantity of data. There is plenty of unstructured data on the Internet, but accurate annotations are scarce, and pixel-level ones are very hard to obtain without manual work. The ideal would be to use the data distribution itself to find segments that stand for concepts rather than content, which is a challenging task. Weakly supervised work is also demanding and promising, since labels for classification or localisation are much easier to collect."
   },
   {
-   "p": "This is a theoretical survey. We explain and compare ideas, but we did not re-run the methods side by side. The numbers quoted above are the ones reported in the original works, and they come from different benchmarks, so they are not a league table. We suggest that an empirical analysis of the discussed methods could follow."
+   "p": "The survey also covers applications: image retrieval, medical imaging, object detection, forensics and surveillance. In medical imaging, for example, the main challenges are the lack of bulk data for difficult diseases and the variety in image quality between imaging devices."
   },
   {
-   "p": "The article is written for new researchers, with minimal mathematics, so that they can see why a design works before trying to improve it."
+   "p": "This is a theoretical survey, with the limits that implies. We explain and compare ideas but did not re-run the methods side by side, and the quoted numbers come from different benchmarks. We suggest that an empirical analysis of the discussed methods could follow. The article is written for new researchers, with minimal mathematics, so that they can see why a design works before trying to improve it."
   }
  ],
  "acknowledgements": "This work was partially supported by project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors also thank the reviewers for their valuable suggestions, which helped to improve the quality of the article.",

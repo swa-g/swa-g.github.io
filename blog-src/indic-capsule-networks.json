@@ -53,16 +53,16 @@
    "p": "We used five datasets from the CMATERdb collection: digits in Bangla, Devanagari and Telugu (10 classes each), Bangla basic characters (50 classes) and Bangla compound characters (199 classes). We split each set into training and test data in a 2:1 ratio."
   },
   {
-   "p": "The capsule network has about 8.2 million parameters (the numbers a network learns) (Table 1). LeNet has around 61 thousand and AlexNet around 57 million, so AlexNet is almost seven times larger than the capsule network. Besides the three networks alone, we also averaged the output probabilities of pairs of them and of all three."
+   "p": "The capsule network has about 8.2 million parameters (the numbers a network learns) (Table I). LeNet has around 61 thousand and AlexNet around 57 million, so AlexNet is almost seven times larger than the capsule network. Besides the three networks alone, we also averaged the output probabilities of pairs of them and of all three."
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "The capsule network beat LeNet on every dataset. The gap was small on the digit sets and large on Bangla basic characters, where LeNet scored 63.0% and the capsule network 90.6%. On Bangla compound characters, the 199-class problem, the scores were 75.4% and 79.3% (Table 2)."
+   "p": "The capsule network beat LeNet on every dataset. The gap was small on the digit sets and large on Bangla basic characters, where LeNet scored 63.0% and the capsule network 90.6%. On Bangla compound characters, the 199-class problem, the scores were 75.4% and 79.3% (Table II)."
   },
   {
-   "p": "AlexNet, the larger network, scored higher than the capsule network on every dataset, for example 94.2% against 79.3% on compound characters. Its mean accuracy over the five sets was 96.29%, against 91.65% for the capsule network (Table 2). The capsule network did learn faster, though. Its test accuracy has the steepest slope in the first few epochs, which are passes over the training data."
+   "p": "AlexNet, the larger network, scored higher than the capsule network on every dataset, for example 94.2% against 79.3% on compound characters. Its mean accuracy over the five sets was 96.29%, against 91.65% for the capsule network (Table II). The capsule network did learn faster, though. Its test accuracy has the steepest slope in the first few epochs, which are passes over the training data."
   },
   {
    "figure": {
@@ -73,19 +73,302 @@
    }
   },
   {
-   "callout": "Averaging AlexNet with the capsule network gave the best mean accuracy, 96.51%, slightly above AlexNet alone at 96.29% (Table 2)."
+   "callout": "Averaging AlexNet with the capsule network gave the best mean accuracy, 96.51%, slightly above AlexNet alone at 96.29% (Table II)."
   },
   {
-   "p": "The combination helped on all five datasets, for instance 96.2% against 95.9% on Bangla basic characters. Averaging LeNet with AlexNet made AlexNet worse on every dataset. We read this as a sign that the capsule network picks up something AlexNet misses, despite having far fewer parameters (Table 2). For Telugu digits the best result, 97.8%, came from combining all three networks. For the other four sets the best result came from AlexNet plus the capsule network. Table 3 lists earlier published results on the same datasets next to our best combinations, for instance 94.40% for compound characters against 93.12% from an earlier paper."
+   "p": "The combination helped on all five datasets, for instance 96.2% against 95.9% on Bangla basic characters. Averaging LeNet with AlexNet made AlexNet worse on every dataset. We read this as a sign that the capsule network picks up something AlexNet misses, despite having far fewer parameters (Table II). For Telugu digits the best result, 97.8%, came from combining all three networks. For the other four sets the best result came from AlexNet plus the capsule network. Table III lists earlier published results on the same datasets next to our best combinations, for instance 94.40% for compound characters against 93.12% from an earlier paper."
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "Capsule networks are slow per step, because the routing has to be repeated for every image. The original design also allows routing only in one layer. And on its own the capsule network did not match AlexNet on any of the five datasets. On compound characters, combining all three networks gave only 75.2%, below AlexNet alone (Table 2)."
+   "p": "Table II holds the full set of numbers: test accuracy for each of the seven models on each of the five datasets, plus the mean over the five datasets with its standard deviation in brackets (a small deviation means the model did about equally well everywhere). The rows with a plus sign are ensembles, where the output probabilities of two or three networks were averaged. We report the model that was best in terms of training accuracy, and the images were resized to the size each network expects: 28×28 pixels for the capsule network, 32×32 for LeNet and 227×227 for AlexNet."
   },
   {
-   "p": "These limits are why we saw this work as a starting point. A faster routing step and routing in more than one layer were the open questions we pointed to."
+   "table": {
+    "caption": "Test accuracy (%) of each network and each ensemble",
+    "source": "Table II",
+    "head": [
+     "Architecture",
+     "Bengali digits",
+     "Devanagari digits",
+     "Telugu digits",
+     "Bengali basic characters",
+     "Bengali compound characters",
+     "Mean (std. dev.)"
+    ],
+    "rows": [
+     [
+      "LeNet",
+      "94.6",
+      "92.1",
+      "95.8",
+      "63.0",
+      "75.4",
+      "84.18 (±14.42)"
+     ],
+     [
+      "AlexNet",
+      "97.65",
+      "96.3",
+      "97.4",
+      "95.9",
+      "94.2",
+      "96.29 (±1.39)"
+     ],
+     [
+      "CapsNet",
+      "97.35",
+      "94.8",
+      "96.2",
+      "90.6",
+      "79.3",
+      "91.65 (±7.36)"
+     ],
+     [
+      "LeNet+AlexNet",
+      "97.6",
+      "96.2",
+      "97.3",
+      "95.8",
+      "92.6",
+      "95.9 (±1.99)"
+     ],
+     [
+      "LeNet+CapsNet",
+      "95.45",
+      "94",
+      "96.2",
+      "88.4",
+      "79.9",
+      "90.79 (±6.81)"
+     ],
+     [
+      "AlexNet+CapsNet",
+      "97.75",
+      "96.6",
+      "97.6",
+      "96.2",
+      "94.4",
+      "<b>96.51 (±1.35)</b>"
+     ],
+     [
+      "All combined",
+      "97.5",
+      "96.5",
+      "97.8",
+      "96.1",
+      "75.2",
+      "92.62 (±9.76)"
+     ]
+    ],
+    "note": "Higher accuracy is better. CapsNet is the capsule network."
+   }
+  },
+  {
+   "p": "LeNet has the largest spread across datasets, and AlexNet plus the capsule network has the smallest spread and the highest mean. The paper says LeNet fails poorly on the two character datasets, while the capsule network held up much better when there were many classes. Adding the capsule network to LeNet also lifted LeNet's own scores on every dataset, for instance from 63.0% to 88.4% on Bangla basic characters (Table II)."
+  },
+  {
+   "p": "Table III puts our best combination for each dataset next to earlier results that other groups published for the same datasets. I list every comparison the paper gives. In each of the five cases, our figure is the higher number in the table."
+  },
+  {
+   "table": {
+    "caption": "Our best combination compared with earlier published results",
+    "source": "Table III",
+    "head": [
+     "Dataset",
+     "Our approach",
+     "Accuracy (%)",
+     "Other approach",
+     "Accuracy (%)"
+    ],
+    "rows": [
+     [
+      "Bangla digits",
+      "AlexNet + CapsNet",
+      "97.75",
+      "Basu et al. [6]",
+      "96.67"
+     ],
+     [
+      "Bangla digits",
+      "AlexNet + CapsNet",
+      "97.75",
+      "Roy et al. [7]",
+      "95.08"
+     ],
+     [
+      "Bangla digits",
+      "AlexNet + CapsNet",
+      "97.75",
+      "Roy et al. [8]",
+      "97.45"
+     ],
+     [
+      "Devanagari digits",
+      "AlexNet + CapsNet",
+      "96.60",
+      "Das et al. [9]",
+      "90.44"
+     ],
+     [
+      "Devanagari digits",
+      "AlexNet + CapsNet",
+      "96.60",
+      "Roy et al. [8]",
+      "96.50"
+     ],
+     [
+      "Telugu digits",
+      "AlexNet + CapsNet + LeNet",
+      "97.80",
+      "Sarkhel et al. [10]",
+      "97.50"
+     ],
+     [
+      "Telugu digits",
+      "AlexNet + CapsNet + LeNet",
+      "97.80",
+      "Roy et al. [8]",
+      "87.20"
+     ],
+     [
+      "Bangla basic characters",
+      "AlexNet + CapsNet",
+      "96.20",
+      "Sarkhel et al. [10]",
+      "86.53"
+     ],
+     [
+      "Bangla basic characters",
+      "AlexNet + CapsNet",
+      "96.20",
+      "Bhattacharya et al. [11]",
+      "92.15"
+     ],
+     [
+      "Bangla compound characters",
+      "AlexNet + CapsNet",
+      "94.40",
+      "Roy et al. [12]",
+      "90.33"
+     ],
+     [
+      "Bangla compound characters",
+      "AlexNet + CapsNet",
+      "94.40",
+      "Pal et al. [13]",
+      "93.12"
+     ],
+     [
+      "Bangla compound characters",
+      "AlexNet + CapsNet",
+      "94.40",
+      "Sarkhel et al. [14]",
+      "86.64"
+     ]
+    ],
+    "note": "Bracketed numbers are the paper's reference numbers. Higher accuracy is better."
+   }
+  },
+  {
+   "p": "The size of the capsule network is listed layer by layer in Table I. It has a first convolution layer, the primary capsule layer, the digit capsule layer that holds one capsule per class, and a three-layer decoder that tries to rebuild the input image. The decoder is there to stop overfitting, which means memorising the training set. Its error is scaled down by a factor of 0.0005 so that it does not dominate the main loss. Most of the 8,227,088 parameters sit in the primary capsule layer, and only around 11 thousand are set at run time by dynamic routing."
+  },
+  {
+   "table": {
+    "caption": "Layers of the capsule network for a single-channel input and ten classes",
+    "source": "Table I",
+    "head": [
+     "Layer",
+     "Kernel size",
+     "Stride",
+     "Input channels",
+     "Output channels",
+     "Weights + biases",
+     "Routing weights"
+    ],
+    "rows": [
+     [
+      "Convolution",
+      "9",
+      "1",
+      "1",
+      "256",
+      "20,992",
+      "NA"
+     ],
+     [
+      "Primary Caps",
+      "9",
+      "2",
+      "256",
+      "32",
+      "5,308,672",
+      "0"
+     ],
+     [
+      "Digit Caps",
+      "NA",
+      "NA",
+      "1,152",
+      "10",
+      "1,474,560",
+      "11,520"
+     ],
+     [
+      "Decoder FC",
+      "NA",
+      "NA",
+      "160",
+      "512",
+      "82,432",
+      "NA"
+     ],
+     [
+      "Decoder FC",
+      "NA",
+      "NA",
+      "512",
+      "1,024",
+      "525,312",
+      "NA"
+     ],
+     [
+      "Decoder FC",
+      "NA",
+      "NA",
+      "1,024",
+      "784",
+      "803,600",
+      "NA"
+     ],
+     [
+      "Total number of parameters",
+      "",
+      "",
+      "",
+      "",
+      "8,227,088",
+      ""
+     ]
+    ],
+    "note": "A selection of the columns of Table I (padding and capsule dimensions are left out)."
+   }
+  },
+  {
+   "p": "The price of routing is time. For every image the routing weights are tuned again, as many times as there are routing iterations, and each pass computes one coupling coefficient for every pair of a primary capsule and a class. That makes each training step slow. Even so, the capsule network learned faster than LeNet and AlexNet when we plot accuracy against epochs (Fig. 3). All models were trained with the Adam optimiser at an initial learning rate of 0.001, on an Nvidia Quadro P5000 graphics card."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that capsule networks are much better than LeNet on these handwriting datasets and that they cope well with a large number of classes. They also learn faster. We take the results to show that the capsule network picks up information that even AlexNet, with about seven times more parameters, does not capture. That is why adding it to AlexNet helped on all five datasets, while adding LeNet to AlexNet always hurt. The best score came from AlexNet plus the capsule network on four datasets, and from all three networks on Telugu digits."
+  },
+  {
+   "p": "The limits show in the numbers and in our own text. On its own, the capsule network never reached AlexNet's accuracy, and the gap is widest on the 199-class compound characters, 79.3% against 94.2% (Table II). Combining all three networks did not help there either, at 75.2%. The routing is also slow, because it must be repeated for each sample, and the design allows routing in one layer only."
+  },
+  {
+   "p": "We see a use for capsule networks in two places: learning with far fewer parameters, and as a booster for larger networks. The slow routing and the single routing layer open up many avenues for research, and that is why we saw this work as a starting point."
   }
  ],
  "acknowledgements": "This work was partially supported by the project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -96,8 +379,8 @@
   }
  ],
  "tables_used": [
-  "Table 1: layer-by-layer specification and parameter count of the capsule network",
-  "Table 2: test accuracy of each network and each combination on the five datasets",
-  "Table 3: our best results next to earlier published results on the same datasets"
+  "Table I: layer-by-layer specification and parameter count of the capsule network",
+  "Table II: test accuracy of each network and each combination on the five datasets",
+  "Table III: our best results next to earlier published results on the same datasets"
  ]
 }

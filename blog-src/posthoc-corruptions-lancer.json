@@ -55,5 +55,6 @@
    "url": "../LANCER/papers/posthoc-corruptions-is2026.pdf"
   }
  ],
- "tables_used": []
+ "tables_used": [],
+ "bibtex": "@inproceedings{ghosh2026posthoc,\n  author    = {Ghosh, Swarnendu and {\u000b S}ter, Branko},\n  title     = {Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving},\n  booktitle = {29th International Multiconference Information Society (IS 2026)},\n  volume    = {1},\n  pages     = {60--63},\n  address   = {Ljubljana, Slovenia},\n  year      = {2026},\n  doi       = {10.70314/is.2026.skui.79}\n}"
 }

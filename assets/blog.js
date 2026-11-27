@@ -50,6 +50,31 @@
   document.addEventListener("click", function (e) { if (!e.target.closest || !e.target.closest(".nav-group")) closeGroups(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeGroups(); });
 
+  /* copy BibTeX */
+  $$("[data-copy-target]").forEach(function (btn) {
+    var label = btn.textContent;
+    btn.addEventListener("click", function () {
+      var src = document.getElementById(btn.getAttribute("data-copy-target"));
+      if (!src) return;
+      var text = src.textContent;
+      function done(ok) {
+        btn.textContent = ok ? "Copied BibTeX" : "Press Ctrl+C to copy";
+        btn.classList.toggle("done", ok);
+        if (!ok) { var r = document.createRange(); r.selectNodeContents(src); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+        setTimeout(function () { btn.textContent = label; btn.classList.remove("done"); }, 2200);
+      }
+      function legacy() {
+        var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, text.length); var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta); return ok;
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(legacy()); });
+      } else { done(legacy()); }
+    });
+  });
+
   /* tag filter (index only) */
   var chips = $$(".tag-chip");
   if (chips.length) {

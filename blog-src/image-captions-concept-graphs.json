@@ -49,6 +49,9 @@
    "p": "To compare two graphs, we again look for the largest shared part, the maximum common subgraph, with a faster approximate version. We score pairs of nodes by how similar their words are, using WordNet, a dictionary that arranges words in a tree of concepts. We add credit for shared attributes and for similar neighbours. The best non-overlapping pairs are kept, and the average of their scores is the similarity of the two captions."
   },
   {
+   "p": "The score for a pair of nodes combines three things: how close the two words are in WordNet, how many attributes the nodes share (relative to the larger number of attributes on either node), and how similar their neighbours are. The neighbours count only when the edges between them are the same in both graphs."
+  },
+  {
    "figure": {
     "src": "img/image-captions-concept-graphs/flowchart.png",
     "alt": "Flow chart: image caption, then Boxer and C&C tools, then discourse representation structure, then graphical representation of the concept, then approximated maximum common subgraph, then ranked image retrieval.",
@@ -80,10 +83,176 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "Negation is the weakness the paper names. Our aim was to show that this representation makes sense to people, and we say that further studies are needed before it can compete with other contemporary techniques. We also propose adding image features and trying dependency-based graphs for speed."
+   "p": "The judges were told to compare each returned picture with the query picture on the objects present and on the overall concept. Each judge scored 100 pictures, five for each of the 20 sets. The scale was:"
+  },
+  {
+   "ul": [
+    "4: both pictures have almost the same objects and show a very similar concept",
+    "3: the pictures share common objects, and may share some concepts as well",
+    "2: the concepts are quite different, though some objects are related in some way",
+    "1: almost no similarity in concept, and the objects are not very related",
+    "0: absolutely no similarity in any respect"
+   ]
+  },
+  {
+   "p": "Table I gives the median score of the judges for every picture. The first table below is its AVERAGE row, which averages over the 20 sets, with the standard deviations."
+  },
+  {
+   "table": {
+    "caption": "Average of the median scores and standard deviation for each of the five returned pictures, over the 20 sets",
+    "source": "Table I",
+    "head": [
+     "Position in the ranking",
+     "Average of median scores",
+     "Standard deviation"
+    ],
+    "rows": [
+     [
+      "1",
+      "2.95",
+      "0.707"
+     ],
+     [
+      "2",
+      "2.55",
+      "0.760"
+     ],
+     [
+      "3",
+      "2.3",
+      "0.779"
+     ],
+     [
+      "4",
+      "1.95",
+      "0.784"
+     ],
+     [
+      "5",
+      "1.55",
+      "0.710"
+     ],
+     [
+      "All five (set average)",
+      "2.26",
+      "0.748"
+     ]
+    ],
+    "note": "The AVERAGE row of Table I."
+   }
+  },
+  {
+   "p": "Going by what the points on the scale mean, an average of 2.26 says that most returned pictures shared some kinds of objects or relations with the query. The picture the system ranks first, with 2.95 ± 0.707, showed a great deal of conceptual similarity."
+  },
+  {
+   "p": "Table I also gives the numbers for each of the 20 sets, and the spread between sets is wide. The set averages run from 1.4 (set 16) to 3.8 (set 3) (Table I). The ranking is not always in order: in set 4 the first and fifth pictures got a median of 0 and the third and fourth got 4 (Table I). The second table below shows the four sets with the highest averages and the three with the lowest."
+  },
+  {
+   "table": {
+    "caption": "Median score of the judges for each of the five returned pictures, in selected query sets",
+    "source": "Table I",
+    "head": [
+     "Set",
+     "Image 1",
+     "Image 2",
+     "Image 3",
+     "Image 4",
+     "Image 5",
+     "Set average"
+    ],
+    "rows": [
+     [
+      "Set 3",
+      "4",
+      "3",
+      "4",
+      "4",
+      "4",
+      "3.8"
+     ],
+     [
+      "Set 20",
+      "4",
+      "3",
+      "3",
+      "3",
+      "4",
+      "3.4"
+     ],
+     [
+      "Set 5",
+      "4",
+      "4",
+      "4",
+      "2",
+      "2",
+      "3.2"
+     ],
+     [
+      "Set 13",
+      "4",
+      "4",
+      "4",
+      "3",
+      "1",
+      "3.2"
+     ],
+     [
+      "Set 16",
+      "4",
+      "1",
+      "0",
+      "1",
+      "1",
+      "1.4"
+     ],
+     [
+      "Set 6",
+      "2",
+      "0",
+      "2",
+      "2",
+      "2",
+      "1.6"
+     ],
+     [
+      "Set 18",
+      "4",
+      "3",
+      "0",
+      "0",
+      "1",
+      "1.6"
+     ]
+    ],
+    "note": "A selection of 7 of the 20 sets in Table I, the ones with the highest and the lowest set averages."
+   }
+  },
+  {
+   "p": "Figure 5 of the paper looks at the scores from the judges' side. For each position in the ranking it shows one bar per judge, with the bar giving that judge's median over the 20 sets, and a thick line for the average trend. The pictures come back in order of conceptual similarity, and the judges gave higher scores to the first pictures than to the later ones, which we read as the similarity analysis agreeing with human perception of similarity."
+  },
+  {
+   "figure": {
+    "src": "img/image-captions-concept-graphs/judge-scores.png",
+    "alt": "Bar chart with five groups of bars for the five returned pictures. Each group has one coloured bar per judge. A thick black line slopes downward from the first group to the fifth.",
+    "caption": "Median score from each judge for each of the five returned pictures, with the thick black line showing the average trend. The bars are highest for the first picture and lowest for the fifth.",
+    "source": "Fig. 5"
+   }
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "Our aim was modest. We wanted to show that a graph of a caption makes sense to people, and the ratings point that way. The first picture returned got an average median of 2.95 out of 4, and the scores fell down the ranking in step with the order the system returned the pictures in. We conclude that the approach works fairly well for captions of complicated images and picks up both the objects and their context."
+  },
+  {
+   "p": "The bats example shows what that costs. The system prefers concept over content, so plastic bags hanging in trees come back for bats hanging in trees, and the paper says that negation needs better handling. We also state that further studies are needed before the model can compete with other contemporary techniques."
+  },
+  {
+   "p": "For future work we plan to add features taken from the images themselves, to try homomorphism instead of subgraph isomorphism, and to try dependency-based graph models for faster results. One proposed way to speed the system up is a lookup table that lists, for each object, the training captions that contain it. A test caption would then be compared only with captions that share at least one of its objects."
   },
   {
    "p": "Retrieval was only the test. The main goal was a graph model of what a caption means."

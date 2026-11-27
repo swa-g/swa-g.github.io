@@ -65,10 +65,262 @@
    "p": "With three-sentence summaries, every combination scored between 54.00% and 56.00%, which is above every individual result (Table 3). The average was 54.5% for node-based and 55.5% for edge-based measures. With two-sentence summaries the combination also scored higher than the graph measure alone (Table 3). We read this as a sign that the graphs hold some information the word counts do not."
   },
   {
-   "h2": "What it does not show"
+   "h2": "Results in more detail"
   },
   {
-   "p": "We tested one subset of Reuters-21578 with one kind of classifier, and the graph method alone was about as good as bag-of-words, not clearly better. The effect of the summarising step is still open. We plan to try more sentences or other summarisers, and to try support vector machines with a graph kernel, a way of comparing graphs inside such a classifier."
+   "p": "Table 1 lists the accuracy of each single method, before any mixing. Each row is one of the five distance formulas, counted on nodes (vertex) or on edges, and the last row is bag-of-words. The columns split the results by summary length and by k, the number of neighbours that vote."
+  },
+  {
+   "table": {
+    "caption": "Test accuracy (%) of each graph distance and of bag-of-words, for two- and three-sentence summaries and k = 3, 5 and 7",
+    "source": "Table 1",
+    "head": [
+     "Distance",
+     "Counts",
+     "2 sent., k = 3",
+     "2 sent., k = 5",
+     "2 sent., k = 7",
+     "3 sent., k = 3",
+     "3 sent., k = 5",
+     "3 sent., k = 7"
+    ],
+    "rows": [
+     [
+      "dmcs",
+      "vertex",
+      "37.50",
+      "37.50",
+      "37.50",
+      "45.50",
+      "45.50",
+      "48.00"
+     ],
+     [
+      "dmcs",
+      "edge",
+      "45.00",
+      "45.50",
+      "49.50",
+      "47.50",
+      "49.50",
+      "50.00"
+     ],
+     [
+      "dwgu",
+      "vertex",
+      "40.00",
+      "40.50",
+      "41.50",
+      "48.00",
+      "48.50",
+      "48.50"
+     ],
+     [
+      "dwgu",
+      "edge",
+      "45.00",
+      "51.00",
+      "50.50",
+      "47.50",
+      "50.50",
+      "50.50"
+     ],
+     [
+      "dugu",
+      "vertex",
+      "37.00",
+      "38.50",
+      "40.00",
+      "45.00",
+      "46.00",
+      "45.50"
+     ],
+     [
+      "dugu",
+      "edge",
+      "44.00",
+      "48.00",
+      "50.00",
+      "48.00",
+      "49.50",
+      "49.50"
+     ],
+     [
+      "dMMCS",
+      "vertex",
+      "35.50",
+      "39.50",
+      "39.50",
+      "46.00",
+      "46.00",
+      "45.00"
+     ],
+     [
+      "dMMCS",
+      "edge",
+      "42.50",
+      "46.50",
+      "49.50",
+      "49.00",
+      "51.00",
+      "49.50"
+     ],
+     [
+      "dMMCSN",
+      "vertex",
+      "39.50",
+      "42.00",
+      "42.00",
+      "47.50",
+      "48.00",
+      "49.00"
+     ],
+     [
+      "dMMCSN",
+      "edge",
+      "45.00",
+      "49.00",
+      "49.50",
+      "47.00",
+      "51.00",
+      "51.50"
+     ],
+     [
+      "bag-of-words",
+      "",
+      "50.50",
+      "50.00",
+      "48.50",
+      "49.50",
+      "49.50",
+      "49.00"
+     ]
+    ],
+    "note": "All rows of Table 1 of the paper. Higher is better."
+   }
+  },
+  {
+   "p": "Bag-of-words scored 50.50%, 50.00% and 48.50% with two-sentence summaries and 49.50%, 49.50% and 49.00% with three-sentence ones. The best graph value, 51.50%, comes from the edge-based dMMCSN at k = 7 with three sentences. The lowest value in the table, 35.50%, is the node-based dMMCS with two sentences at k = 3 (Table 1)."
+  },
+  {
+   "p": "Table 3 shows what mixing does. The graph columns hold the accuracy of the graph measure alone, the graph + BOW columns the accuracy after the confidences of the two classifiers are averaged, and the last row repeats bag-of-words alone."
+  },
+  {
+   "table": {
+    "caption": "Test accuracy (%) when the graph and bag-of-words confidences are combined, for two- and three-sentence summaries",
+    "source": "Table 3",
+    "head": [
+     "Distance",
+     "Counts",
+     "2 sent.: graph",
+     "2 sent.: graph + BOW",
+     "3 sent.: graph",
+     "3 sent.: graph + BOW"
+    ],
+    "rows": [
+     [
+      "dmcs",
+      "vertex",
+      "37.50",
+      "48.00",
+      "48.00",
+      "54.00"
+     ],
+     [
+      "dmcs",
+      "edge",
+      "49.50",
+      "52.50",
+      "50.00",
+      "55.00"
+     ],
+     [
+      "dwgu",
+      "vertex",
+      "41.50",
+      "51.00",
+      "48.50",
+      "55.00"
+     ],
+     [
+      "dwgu",
+      "edge",
+      "51.00",
+      "52.50",
+      "50.50",
+      "55.50"
+     ],
+     [
+      "dugu",
+      "vertex",
+      "40.00",
+      "49.00",
+      "46.00",
+      "54.50"
+     ],
+     [
+      "dugu",
+      "edge",
+      "50.00",
+      "52.50",
+      "49.50",
+      "56.00"
+     ],
+     [
+      "dMMCS",
+      "vertex",
+      "39.50",
+      "49.50",
+      "46.00",
+      "54.50"
+     ],
+     [
+      "dMMCS",
+      "edge",
+      "49.50",
+      "51.50",
+      "51.00",
+      "56.00"
+     ],
+     [
+      "dMMCSN",
+      "vertex",
+      "42.00",
+      "51.00",
+      "49.00",
+      "54.50"
+     ],
+     [
+      "dMMCSN",
+      "edge",
+      "49.50",
+      "52.00",
+      "51.50",
+      "55.00"
+     ],
+     [
+      "bag-of-words alone",
+      "",
+      "50.50",
+      "",
+      "49.50",
+      ""
+     ]
+    ],
+    "note": "All rows of Table 3 of the paper except its column of increases. Higher is better."
+   }
+  },
+  {
+   "p": "With three-sentence summaries the combined accuracy runs from 54.00% (dmcs, vertex) to 56.00% (dugu and dMMCS, edge), and every combined value is above the best individual result of 51.50% (Table 3). With two-sentence summaries the combined values run from 48.00% to 52.50%, and in every row the combined value is higher than the graph value alone (Table 3)."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "The paper's reading of Table 3 is that the graphs hold some information that word counts do not. Taken alone, the graph approach does about as well as bag-of-words and in some cases better. Mixed with word counts, it did better than either part with three-sentence summaries: the lowest combined value, 54.00%, is above every individual approach. We take this as a sign that semantic information is a useful addition to word counts, which is the paper's own conclusion, rather than a replacement for them."
+  },
+  {
+   "p": "The results come with limits. We tested one subset of Reuters-21578, with 20 topics and 10 test documents per topic, and used one kind of classifier, k-nearest neighbours. We also had to shrink each document to two or three sentences, chosen by word frequency in the topic, because the exact common subgraph is NP-hard to compute. The effect of that summarising step is still open. We plan to try more sentences or other summarisation algorithms, and to test other learners, such as support vector machines with a graph kernel, a way of comparing graphs inside such a classifier."
   },
   {
    "p": "The graphs did not replace word counts but added to them."

@@ -91,13 +91,269 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "Not all scripts are equal. Bangla was the hardest, with an F-measure of 0.888, and Telugu the easiest at 0.991 (Table 5). All results are for single words from one dataset of 11,000 images. We also trained each network separately. Training them together against a common loss would probably have given better features, as the paper says, but we wanted networks that can be trained one by one on small hardware."
+   "p": "Table 3 of the paper lists every network. A row name has three parts: RAW for the plain image or HWT for the wavelet image, then the image size in pixels, then the depth (2 or 3). A row with the depth left out, such as HWT,64, merges the two depths. A row such as HWT,64_128 merges two sizes, and a bare RAW or HWT merges all three. The last three rows, MAX, PROB and FEAT, are the three ways of combining all twelve networks. Below are 14 of the 29 rows."
   },
   {
-   "p": "The point is about hardware as much as accuracy. The paper calls the 90-dollar card a household-level GPU, and a team of small networks was trained on it."
+   "table": {
+    "caption": "Accuracy, precision, recall and F-measure for some single networks, merged networks and the three ensembles",
+    "source": "Table 3",
+    "head": [
+     "Architecture",
+     "Accuracy",
+     "Precision",
+     "Recall",
+     "F-Measure"
+    ],
+    "rows": [
+     [
+      "CNN RAW,128,2",
+      "87.3182%",
+      "87.5172%",
+      "87.4528%",
+      "87.0640%"
+     ],
+     [
+      "CNN RAW,128,3",
+      "90.0000%",
+      "89.8828%",
+      "89.9499%",
+      "89.8364%"
+     ],
+     [
+      "CNN HWT,64,2",
+      "91.5000%",
+      "91.3082%",
+      "91.3473%",
+      "91.2758%"
+     ],
+     [
+      "CNN HWT,64,3",
+      "92.1818%",
+      "92.1121%",
+      "92.0389%",
+      "91.9549%"
+     ],
+     [
+      "CNN HWT,128,3",
+      "75.5455%",
+      "79.9510%",
+      "74.5490%",
+      "74.9420%"
+     ],
+     [
+      "CNN RAW,128",
+      "91.4091%",
+      "91.3026%",
+      "91.4039%",
+      "91.2335%"
+     ],
+     [
+      "CNN HWT,64",
+      "94.2273%",
+      "94.0972%",
+      "94.1016%",
+      "94.0543%"
+     ],
+     [
+      "CNN HWT,128",
+      "86.7273%",
+      "87.3288%",
+      "86.2867%",
+      "86.4852%"
+     ],
+     [
+      "CNN HWT,64_128",
+      "89.0900%",
+      "89.4100%",
+      "88.6900%",
+      "88.8800%"
+     ],
+     [
+      "CNN RAW",
+      "93.6818%",
+      "93.6086%",
+      "93.6015%",
+      "93.5799%"
+     ],
+     [
+      "CNN HWT",
+      "92.1818%",
+      "92.1451%",
+      "92.0924%",
+      "92.0585%"
+     ],
+     [
+      "CNN MAX",
+      "95.0000%",
+      "94.9456%",
+      "94.8896%",
+      "94.8893%"
+     ],
+     [
+      "CNN PROB",
+      "95.4545%",
+      "95.3646%",
+      "95.3199%",
+      "95.3265%"
+     ],
+     [
+      "CNN FEAT",
+      "94.6818%",
+      "94.7328%",
+      "94.6288%",
+      "94.6127%"
+     ]
+    ],
+    "note": "A selection of the rows of Table 3, as printed."
+   }
+  },
+  {
+   "p": "Merging the two depths helps at one size. For wavelet images at 64 pixels the two networks scored 91.5000% and 92.1818%, and the merged row scores 94.2273% (Table 3). For raw images at 128 pixels the pair scored 87.3182% and 90.0000%, and the merge scored 91.4091% (Table 3). The paper reads this as the networks complementing each other. A correlation analysis points the same way. Individual networks correlate with the three combined models at values between 0.7315 and 0.9350, while the combined models correlate with each other at 0.9440 or higher (Table 4). We take this to mean that the individual networks learnt different things, so there was room to gain by merging them."
+  },
+  {
+   "p": "Depth and image size interact. Deeper networks handled larger raw images better. For wavelet images, extra depth hurt on larger inputs. Raw images did well at higher resolution. One way to picture the size effect is the area each filter sees. In the two-layer network the first filter covers 5×5 pixels of the original 128×128 image at full size, but 20×20 pixels when the image is shrunk to 32×32 (Table 1)."
+  },
+  {
+   "p": "Table 5 breaks the probability-averaging ensemble down by script. Telugu has recall 1 and an F-measure of 0.9909502. Gujarati and Kannada follow at 0.9858491. Bangla is lowest at 0.8882521, with Devanagari (0.9252874) and Malayalam (0.9272727) next."
+  },
+  {
+   "table": {
+    "caption": "Precision, recall and F-measure for each script, probability-averaging ensemble",
+    "source": "Table 5",
+    "head": [
+     "Language",
+     "Precision",
+     "Recall",
+     "F-Measure"
+    ],
+    "rows": [
+     [
+      "Bangla",
+      "0.8857143",
+      "0.8908046",
+      "0.8882521"
+     ],
+     [
+      "Devanagari",
+      "0.9415205",
+      "0.90960452",
+      "0.9252874"
+     ],
+     [
+      "Gujarati",
+      "0.9858491",
+      "0.98584906",
+      "0.9858491"
+     ],
+     [
+      "Gurumukhi",
+      "0.947619",
+      "0.9255814",
+      "0.9364706"
+     ],
+     [
+      "Kannada",
+      "0.9766355",
+      "0.9952381",
+      "0.9858491"
+     ],
+     [
+      "Malayalam",
+      "0.9230769",
+      "0.93150685",
+      "0.9272727"
+     ],
+     [
+      "Oriya",
+      "0.9253731",
+      "0.97894737",
+      "0.9514066"
+     ],
+     [
+      "Roman",
+      "0.9842105",
+      "0.94923858",
+      "0.9664083"
+     ],
+     [
+      "Tamil",
+      "0.9540816",
+      "0.93969849",
+      "0.9468354"
+     ],
+     [
+      "Telugu",
+      "0.9820628",
+      "1",
+      "0.9909502"
+     ],
+     [
+      "Urdu",
+      "0.9839572",
+      "0.9787234",
+      "0.9813333"
+     ]
+    ],
+    "note": "All rows of Table 5, as printed."
+   }
+  },
+  {
+   "p": "We compared the ensembles with the baseline reported for this dataset by its creators, which uses hand-crafted features, and with two standard networks, LeNet and AlexNet. For a fair comparison the baseline was applied to the cropped word images, and we resized our images to the input size that LeNet and AlexNet expect. Our individual networks are closer to LeNet in size. AlexNet is considerably larger, yet it does not beat our ensemble (Table 6). Training used the Adam optimiser with a learning rate of 1×10<sup>−4</sup>, batches of 50 images and dropout of 0.5 on the 1,024-unit layer."
+  },
+  {
+   "table": {
+    "caption": "Comparison with the baseline method and with LeNet and AlexNet",
+    "source": "Table 6",
+    "head": [
+     "Approach",
+     "Accuracy"
+    ],
+    "rows": [
+     [
+      "Obaidullah et. al 2017",
+      "91.00%"
+     ],
+     [
+      "LeNet 1998",
+      "82.00%"
+     ],
+     [
+      "AlexNet 2012",
+      "92.14%"
+     ],
+     [
+      "Our method (CNNmax)",
+      "95.00%"
+     ],
+     [
+      "Our method (CNNprob)",
+      "95.45%"
+     ],
+     [
+      "Our method (CNNfeat)",
+      "94.68%"
+     ]
+    ],
+    "note": "All rows of Table 6, as printed. Reference numbers left out."
+   }
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "Our reading is that small networks can be made to work as a committee. Merging improved accuracy almost every time, and the correlation analysis suggests why: each small network learnt something different, so each had something to add. Wavelets helped because a shallow network has little room to learn a background-cleaning filter on its own, so we forced that step. The cost is lost information and sparse images, which fits the drop we saw at large sizes."
+  },
+  {
+   "p": "Probability averaging beat feature concatenation because we trained the twelve networks one at a time. Their features hold a lot of redundant information, so the joined list is not as good as it could be. Training all networks together against one common loss would, we believe, give much better features, and the paper calls it a valid way to go. We left it out on purpose. We wanted networks that can be trained individually on cheap hardware."
+  },
+  {
+   "p": "The limits are plain. Bangla stayed the hardest script. Everything was tested on single words of one dataset, PHDIndic_11, with 11,000 images."
+  },
+  {
+   "p": "The point is about hardware as much as accuracy. The paper prices the graphics card at around 90 US dollars and calls it household level, and a team of small networks was trained on it."
   }
  ],
  "acknowledgements": "This work was partially supported by the project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors also thank the reviewers for their valuable suggestions, which helped to improve the quality of the manuscript.",
@@ -108,7 +364,10 @@
   }
  ],
  "tables_used": [
-  "Table 3: accuracy of each single network, each hierarchical combination and the three ensembles",
-  "Table 5: precision, recall and F-measure for each script"
+  "Table 1: area of the original image seen by each filter, for each input size",
+  "Table 3: accuracy, precision, recall and F-measure of each single network, each hierarchical combination and the three ensembles",
+  "Table 4: correlation between the single networks and the three combined models",
+  "Table 5: precision, recall and F-measure for each script",
+  "Table 6: accuracy of our method against the baseline, LeNet and AlexNet"
  ]
 }

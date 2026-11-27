@@ -72,16 +72,209 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "The smallest versions lose too much: GSD-Net-4 performs the worst in terms of segmented output. We saw only a marginal difference between the 16 and 32 versions, which means the network could be made even more compact."
+   "p": "The data sets are the electrical diagrams (18 classes: one background class, one for the template and 16 different elements) and the floor plans (23 classes: background, template and 21 elements). We turned the annotations into pixel-level masks and trained on them. The experiments ran on an Nvidia GTX 1080 GPU with an Intel i7 5820K processor."
   },
   {
-   "p": "We limited our experiments to standard graphical symbols from synthetic documents that are visually clear and easy to check against the gold standard. Real documents, where symbols touch and overlap other elements, are the setting that motivated the work. For further compression, the paper points to pruning and kernel factorisation."
+   "p": "The first table puts all four sizes of our network next to SegNet and U-Net. Each number is the pixel accuracy, the ratio of correctly labelled pixels to all pixels, so 1.000 would be a perfect score."
   },
   {
-   "p": "We also see the network being extended to other graphical elements that carry meaning in a domain, such as logos, musical notes and line segments."
+   "table": {
+    "caption": "Pixel accuracy of the four GSD-Net sizes, SegNet and U-Net on the two SESYD data sets",
+    "source": "Table I",
+    "head": [
+     "Data set",
+     "GSD-Net-4",
+     "GSD-Net-8",
+     "GSD-Net-16",
+     "GSD-Net-32",
+     "SegNet",
+     "U-Net"
+    ],
+    "rows": [
+     [
+      "SESYD (Circuits)",
+      "0.954",
+      "0.974",
+      "0.994",
+      "0.999",
+      "0.999",
+      "0.997"
+     ],
+     [
+      "SESYD (Floor Plan)",
+      "0.914",
+      "0.941",
+      "0.978",
+      "0.997",
+      "0.998",
+      "0.995"
+     ]
+    ],
+    "note": "Higher is better."
+   }
+  },
+  {
+   "p": "The score goes up with every step in the channel count C, from 4 to 32. On circuits the step from 16 to 32 moves the score from 0.994 to 0.999, and on floor plans from 0.978 to 0.997 (Table I). We read the gap between the 16 and 32 versions as marginal, and the 32 version as the one that performs almost as well as SegNet and beats U-Net."
+  },
+  {
+   "p": "The second table repeats the comparison with noise added to the images. Only GSD-Net-32, SegNet and U-Net were tested. We made five noisy versions of each data set, adding Gaussian noise of strength σ (the larger σ, the noisier the image). A σ of 0 means no noise."
+  },
+  {
+   "table": {
+    "caption": "Pixel accuracy of GSD-Net-32, SegNet and U-Net as Gaussian noise of strength σ is added",
+    "source": "Table II",
+    "head": [
+     "Data set",
+     "Model",
+     "σ = 0",
+     "σ = 0.01",
+     "σ = 0.1",
+     "σ = 0.25",
+     "σ = 0.5",
+     "σ = 0.75"
+    ],
+    "rows": [
+     [
+      "SESYD (Circuits)",
+      "GSD-Net-32",
+      "0.999",
+      "0.999",
+      "0.999",
+      "0.998",
+      "0.996",
+      "0.991"
+     ],
+     [
+      "SESYD (Circuits)",
+      "SegNet",
+      "0.999",
+      "0.999",
+      "0.999",
+      "0.998",
+      "0.997",
+      "0.992"
+     ],
+     [
+      "SESYD (Circuits)",
+      "U-Net",
+      "0.997",
+      "0.996",
+      "0.996",
+      "0.994",
+      "0.991",
+      "0.988"
+     ],
+     [
+      "SESYD (Floor plan)",
+      "GSD-Net-32",
+      "0.997",
+      "0.996",
+      "0.993",
+      "0.989",
+      "0.987",
+      "0.974"
+     ],
+     [
+      "SESYD (Floor plan)",
+      "SegNet",
+      "0.998",
+      "0.998",
+      "0.997",
+      "0.996",
+      "0.989",
+      "0.982"
+     ],
+     [
+      "SESYD (Floor plan)",
+      "U-Net",
+      "0.995",
+      "0.993",
+      "0.987",
+      "0.928",
+      "0.908",
+      "0.878"
+     ]
+    ],
+    "note": "Higher is better."
+   }
+  },
+  {
+   "p": "On the circuits all three models lose little, and GSD-Net-32 and SegNet stay within a thousandth of each other at every level. The floor plans separate them more. U-Net drops from 0.987 at σ = 0.1 to 0.928 at σ = 0.25, and ends at 0.878. GSD-Net-32 ends at 0.974 and SegNet at 0.982 (Table II)."
+  },
+  {
+   "p": "The third table is about size. For each model it lists the number of parameters, an estimated size in megabytes, and the floating point operations (the count of additions and multiplications for one input, in billions, written GFlops). All three measures use an input of 3 × 256 × 256, batch size 2 and 10 output classes."
+  },
+  {
+   "table": {
+    "caption": "Compactness of each model: parameters, estimated size and floating point operations",
+    "source": "Table III",
+    "head": [
+     "Model",
+     "Parameters",
+     "Estimated size (MB)",
+     "GFlops"
+    ],
+    "rows": [
+     [
+      "GSD-Net-4",
+      "4,326",
+      "54.11",
+      "0.0180"
+     ],
+     [
+      "GSD-Net-8",
+      "13,678",
+      "101.36",
+      "0.0443"
+     ],
+     [
+      "GSD-Net-16",
+      "47,598",
+      "195.93",
+      "0.1264"
+     ],
+     [
+      "GSD-Net-32",
+      "176,302",
+      "385.30",
+      "0.4076"
+     ],
+     [
+      "SegNet",
+      "29,448,778",
+      "566.09",
+      "40.4421"
+     ],
+     [
+      "U-Net",
+      "31,032,330",
+      "565.13",
+      "46.0982"
+     ]
+    ],
+    "note": "Lower is better in every column."
+   }
+  },
+  {
+   "p": "Even the largest of our four sizes is far below SegNet and U-Net in parameters and in GFlops (Table III). The smallest, GSD-Net-4, has 4,326 parameters and 0.0180 GFlops. Its estimated size is 54.11 MB, while SegNet is listed at 566.09 MB and U-Net at 565.13 MB. In the paper's words, the key contribution lies in compactness, with a minimal trade-off in performance."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that a compact network can label graphical symbols pixel by pixel almost as well as the large standard models. Compared with SegNet and U-Net, GSD-Net uses fewer parameters, less memory and far fewer floating point operations. In accuracy it is better than U-Net and comparable to SegNet, where the difference is marginal. It also held up under added noise, and the quality of the output did not degrade much, even with noise."
+  },
+  {
+   "p": "We attribute the compactness to the depth-wise separable convolutions in the Spark modules. We replaced the transposed convolutions of SegFast by bilinear upsampling to avoid the checkered artefacts they create, and because bilinear upsampling has no learned parameter."
+  },
+  {
+   "p": "There are limits. GSD-Net-4 gives the worst segmented output, and the larger sizes get better as C grows. Because the 16 and 32 versions differ only marginally, we think the network could be made even more compact. Our experiments were limited to standard graphical symbols from synthetic documents that are visually clear and easy to check against the gold standard. Real documents, where symbols touch and overlap other elements, are the setting that motivated the work."
+  },
+  {
+   "p": "For the future, we see two directions. One is further compression with methods such as pruning or kernel factorisation. The other is to apply the network to other graphical elements that carry meaning in a domain, such as logos, musical notes and line segments, which can occur together in engineering, electrical and architectural drawings."
   }
  ],
  "acknowledgements": "This work was partially supported by the project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors also thank Sayan Chatterjee from the Dept. of CSE, Sikkim Manipal Institute of Technology, for assisting in this research project as an intern.",

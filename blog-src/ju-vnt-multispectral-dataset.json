@@ -27,6 +27,14 @@
    "p": "Each spectrum shows something different. Visible light gives colour, texture and shape. Near-infrared (NIR) light lies just beyond the red end of the visible range. NIR cameras have been found to work in fog where ordinary cameras cannot, and an infrared lamp can light a scene at night. It also copes better than visible light with glass, which bends and reflects light. Thermal cameras record heat, so they do not depend on the light source at all, although they are expensive and can struggle in warm surroundings."
   },
   {
+   "figure": {
+    "src": "img/ju-vnt-multispectral-dataset/visible-vs-nir.jpg",
+    "alt": "Top row: two visible-light photos, a glass paper weight beside a blue-capped bottle, and a hexagonal glass block. Bottom row: the same two scenes as grey-scale near-infrared images.",
+    "caption": "Top: visible light. Bottom: near-infrared. The paper notes that the near-infrared images are less affected by the refraction of light through glass.",
+    "source": "Fig. 5"
+   }
+  },
+  {
    "p": "Datasets that pair two spectra exist, for example visible with thermal for street scenes (Table 1). The paper states that there are none on these three spectra together. Having three cameras also brings practical complications, such as different lenses, viewpoints, sharpness and noise, which the dataset also carries."
   },
   {
@@ -81,13 +89,289 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "The registration is approximate. The cameras view the table from slightly different angles, so a pixel-exact match is technically impossible, as the paper says. The objects are ordinary desk items photographed indoors on white paper."
+   "p": "Table 3 of the paper holds the single-object results. Each row is one choice of input, either one spectrum or several joined together, so \"rgb nir\" means visible plus near-infrared. Each column is one network, and every value is the percentage of test images classified correctly. The table below shows the runs without data augmentation, plus the row means for the runs with augmentation in the last column. The last row averages over the rows. Data augmentation here means randomly flipping the training images to give the network more variety of views. The data were split at random, three parts for training and one for testing. The RGB images went in as three channels, and the NIR and thermal images, being grey-scale, went in as one."
   },
   {
-   "p": "We see it as a starting point. Beyond classification and finding objects, the paper suggests translating images from one spectrum to another and generating rotated views of an object. The dataset is on GitHub."
+   "table": {
+    "caption": "Accuracy (%) for single objects, without augmentation, with the mean with augmentation in the last column",
+    "source": "Table 3",
+    "head": [
+     "Spectrum",
+     "ResNet18",
+     "Inception-V3",
+     "DenseNet 121",
+     "MobileNetV2",
+     "Mean",
+     "Mean with augmentation"
+    ],
+    "rows": [
+     [
+      "rgb",
+      "72.00",
+      "98.00",
+      "96.00",
+      "76.00",
+      "85.50",
+      "91.00"
+     ],
+     [
+      "nir",
+      "78.00",
+      "96.00",
+      "100.00",
+      "96.00",
+      "92.50",
+      "93.00"
+     ],
+     [
+      "thermal",
+      "92.00",
+      "92.00",
+      "92.00",
+      "89.00",
+      "91.25",
+      "91.50"
+     ],
+     [
+      "rgb nir",
+      "98.00",
+      "98.00",
+      "98.00",
+      "96.00",
+      "97.50",
+      "97.75"
+     ],
+     [
+      "nir thermal",
+      "92.00",
+      "100.00",
+      "98.00",
+      "96.00",
+      "96.50",
+      "93.50"
+     ],
+     [
+      "rgb thermal",
+      "94.00",
+      "100.00",
+      "98.00",
+      "97.00",
+      "97.25",
+      "94.00"
+     ],
+     [
+      "rgb nir thermal",
+      "90.00",
+      "98.00",
+      "98.00",
+      "99.00",
+      "96.25",
+      "97.50"
+     ],
+     [
+      "Mean",
+      "88.00",
+      "97.43",
+      "97.14",
+      "92.71",
+      "-",
+      "-"
+     ]
+    ],
+    "note": "Table 3, as printed, with the four per-network columns of the with-augmentation runs left out. Higher is better."
+   }
+  },
+  {
+   "p": "With single objects, no one input won everywhere. Without augmentation, ResNet18, Inception-V3 and MobileNetV2 did better on the combined spectra than on any single one, while DenseNet-121 did best on NIR alone. With augmentation, Inception-V3 reached 100.00 on both RGB and NIR (Table 3). Augmentation helped MobileNetV2 a great deal, for example from 76.00 to 98.00 on RGB. It worked against some networks on the combinations with thermal: ResNet18 on NIR plus thermal went from 92.00 to 82.00 (Table 3). The paper's reason is that thermal adds little for general learning when there is only one object in the picture, so whenever RGB or NIR is left out, augmentation hurts."
+  },
+  {
+   "p": "Table 4 has the same layout for pairs of objects, which is the harder task. Here are the runs without augmentation."
+  },
+  {
+   "table": {
+    "caption": "Accuracy (%) for pairs of objects, without augmentation",
+    "source": "Table 4",
+    "head": [
+     "Spectrum",
+     "ResNet18",
+     "Inception-V3",
+     "DenseNet 121",
+     "MobileNetV2",
+     "Mean"
+    ],
+    "rows": [
+     [
+      "rgb",
+      "90.58",
+      "92.67",
+      "95.67",
+      "96.48",
+      "93.85"
+     ],
+     [
+      "nir",
+      "83.08",
+      "77.75",
+      "90.33",
+      "94.42",
+      "86.40"
+     ],
+     [
+      "thermal",
+      "59.92",
+      "51.50",
+      "62.25",
+      "87.99",
+      "65.41"
+     ],
+     [
+      "rgb nir",
+      "89.58",
+      "91.50",
+      "97.25",
+      "97.80",
+      "94.03"
+     ],
+     [
+      "nir thermal",
+      "81.75",
+      "81.92",
+      "86.92",
+      "90.64",
+      "85.31"
+     ],
+     [
+      "rgb thermal",
+      "87.83",
+      "92.75",
+      "96.17",
+      "95.74",
+      "93.12"
+     ],
+     [
+      "rgb nir thermal",
+      "92.75",
+      "87.50",
+      "95.83",
+      "95.83",
+      "92.98"
+     ],
+     [
+      "Mean",
+      "83.64",
+      "82.23",
+      "89.20",
+      "94.13",
+      "-"
+     ]
+    ],
+    "note": "The left half of Table 4, as printed. Higher is better."
+   }
+  },
+  {
+   "p": "Thermal alone is the lowest row for every network, and Inception-V3 has the lowest mean of the four networks. MobileNetV2 has the highest mean and held up best on thermal images, with 87.99. These are the runs with augmentation."
+  },
+  {
+   "table": {
+    "caption": "Accuracy (%) for pairs of objects, with random flips as augmentation",
+    "source": "Table 4",
+    "head": [
+     "Spectrum",
+     "ResNet18",
+     "Inception-V3",
+     "DenseNet 121",
+     "MobileNetV2",
+     "Mean"
+    ],
+    "rows": [
+     [
+      "rgb",
+      "93.42",
+      "94.67",
+      "98.17",
+      "95.32",
+      "95.39"
+     ],
+     [
+      "nir",
+      "82.58",
+      "75.91",
+      "92.25",
+      "94.51",
+      "86.31"
+     ],
+     [
+      "thermal",
+      "64.33",
+      "52.92",
+      "71.33",
+      "92.53",
+      "70.28"
+     ],
+     [
+      "rgb nir",
+      "96.17",
+      "96.83",
+      "98.08",
+      "99.00",
+      "97.52"
+     ],
+     [
+      "nir thermal",
+      "81.92",
+      "79.92",
+      "91.08",
+      "93.94",
+      "86.71"
+     ],
+     [
+      "rgb thermal",
+      "93.42",
+      "89.08",
+      "97.92",
+      "95.04",
+      "93.86"
+     ],
+     [
+      "rgb nir thermal",
+      "97.08",
+      "91.17",
+      "97.92",
+      "96.27",
+      "95.61"
+     ],
+     [
+      "Mean",
+      "86.99",
+      "82.93",
+      "92.39",
+      "95.23",
+      "-"
+     ]
+    ],
+    "note": "The right half of Table 4, as printed. Higher is better."
+   }
+  },
+  {
+   "p": "With augmentation the mean of every network went up. For example, DenseNet-121 went from 89.20 to 92.39 and MobileNetV2 from 94.13 to 95.23 (Table 4). The paper says that augmentation was more effective on pairs than on single objects. The combinations with thermal scored below RGB with NIR for most networks. The paper puts it this way: when two objects have similar thermal intensity the network sees them as a whole, while NIR helps to tell different materials apart, which helps when there are several objects."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We built JU-VNT as a testbed, and the benchmarks give it a job. Most earlier multispectral datasets use two spectra, such as RGB with NIR or RGB with thermal. Our results show how hard it is to use three. The standard networks we tried are not suited to handling more than two spectra, so we see the combination of all three as a challenge that readers can take up."
+  },
+  {
+   "p": "The pattern in the results has a simple cause in our view. Thermal images record temperature, so printing on an object disappears and, as the paper notes, different objects with a similar colour can show different intensities. That is useful when objects differ in how they hold heat, and a handicap when two neighbouring objects are about equally warm. NIR copes better with glass, and it helps the network tell materials apart. RGB with NIR therefore worked well for most networks."
+  },
+  {
+   "p": "The limits are stated in the paper. The registration is approximate. An affine transformation can rotate, scale and skew an image but not shift it, so we refined each result by hand, and the cameras see the table from slightly different angles, which makes a pixel-exact match technically impossible. The objects are ordinary desk items photographed indoors on white paper."
+  },
+  {
+   "p": "We see the collection as a starting point. Besides classifying one or several objects and locating them, the paper suggests translating images from one spectrum to another and generating images that simulate an object's rotation. The paper calls JU-VNT one of the largest multispectral datasets of its time, with 7,800 images, and the dataset is on GitHub."
   }
  ],
  "acknowledgements": "This work is supported by the project sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors thank the team that made the collection of the dataset possible. Image capturing: Subham Jana and Puspendu Khan. Data preprocessing: Tathagata Bandyopadhyay, Anwesha Sen and Soupik Chowdhury. Data annotation: Osman Goni, Priyam Sarkar, Rounak Dutta, Supriyo Das, Debarati Roy and Ujjwal Misra. Benchmarks: Somenath Kuiry and Bodhisatwa Mondal. Special thanks to Somenath Kuiry for his contribution during revision.",

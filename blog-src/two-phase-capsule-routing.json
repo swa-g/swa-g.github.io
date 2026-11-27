@@ -73,6 +73,77 @@
    "p": "Caps-5 beat both a plain capsule network and a LeNet5 baseline on all seven datasets (Table 4). Caps-21 beat LeNet5 everywhere but trailed the plain capsule network on the Bengali and Devanagari digits and on SVHN. On the Telugu digits, Caps-5 reached 98.00% against 95.40% for the plain capsule network and 92.20% for LeNet5. Caps-5 did well on the digit sets and SVHN, while Caps-21 did better on the non-digit sets with more variation inside a class: 91.27% on Fashion-MNIST and 95.66% on Not-MNIST."
   },
   {
+   "p": "Table 4 gives the accuracy of each model on each dataset. Each row is one dataset, and the interesting question is which column is highest."
+  },
+  {
+   "table": {
+    "caption": "Test accuracy of the two proposed networks, a plain capsule network (Basic-Caps) and LeNet5 on each dataset (%)",
+    "source": "Table 4",
+    "head": [
+     "Dataset",
+     "Caps-5 (%)",
+     "Caps-21 (%)",
+     "Basic-Caps (%)",
+     "LeNet5 (%)"
+    ],
+    "rows": [
+     [
+      "CMATERdb 3.1.1",
+      "<b>97.35</b>",
+      "96.45",
+      "97.05",
+      "94.90"
+     ],
+     [
+      "CMATERdb 3.2.1",
+      "<b>95.60</b>",
+      "93.60",
+      "94.70",
+      "92.40"
+     ],
+     [
+      "CMATERdb 3.3.1",
+      "<b>97.10</b>",
+      "96.60",
+      "96.60",
+      "95.20"
+     ],
+     [
+      "CMATERdb 3.4.1",
+      "<b>98.00</b>",
+      "97.20",
+      "95.40",
+      "92.20"
+     ],
+     [
+      "Fashion-MNIST",
+      "90.96",
+      "<b>91.27</b>",
+      "89.76",
+      "88.42"
+     ],
+     [
+      "Not-MNIST",
+      "95.43",
+      "<b>95.66</b>",
+      "94.36",
+      "87.49"
+     ],
+     [
+      "SVHN",
+      "<b>90.19</b>",
+      "89.70",
+      "89.81",
+      "87.85"
+     ]
+    ],
+    "note": "The paper boldfaces the best value for each dataset. CMATERdb 3.1.1 to 3.4.1 are the Bengali, Devanagari, Arabic and Telugu digit sets."
+   }
+  },
+  {
+   "p": "Caps-5 has the highest value in five of the seven rows and Caps-21 in the other two."
+  },
+  {
    "p": "We also built ordinary multi-column convolutional networks with the same inputs. On SVHN, Caps-5 scored 90.19% against 81.87% for the five-column convolutional version, and the 21-column version fell to 57.79% (Table 5). The paper backs these comparisons with McNemar mid-P tests, a check on whether two classifiers really differ. For some pairs, mostly on the small digit sets, the difference is not statistically significant (Table 6)."
   },
   {
@@ -85,13 +156,186 @@
    "p": "Why can routing beat voting? When we tested each region alone, the full image was best, the quadrants slightly weaker and the small tiles weakest. Yet in the routing weights, many small regions had contributions comparable to the full image (Figs. 6 to 8 of the paper). The paper's explanation is that voting combines the strongest opinions of independent classifiers, while routing can prefer weaker opinions when they form a stronger consensus."
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "Our networks do not yet reach the level of state-of-the-art convolutional networks. The paper names speed as the main bottleneck: like other capsule networks, ours train slowly, which limits scalability. Without augmentation, Caps-5 and Caps-21 reached only 68.87% and 68.97% on CIFAR-10 (Table 8). In that comparison the paper reports MS-CapsNet as the best method, and notes that its data loading includes pre-processing and augmentation that ours did not. When we used the MS-CapsNet data loader, our CIFAR-10 numbers rose substantially."
+   "p": "The convolutional rivals in our tests were multi-column networks of the same shape, inspired by earlier work of Ciresan and colleagues. Multi-5 and Multi-21 get the same five or 21 inputs as Caps-5 and Caps-21, and their outputs are combined in the traditional way. Table 5 sets them next to our networks."
   },
   {
-   "p": "We meant the two-level scheme as a step toward deeper capsule networks with several routing layers. It could in theory be extended to more levels, but that is still computationally expensive, so hierarchies with more levels are left for future work."
+   "table": {
+    "caption": "Test accuracy of the capsule networks against multi-column convolutional networks with the same inputs (%)",
+    "source": "Table 5",
+    "head": [
+     "Dataset",
+     "Caps-5 (%)",
+     "Caps-21 (%)",
+     "Multi-5 (%)",
+     "Multi-21 (%)"
+    ],
+    "rows": [
+     [
+      "CMATERdb 3.1.1",
+      "<b>97.35</b>",
+      "96.45",
+      "94.20",
+      "84.0"
+     ],
+     [
+      "CMATERdb 3.2.1",
+      "<b>95.60</b>",
+      "93.60",
+      "93.0",
+      "87.30"
+     ],
+     [
+      "CMATERdb 3.3.1",
+      "<b>97.10</b>",
+      "96.60",
+      "95.20",
+      "89.30"
+     ],
+     [
+      "CMATERdb 3.4.1",
+      "<b>98.0</b>",
+      "97.20",
+      "93.70",
+      "91.10"
+     ],
+     [
+      "Fashion-MNIST",
+      "90.96",
+      "<b>91.27</b>",
+      "87.57",
+      "84.89"
+     ],
+     [
+      "Not-MNIST",
+      "95.43",
+      "<b>95.66</b>",
+      "87.05",
+      "84.19"
+     ],
+     [
+      "SVHN",
+      "<b>90.19</b>",
+      "89.70",
+      "81.87",
+      "57.79"
+     ]
+    ],
+    "note": "Multi-5 and Multi-21 are ensembles of five and 21 convolutional networks. The best value for each dataset is in bold."
+   }
+  },
+  {
+   "p": "The capsule networks lead in every row, which is the paper's conclusion too: capsule-based architectures outperform the convolutional multi-column models. In the convolutional pair, the 21-column network scored below the five-column one on every dataset."
+  },
+  {
+   "p": "The statistical tests add detail. The improvement of Caps-5 over the plain capsule network is significant on the Telugu digits, Fashion-MNIST, Not-MNIST and SVHN, and not significant on the other three digit sets. Caps-5 differs significantly from Multi-5 on the Telugu digits, Fashion-MNIST and SVHN (Table 6)."
+  },
+  {
+   "p": "The full comparison of the three ways to combine the columns is in Table 7. Each row uses the same trained region networks; only the final step changes."
+  },
+  {
+   "table": {
+    "caption": "Three ways of combining the columns: majority voting, probabilistic averaging and our two-phase routing (%)",
+    "source": "Table 7",
+    "head": [
+     "Dataset",
+     "Caps-5 majority voting",
+     "Caps-5 averaging",
+     "Caps-5 our method",
+     "Caps-21 majority voting",
+     "Caps-21 averaging",
+     "Caps-21 our method"
+    ],
+    "rows": [
+     [
+      "CMATERdb 3.1.1",
+      "95.50",
+      "94.30",
+      "<b>97.35</b>",
+      "93.10",
+      "91.0",
+      "<b>96.45</b>"
+     ],
+     [
+      "CMATERdb 3.2.1",
+      "95.50",
+      "<b>95.85</b>",
+      "95.63",
+      "93.45",
+      "89.20",
+      "<b>93.60</b>"
+     ],
+     [
+      "CMATERdb 3.3.1",
+      "94.50",
+      "94.90",
+      "<b>97.10</b>",
+      "92.70",
+      "90.50",
+      "<b>96.60</b>"
+     ],
+     [
+      "CMATERdb 3.4.1",
+      "96.40",
+      "96.0",
+      "<b>98.04</b>",
+      "96.50",
+      "94.40",
+      "<b>97.20</b>"
+     ],
+     [
+      "Fashion-MNIST",
+      "<b>91.49</b>",
+      "90.95",
+      "90.96",
+      "90.91",
+      "90.18",
+      "<b>91.27</b>"
+     ],
+     [
+      "Not-MNIST",
+      "93.82",
+      "93.65",
+      "<b>95.43</b>",
+      "92.66",
+      "91.19",
+      "<b>95.66</b>"
+     ],
+     [
+      "SVHN",
+      "87.71",
+      "87.59",
+      "<b>90.19</b>",
+      "81.20",
+      "80.30",
+      "<b>89.70</b>"
+     ]
+    ],
+    "note": "The best value for each dataset and network is in bold. The same trained networks are combined in three different ways."
+   }
+  },
+  {
+   "p": "For Caps-21, our routing has the highest value in every row. The widest gaps are on SVHN, where it reached 89.70% against 81.20% for majority voting and 80.30% for averaging, and on Not-MNIST, 95.66% against 92.66% and 91.19%. For Caps-5, voting and averaging each win one row: majority voting on Fashion-MNIST and probabilistic averaging on the Devanagari digits (Table 7)."
+  },
+  {
+   "p": "Looking at the regions one by one, the paper reports some anomalies. Now and then a single region did much better than the other regions of its kind, and this happened more often on the harder datasets, Fashion-MNIST, Not-MNIST and SVHN (Fig. 6 of the paper). The paper takes this as a sign of how much a well-chosen small region, a fixation point, can contribute."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We read these results as follows. Region-specific networks are good at local parts that deform independently, but a standard ensemble looks only at maximal activations and has no way to ask whether the columns agree. Capsule routing can pass on weaker activations when they agree with each other. Two-phase routing keeps the micro-level step, where regions are reconciled, apart from the macro-level step, where the class is decided. In our tests it performed competitively or better than the nearest alternatives: a plain capsule network, multi-column convolutional networks, and voting or averaging."
+  },
+  {
+   "p": "The mismatch between how strong a region is alone and how much weight routing gives it leads us to say that non-maximal activations can contribute when they form a consensus within and across regions."
+  },
+  {
+   "p": "The shortfalls are clear. Our networks do not yet match state-of-the-art convolutional networks, and capsule networks in general still need, in the paper's words, a lot of polish before they can compete with large CNNs. Speed is the main bottleneck: like other capsule networks, ours train slowly. Without augmentation, Caps-5 and Caps-21 reached only 68.87% and 68.97% on CIFAR-10 (Table 8). In that comparison the paper reports MS-CapsNet as the best method, and notes that its data loading includes pre-processing and augmentation that ours did not. When we used the MS-CapsNet data loader, our CIFAR-10 numbers rose substantially. We did not add a deep convolutional back end to chase benchmark scores, because the paper argues that would defeat the purpose of capsule networks."
+  },
+  {
+   "p": "We meant the two-level scheme as a step toward deeper capsule networks with several routing layers. It could in theory be extended to more levels, but that is computationally expensive, so hierarchies with more levels are left for future work."
   }
  ],
  "acknowledgements": "This work was supported by the project sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",

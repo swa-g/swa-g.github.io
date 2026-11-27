@@ -75,13 +75,159 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "SegFast does not win everywhere. It did worse than SegNet on CamVid, which has only 367 training images, and on Mapillary, which has 66 classes (Table 1). Our reading is that it works best when the number of classes and the amount of training data are well balanced. With so few parameters it has less room to learn. To improve it one would need a deeper or wider network, but that would be less efficient in speed. The speed result also applies to the CPU setting; on the highly parallel hardware of a GPU the difference in time would be negligible."
+   "p": "The four datasets differ a lot (Table 1). CamVid has 12 classes and only 367 training images. BDD has 20 classes and 7,000 training images. Synthia has 13 classes and 10,786 training images. Mapillary has 66 classes and 18,000 training images. We trained every model for 200 epochs with the Adam optimiser, kept the version that did best on the validation images (early stopping), and report that score. Table 2 gives the pixel accuracy, the share of pixels that received the right label. SegFast-Basic is the control: the same network built with ordinary convolutions."
   },
   {
-   "p": "The aim was not to beat every record. It was to offer a method that can run on cheap hardware and so reach more people. In future we hope the same compression can be applied to deeper networks."
+   "table": {
+    "caption": "Pixel accuracy of each network on each dataset",
+    "source": "Table 2",
+    "head": [
+     "Dataset",
+     "FCN",
+     "SegNet",
+     "SegFast-Basic",
+     "SegFast"
+    ],
+    "rows": [
+     [
+      "BDD",
+      "75.31 %",
+      "82.79 %",
+      "80.45 %",
+      "<b>83.48 %</b>"
+     ],
+     [
+      "CamVid",
+      "74.22 %",
+      "<b>88.70 %</b>",
+      "86.31 %",
+      "85.08 %"
+     ],
+     [
+      "Mapillary",
+      "79.62 %",
+      "<b>82.46 %</b>",
+      "82.10 %",
+      "81.63 %"
+     ],
+     [
+      "Synthia",
+      "91.81 %",
+      "92.05 %",
+      "91.65 %",
+      "<b>93.58 %</b>"
+     ]
+    ],
+    "note": "Higher is better. Bold marks the highest value in each row."
+   }
+  },
+  {
+   "p": "SegFast gives the highest pixel accuracy on BDD and Synthia. Against the basic variant, it came out ahead on those two datasets in both pixel accuracy and mean intersection over union. On CamVid it came out ahead of SegFast-Basic only on the intersection-over-union score (Table 2 and Table 3). Table 3 shows that second score, which compares the predicted region for each class with the true region, and so punishes sloppy borders more than pixel accuracy does."
+  },
+  {
+   "table": {
+    "caption": "Mean intersection over union of each network on each dataset",
+    "source": "Table 3",
+    "head": [
+     "Dataset",
+     "FCN",
+     "SegNet",
+     "SegFast-Basic",
+     "SegFast"
+    ],
+    "rows": [
+     [
+      "BDD",
+      "0.3076",
+      "0.3475",
+      "0.3434",
+      "<b>0.3576</b>"
+     ],
+     [
+      "CamVid",
+      "0.3342",
+      "<b>0.5174</b>",
+      "0.4431",
+      "0.5000"
+     ],
+     [
+      "Mapillary",
+      "0.1910",
+      "<b>0.2234</b>",
+      "0.2206",
+      "0.2108"
+     ],
+     [
+      "Synthia",
+      "0.5346",
+      "0.5430",
+      "0.5317",
+      "<b>0.5910</b>"
+     ]
+    ],
+    "note": "Higher is better. Bold marks the highest value in each row."
+   }
+  },
+  {
+   "p": "The pattern matches Table 2: SegFast leads on BDD and Synthia, and SegNet leads on CamVid and Mapillary. Mapillary, the dataset with 66 classes, has the lowest scores for every network."
+  },
+  {
+   "p": "Speed is where SegFast pulls ahead. Table 4 lists the time for one forward pass (labelling one image, which is what happens at test time) and one backward pass (the learning step, which is what happens in training), both on the CPU. Each time is for a single sample image."
+  },
+  {
+   "table": {
+    "caption": "Time per sample image on a CPU-only machine (seconds)",
+    "source": "Table 4",
+    "head": [
+     "Network",
+     "Forward pass",
+     "Backward pass"
+    ],
+    "rows": [
+     [
+      "FCN",
+      "3.385",
+      "5.230"
+     ],
+     [
+      "SegNet",
+      "1.977",
+      "3.251"
+     ],
+     [
+      "SegFast-Basic",
+      "0.419",
+      "1.336"
+     ],
+     [
+      "SegFast",
+      "<b>0.389</b>",
+      "<b>0.929</b>"
+     ]
+    ],
+    "note": "Lower is better. The machine was an Intel Xeon with 8 cores and 16 threads."
+   }
+  },
+  {
+   "p": "Both SegFast and SegFast-Basic label a sample in under half a second, and SegFast is the faster of the two, which shows that the depth-wise trick speeds the network up. On this basis we argued that the network could serve real-time applications even on low-end GPUs. We think SegFast is quicker than SegNet partly because it has fewer convolution blocks (four against five) and starts with a single strided convolution, where SegNet starts with two ordinary ones. For memory, SegFast-Basic needs 1,232 MiB for one 224×224 input, against 703 MiB for SegFast (Table 5). Figure 4 shows the outputs side by side: SegFast's boundaries are sharper than FCN's and close to SegNet's."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that SegFast is much smaller and faster than SegNet and FCN while giving up little accuracy. It is best on BDD and Synthia, and its CamVid and Mapillary scores are comparable to SegNet's. Against FCN, it did better on every dataset."
+  },
+  {
+   "p": "It does not win everywhere, and we have a guess about why. CamVid has very few training images and Mapillary has 66 classes. Our experiments lead us to believe that the network performs best when the number of classes and the amount of training data are in healthy balance, and that it degrades with less data and more classes. The accuracy drops mostly because the network has far fewer neurons. To improve it, one would have to make it deeper and wider, and that would cost speed."
+  },
+  {
+   "p": "Another caveat concerns the timing. We measured it on a CPU because our graphics card was too powerful to show a significant difference. On the highly parallel hardware of a GPU the difference in time would be negligible. Networks were mainly trained and tested on the GPU, and the CPU was used only for the timing runs."
+  },
+  {
+   "p": "The aim was not to beat every record. It was to offer a method that can run on cheap hardware and so reach more people. In future we hope to apply the same compression to deeper networks and reach even better results."
   }
  ],
  "acknowledgements": "This work is sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",

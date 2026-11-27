@@ -26,7 +26,7 @@
    "p": "The retinal vessels work as a window into the body's smallest blood circulation. Changes in them, such as narrowing or leakage, can point to disease. Marking each pixel of a scan as artery, vein or background is called segmentation. Accurate segmentation can feed automated diagnostic tools, which the paper says could be deployed in remote or underserved areas for early screening without a specialist."
   },
   {
-   "p": "We worked with the RAVIR dataset. It holds 46 infrared images taken with a scanning laser ophthalmoscope, a device that sweeps a laser over the retina. The images come from the UCLA Stein Eye Institute and have high quality and high contrast. To enlarge the training data we applied horizontal flips, vertical flips and rotations."
+   "p": "We worked with the RAVIR dataset. It holds 46 infrared images taken with a scanning laser ophthalmoscope, a device that sweeps a laser over the retina. The images come from the UCLA Stein Eye Institute and have high quality and high contrast. To enlarge the training data we applied horizontal flips, vertical flips and rotations. The paper says the flips and rotations were chosen to mimic realistic variations in eye orientation during imaging."
   },
   {
    "h2": "The idea"
@@ -47,6 +47,17 @@
   },
   {
    "h2": "How it works"
+  },
+  {
+   "p": "The first network is a U-Net built from residual blocks, a common building block that adds its input back to its output. Its encoder works at six resolutions. The middle of the network, the bottleneck, has three residual blocks. The decoder mirrors the encoder, using transposed convolutions that double the resolution at each step, and it ends in a sigmoid activation, chosen for binary segmentation. Each skip connection adds the output of an encoder block to the matching decoder block."
+  },
+  {
+   "figure": {
+    "src": "img/ravnet-retinal-vessels/first-model.png",
+    "alt": "Diagram of the first network: an infrared eye scan enters an encoder with six resolutions, passes three residual blocks at the bottom, and a mirrored decoder produces a predicted binary vessel mask. Six skip connections link encoder and decoder.",
+    "caption": "The first network. An encoder (yellow) and a decoder (blue) joined by skip connections turn the scan into a binary vessel mask.",
+    "source": "Fig. 1"
+   }
   },
   {
    "p": "The second network has one encoder and three decoders. One decoder outputs arteries and one outputs veins. The third, labelled the regularizer in the figure, rebuilds the input scan. This extra task serves to regularize the outputs, which means it acts as a constraint that guides training."
@@ -72,13 +83,136 @@
    }
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "RavNet is not ahead on every measure. For veins it had the highest specificity (0.9929) but the lowest sensitivity of the five models (0.7385), so it detects fewer of the true vein pixels (Table 2). For arteries, R2U-Net had a slightly higher accuracy, 0.9706 against 0.9701 (Table 1). The dataset is small, only 46 images. The paper lists stronger data augmentation, multimodal imaging, real-time use, transfer learning and clinical validation as future work."
+   "p": "The paper judges every model on unseen retinal scans with four measures. Sensitivity is the share of true vessel pixels that the model finds, so a low value means missed vessels. Specificity is the share of non-vessel pixels that the model correctly leaves alone, so a low value means false alarms. Accuracy is the overall share of pixels labelled correctly. The Dice index is twice the overlap of the predicted and true regions divided by the sum of their areas. The paper cautions that accuracy should be read alongside sensitivity and specificity, because that is where the trade-off between false alarms and misses shows up."
   },
   {
-   "p": "According to the abstract, the improvement in vessel delineation comes from incorporating the mask predictions of the first model. The longer-term aim is the kind of screening tool for remote or underserved areas mentioned above."
+   "p": "Table 1 covers arteries. Each row is a model and each column a measure."
+  },
+  {
+   "table": {
+    "caption": "Artery segmentation: sensitivity, specificity, accuracy and Dice for RavNet and four U-Net-based models",
+    "source": "Table 1",
+    "head": [
+     "Method",
+     "Sensitivity",
+     "Specificity",
+     "Accuracy",
+     "Dice"
+    ],
+    "rows": [
+     [
+      "U-Net [26]",
+      "0.7275",
+      "0.9788",
+      "0.9670",
+      "0.7510"
+     ],
+     [
+      "Dense U-Net [33]",
+      "0.7296",
+      "0.9795",
+      "0.9681",
+      "0.7584"
+     ],
+     [
+      "Residual U-Net [34]",
+      "0.7375",
+      "0.9828",
+      "0.9697",
+      "0.7602"
+     ],
+     [
+      "R2U-Net [34]",
+      "0.7408",
+      "0.9810",
+      "0.9706",
+      "0.7621"
+     ],
+     [
+      "RavNet",
+      "0.7440",
+      "0.9802",
+      "0.9701",
+      "0.7790"
+     ]
+    ],
+    "note": "Bracketed numbers are the paper's own reference numbers. Higher is better in every column."
+   }
+  },
+  {
+   "p": "RavNet has the highest sensitivity here, 0.7440, and the highest Dice, 0.7790. Residual U-Net has the highest specificity, 0.9828, and R2U-Net the highest accuracy, 0.9706 (Table 1)."
+  },
+  {
+   "p": "Table 2 is the same comparison for veins."
+  },
+  {
+   "table": {
+    "caption": "Vein segmentation: sensitivity, specificity, accuracy and Dice for RavNet and four U-Net-based models",
+    "source": "Table 2",
+    "head": [
+     "Method",
+     "Sensitivity",
+     "Specificity",
+     "Accuracy",
+     "Dice"
+    ],
+    "rows": [
+     [
+      "U-Net [26]",
+      "0.7389",
+      "0.9795",
+      "0.9685",
+      "0.7674"
+     ],
+     [
+      "Dense U-Net [33]",
+      "0.7410",
+      "0.9808",
+      "0.9691",
+      "0.7704"
+     ],
+     [
+      "Residual U-Net [34]",
+      "0.7455",
+      "0.9839",
+      "0.9701",
+      "0.7768"
+     ],
+     [
+      "R2U-Net [34]",
+      "0.7492",
+      "0.9842",
+      "0.9728",
+      "0.7826"
+     ],
+     [
+      "RavNet",
+      "0.7385",
+      "0.9929",
+      "0.9729",
+      "0.7890"
+     ]
+    ],
+    "note": "Bracketed numbers are the paper's own reference numbers. Higher is better in every column."
+   }
+  },
+  {
+   "p": "For veins RavNet has the highest specificity, 0.9929, the highest accuracy, 0.9729 against 0.9728 for R2U-Net, and the highest Dice, 0.7890. Its sensitivity, 0.7385, is the lowest of the five models, and R2U-Net has the highest at 0.7492 (Table 2). So on veins RavNet makes few false alarms, but it finds a smaller share of the true vein pixels than the other models do."
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that the cascade pays off: RavNet outperforms the U-Net-based models it was compared with, and the abstract attributes the improvement in vessel delineation to the mask predictions of the first model. The second network starts from a prediction of where the vessels are. The extra decoder that rebuilds the input scan acts as a regularizer. The vein results also show why several measures matter. RavNet leads on Dice and specificity there, but has the lowest sensitivity."
+  },
+  {
+   "p": "The limits are plain. The RAVIR dataset is small, only 46 images, and all results come from it. The comparison is with four U-Net-based models. The paper lists stronger data augmentation, multimodal imaging, optimizing the models for real-time use, transfer learning and extensive clinical validation as future work."
+  },
+  {
+   "p": "The applications we have in mind are disease diagnosis and monitoring, surgical planning, telemedicine and research, and screening tools that could be used in remote or underserved areas without a specialist."
   }
  ],
  "acknowledgements": "",

@@ -1,6 +1,6 @@
 """Build blog/index.html and blog/<slug>.html from blog-src/*.json, update sitemap.xml and the `blog:` links in assets/data.js.
 Run from anywhere:  python blog-src/build.py"""
-import html, io, json, os, re, subprocess, datetime
+import html, io, json, os, re, subprocess, datetime, unicodedata
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__)); SITE = os.path.dirname(HERE); BLOG = os.path.join(SITE, 'blog')
@@ -22,6 +22,73 @@ def load_pubs():
     js = "global.window={};eval(require('fs').readFileSync(%s,'utf8'));console.log(JSON.stringify(window.PUBLICATIONS))" % json.dumps(os.path.join(SITE, 'assets', 'data.js'))
     return json.loads(subprocess.check_output(['node', '-e', js]).decode('utf8'))
 
+
+
+# ---------- BibTeX
+TEX = {'š': r'{\v s}', 'Š': r'{\v S}', 'č': r'{\v c}', 'Č': r'{\v C}', 'ć': r"{\'c}", 'ž': r'{\v z}', 'Ž': r'{\v Z}', 'ç': r'{\c c}',
+       'ã': r'{\~a}', 'é': r"{\'e}", 'è': r'{\`e}', 'ö': r'{\"o}', 'ü': r'{\"u}', 'ä': r'{\"a}', 'í': r"{\'i}", 'á': r"{\'a}", 'ó': r"{\'o}", 'ú': r"{\'u}", 'ñ': r'{\~n}', 'ć': r"{\'c}", 'đ': r'{\dj}', '–': '--', '—': '---', '’': "'", '“': '``', '”': "''"}
+def tex(x): return ''.join(TEX.get(c, c) for c in x)
+def ascii_(x): return unicodedata.normalize('NFKD', x).encode('ascii', 'ignore').decode().lower()
+
+
+def bibtex(d, pub):
+    if d.get('bibtex'): return d['bibtex']
+    pub = pub or {}
+    names = [a.strip() for a in re.split(r',\s*', d['authors']) if a.strip()]
+    auth = []
+    for n in names:
+        parts = n.split()
+        auth.append('%s, %s' % (parts[-1], ' '.join(parts[:-1])) if len(parts) > 1 else n)
+    year = str(pub.get('year') or d['date'][:4])
+    stop = {'a', 'an', 'the', 'on', 'of', 'for', 'using', 'with', 'from', 'towards', 'toward', 'questioning', 'understanding'}
+    words = [w for w in re.findall(r'[A-Za-z0-9]+', d['paper_title']) if w.lower() not in stop]
+    key = (ascii_(auth[0].split(',')[0]) if auth else 'paper') + year + (ascii_(words[0]) if words else 'paper')
+    typ = 'article' if pub.get('type') == 'journal' else 'inproceedings'
+    def protect(t):
+        return ' '.join('{%s}' % w if (any(c.isupper() for c in w[1:]) and re.match(r'^[A-Za-z0-9-]+', w)) else w for w in t.split(' '))
+    detail = d.get('detail') or pub.get('detail', '') or ''
+    f = [('author', ' and '.join(tex(a) for a in auth)), ('title', tex(protect(d['paper_title']))),
+         ('journal' if typ == 'article' else 'booktitle', tex(d['venue']))]
+    m = re.search(r'(\d+)\((\d+)\):(\d+)', detail)
+    if m: f += [('volume', m.group(1)), ('number', m.group(2)), ('pages', m.group(3))]
+    else:
+        m = re.search(r'Vol\.\s*(\d+)', detail)
+        if m: f.append(('volume', m.group(1)))
+        m = re.search(r'pp\.\s*(\d+)\s*[–-]\s*(\d+)', detail)
+        if m: f.append(('pages', '%s--%s' % (m.group(1), m.group(2))))
+    pm = re.search(r'·\s*(.+)$', detail)
+    if pm: f.append(('publisher', tex(pm.group(1).strip())))
+    if 'in press' in detail.lower(): f.append(('note', 'In press'))
+    f.append(('year', year))
+    url = d.get('url') or pub.get('url') or ''
+    if 'doi.org/' in url: f.append(('doi', url.split('doi.org/', 1)[1]))
+    elif url.startswith('http'): f.append(('url', url))
+    return '@%s{%s,\n%s\n}' % (typ, key, ',\n'.join('  %-9s = {%s}' % (k, v) for k, v in f))
+
+
+# ---------- thumbnails for the index cards (640x360; photos are cropped to fill, diagrams sit on white)
+def pick_thumb_source(d):
+    figs = [b['figure'] for b in d['body'] if 'figure' in b]
+    if not figs: return None
+    for pref in ('sample', 'output', 'example', 'predict', 'retriev', 'result', 'photo', 'night'):
+        for f in figs:
+            if pref in os.path.basename(f['src']).lower(): return f['src']
+    return figs[0]['src']
+
+
+def make_thumb(d):
+    src = pick_thumb_source(d)
+    if not src: return None
+    out = os.path.join(BLOG, 'img', d['slug'], 'thumb.jpg')
+    im = Image.open(os.path.join(BLOG, src)).convert('RGB'); W, H = 640, 360
+    if src.lower().endswith(('.jpg', '.jpeg')):                       # photo-like: crop to fill
+        r = max(W / im.width, H / im.height); im = im.resize((round(im.width * r) + 1, round(im.height * r) + 1), Image.LANCZOS)
+        l, t = (im.width - W) // 2, (im.height - H) // 2; canvas = im.crop((l, t, l + W, t + H))
+    else:                                                               # diagram: fit inside, on white
+        r = min((W - 40) / im.width, (H - 30) / im.height); im = im.resize((max(1, round(im.width * r)), max(1, round(im.height * r))), Image.LANCZOS)
+        canvas = Image.new('RGB', (W, H), 'white'); canvas.paste(im, ((W - im.width) // 2, (H - im.height) // 2))
+    canvas.save(out, 'JPEG', quality=80, optimize=True)
+    return 'img/%s/thumb.jpg' % d['slug']
 
 # ---------- shared pieces
 CHEV = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>'
@@ -119,6 +186,21 @@ def render_block(b, d):
     if 'ul' in b: return '<ul>%s</ul>' % ''.join('<li>%s</li>' % x for x in b['ul'])
     if 'ol' in b: return '<ol>%s</ol>' % ''.join('<li>%s</li>' % x for x in b['ol'])
     if 'callout' in b: return '<div class="callout">%s</div>' % b['callout']
+    if 'table' in b:
+        t = b['table']
+        NUM = re.compile(r'^[<>~≈±+\-−]?\s*\d[\d.,%]*(\s*±\s*[\d.,]+)?\s*[%a-zA-Z]{0,3}$|^[\d.]+\s*/\s*[\d.]+$')
+        strip = lambda c: re.sub(r'<[^>]+>|\[[^\]]*\]', '', c).strip()
+        numcol = []
+        for j in range(len(t['head'])):
+            vals = [strip(r[j]) for r in t['rows'] if strip(r[j])]
+            numcol.append(j > 0 and len(vals) > 0 and sum(1 for v in vals if NUM.match(v)) >= 0.6 * len(vals))
+        def cell(c, tag, j):
+            return '<%s%s>%s</%s>' % (tag, ' class="num"' if numcol[j] else '', c, tag)
+        head = '<tr>%s</tr>' % ''.join(cell(c, 'th', j) for j, c in enumerate(t['head']))
+        rows = ''.join('<tr>%s</tr>' % ''.join(cell(c, 'td', j) for j, c in enumerate(r)) for r in t['rows'])
+        note = (t['note'] + ' ') if t.get('note') else ''
+        return ('<figure class="tbl"><div class="tbl-wrap"><table><caption>%s</caption><thead>%s</thead><tbody>%s</tbody></table></div>'
+                '<figcaption>%s<span class="src">Source: %s of the paper.</span></figcaption></figure>') % (t['caption'], head, rows, note, E(t['source']))
     if 'figure' in b:
         f = b['figure']; im = Image.open(os.path.join(BLOG, f['src'])); w, h = im.size
         return ('<figure><div class="frame"><img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async"></div>'
@@ -144,6 +226,7 @@ def citation(d, pub):
 def build_article(d, prev, nxt, pub):
     slug = d['slug']; mins = reading_minutes(d)
     tags = ''.join('<span>%s</span>' % E(t) for t in d['tags'])
+    bib = bibtex(d, pub)
     links = ''.join('<a href="%s"%s>%s</a>' % (E(l['url']), '' if (not l['url'].startswith('http')) or 'swarnendughosh.com' in l['url'] else ' target="_blank" rel="noopener"', E(l['label'])) for l in d['links'])
     if d['kind'] == 'explainer' and d['links']:
         cta = '<div class="cta"><a href="%s">%s</a></div>' % (E(d['links'][0]['url']), E(d.get('cta', 'Read the full write-up on the LANCER page')))
@@ -152,7 +235,7 @@ def build_article(d, prev, nxt, pub):
     box = ('<aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">%s</div>'
            '<div class="pa">%s</div><div class="pv">%s%s · %s</div>%s</aside>') % (
         E(d['paper_title']), authors_html(d['authors']), E(d['venue']), (', ' + E(d['detail'])) if d.get('detail') else '', d['date'][:4],
-        ('<div class="paper-links">%s</div>' % links) if links else '')
+        '<div class="paper-links">%s<button type="button" class="cite-btn" data-copy-target="bibtex" aria-label="Copy the BibTeX entry of this paper">Cite this paper</button></div>' % links)
     body = ''.join(render_block(b, d) for b in d['body'])
     ack = ''
     if d['acknowledgements'].strip():
@@ -164,7 +247,9 @@ def build_article(d, prev, nxt, pub):
         if figs: rows += '<li><b>Figures:</b> %s</li>' % ', '.join(E(x) for x in figs)
         if d['tables_used']: rows += '<li><b>Tables:</b> %s</li>' % '; '.join(E(x) for x in d['tables_used'])
         src = '<section class="sources"><h2>Sources</h2><p>The figures and tables listed here are taken from the paper cited at the top of this page; the numbers quoted in the text come from the paper too.</p><ul>%s</ul></section>' % rows
-    cite = '<details class="cite-box"><summary>How to cite the paper</summary><pre>%s</pre></details>' % E(citation(d, pub))
+    cite = ('<section class="cite-box" id="cite"><h2>Cite the paper</h2><p>%s</p>'
+            '<div class="bib-head"><span>BibTeX</span><button type="button" class="cite-btn" data-copy-target="bibtex">Copy BibTeX</button></div>'
+            '<pre id="bibtex">%s</pre></section>') % (E(citation(d, pub)), E(bib))
     pager = '<nav class="pager" aria-label="More articles">'
     pager += ('<a href="%s.html"><small>Newer</small>%s</a>' % (nxt['slug'], E(nxt['title']))) if nxt else '<span></span>'
     pager += ('<a class="next" href="%s.html"><small>Older</small>%s</a>' % (prev['slug'], E(prev['title']))) if prev else '<span></span>'
@@ -199,8 +284,10 @@ def build_index(posts):
         cards = ''
         for p in years[y]:
             badge = '<span class="badge">LANCER</span>' if p['kind'] == 'explainer' else ''
-            cards += ('<a class="post-card" href="%s.html" data-tags="%s"><div class="meta">%s%s</div><h3>%s</h3><p>%s</p><div class="venue">%s</div></a>') % (
-                p['slug'], E('|'.join(t.lower() for t in p['tags'])), long_date(p['date']), badge, E(p['title']), E(p['summary']), E(p['venue']))
+            th = make_thumb(p)
+            img = ('<div class="thumb"><img src="%s" alt="" width="640" height="360" loading="lazy" decoding="async"></div>' % th) if th else ''
+            cards += ('<a class="post-card" href="%s.html" data-tags="%s">%s<div class="pc-body"><div class="meta">%s%s</div><h3>%s</h3><p>%s</p><div class="venue">%s</div></div></a>') % (
+                p['slug'], E('|'.join(t.lower() for t in p['tags'])), img, long_date(p['date']), badge, E(p['title']), E(p['summary']), E(p['venue']))
         blocks += '<section class="year-block"><h2>%s</h2><div class="posts">%s</div></section>' % (y, cards)
     body = ('<div class="blog-head"><div class="eyebrow">Blog</div><h1>My papers, in plain language</h1>'
             '<p class="lead">One short article for each of my papers: what problem we tackled, what we did, what we found. '

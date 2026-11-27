@@ -90,13 +90,272 @@
    "p": "Looking at the mistakes, we saw two patterns. Some models, among them DETR, Detectron2 and YOLOv12, draw redundant, overlapping boxes. Others, among them YOLOv9 and YOLOv11, miss Instruction and Description regions altogether."
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "HiLEx has limits that we state in the paper. We removed pages in other languages, so it is English only, and the questions come mostly from Indian national exams, plus GMAT, GRE and SAT. The dataset is unbalanced, as the page counts per exam show (Table 1). It holds page images and boxes, but not yet the text of the questions."
+   "p": "The paper gives one big table for each family of models. Here are the ones that show the most. Table 3 gives the mAP50 of each YOLO version for every region type. Each row is one kind of region and each column is one model. The row called All is the score over all six region types."
   },
   {
-   "p": "Next we plan to add OCR-based text annotations, so that models that read words and layout together, such as LayoutLMv3, TILT and DocFormer, can be tested. We also plan to add non-English and non-Indian exams, including East Asian, African and European ones."
+   "table": {
+    "caption": "mAP50 of the five YOLO versions on the HiLEx test set, by region type",
+    "source": "Table 3",
+    "head": [
+     "Class",
+     "YOLOv8",
+     "YOLOv9",
+     "YOLOv10",
+     "YOLOv11",
+     "YOLOv12"
+    ],
+    "rows": [
+     [
+      "All",
+      "0.848",
+      "0.818",
+      "0.743",
+      "0.822",
+      "0.685"
+     ],
+     [
+      "Answer_Block",
+      "0.922",
+      "0.915",
+      "0.856",
+      "0.915",
+      "0.847"
+     ],
+     [
+      "Description",
+      "0.478",
+      "0.375",
+      "0.243",
+      "0.424",
+      "0.104"
+     ],
+     [
+      "Instruction",
+      "0.856",
+      "0.790",
+      "0.666",
+      "0.818",
+      "0.537"
+     ],
+     [
+      "Question_Answer_Block",
+      "0.947",
+      "0.940",
+      "0.903",
+      "0.927",
+      "0.873"
+     ],
+     [
+      "Question_Block",
+      "0.903",
+      "0.909",
+      "0.833",
+      "0.886",
+      "0.771"
+     ],
+     [
+      "Question_Paper_Area",
+      "0.984",
+      "0.979",
+      "0.956",
+      "0.964",
+      "0.978"
+     ]
+    ],
+    "note": "Higher is better. The test set has 199 pages. The Image, Instance, Precision, Recall and mAP50-95 columns of Table 3 are left out here."
+   }
+  },
+  {
+   "p": "Large regions score high for every version: Question_Paper_Area is at 0.956 or higher, while Description ranges from 0.104 to 0.478 (Table 3). In the All row YOLOv8 has the highest mAP50. The other metrics tell a slightly different story. YOLOv11 has the highest precision in that row, 0.866 against 0.766 for YOLOv8, which means fewer false alarms. YOLOv8 has the higher recall, 0.840 against 0.752, which means it finds more of the true regions (Table 3). We suggest that YOLOv11's refinements explain its precision, and that YOLOv8's features are more sensitive to subtle patterns, at the price of more false detections."
+  },
+  {
+   "p": "The two transformer-based detectors are compared in Table 4. RT-DETR has the higher mAP50 over all classes, 0.606 against 0.502, and it does better on Instruction regions. DETR does better at fine localisation of Question_Answer_Block regions, with an mAP50-95 of 0.557 against 0.526. Both do poorly on Description, with a precision of 0.157 for DETR and 0.270 for RT-DETR (Table 4). We link the differences to how each model is built: DETR matches boxes one-to-one, which struggles with the dense structure of documents."
+  },
+  {
+   "table": {
+    "caption": "DETR and RT-DETR on the HiLEx test set, by region type",
+    "source": "Table 4",
+    "head": [
+     "Class",
+     "DETR precision",
+     "DETR mAP50",
+     "DETR mAP50-95",
+     "RT-DETR precision",
+     "RT-DETR mAP50",
+     "RT-DETR mAP50-95"
+    ],
+    "rows": [
+     [
+      "All",
+      "0.407",
+      "0.502",
+      "0.350",
+      "0.678",
+      "0.606",
+      "0.448"
+     ],
+     [
+      "Answer_Block",
+      "0.376",
+      "0.568",
+      "0.319",
+      "0.565",
+      "0.625",
+      "0.386"
+     ],
+     [
+      "Description",
+      "0.157",
+      "0.071",
+      "0.044",
+      "0.270",
+      "0.118",
+      "0.073"
+     ],
+     [
+      "Instruction",
+      "0.334",
+      "0.368",
+      "0.283",
+      "0.575",
+      "0.613",
+      "0.471"
+     ],
+     [
+      "Question_Answer_Block",
+      "0.614",
+      "0.763",
+      "0.557",
+      "0.925",
+      "0.699",
+      "0.526"
+     ],
+     [
+      "Question_Block",
+      "0.344",
+      "0.394",
+      "0.167",
+      "0.797",
+      "0.657",
+      "0.468"
+     ],
+     [
+      "Question_Paper_Area",
+      "0.618",
+      "0.850",
+      "0.731",
+      "0.933",
+      "0.923",
+      "0.761"
+     ]
+    ],
+    "note": "Higher is better. The Image, Instance and Recall columns of Table 4 are left out here."
+   }
+  },
+  {
+   "p": "Detectron2, the two-stage model, reached an mAP50 of 0.94 and an mAP50-95 of 0.673 over all classes, with a precision of 0.741 and a recall of 0.837 (Table 5). Its precision was highest on Question_Paper_Area, at 0.819, and lowest on Description, at 0.250. We blame the weak Description result on the region proposal network, which struggles with regions that lack clear boundaries, on how much Descriptions vary in position and format, and on the few examples."
+  },
+  {
+   "p": "Table 6 compares the two vision-language models. PaLI-Gemma 2 is ahead of Florence-2 across the main numbers in the All row: precision 0.790 against 0.740, recall 0.800 against 0.755 and mAP50 0.835 against 0.810. Both are weakest on Description (Table 6)."
+  },
+  {
+   "table": {
+    "caption": "Florence-2 and PaLI-Gemma 2 on the HiLEx test set, by region type",
+    "source": "Table 6",
+    "head": [
+     "Class",
+     "Florence-2 precision",
+     "Florence-2 recall",
+     "Florence-2 mAP50",
+     "PaLI-Gemma2 precision",
+     "PaLI-Gemma2 recall",
+     "PaLI-Gemma2 mAP50"
+    ],
+    "rows": [
+     [
+      "All",
+      "0.740",
+      "0.755",
+      "0.810",
+      "0.790",
+      "0.800",
+      "0.835"
+     ],
+     [
+      "Answer_Block",
+      "0.785",
+      "0.820",
+      "0.800",
+      "0.825",
+      "0.840",
+      "0.855"
+     ],
+     [
+      "Description",
+      "0.350",
+      "0.180",
+      "0.150",
+      "0.420",
+      "0.250",
+      "0.220"
+     ],
+     [
+      "Instruction",
+      "0.650",
+      "0.670",
+      "0.640",
+      "0.710",
+      "0.730",
+      "0.710"
+     ],
+     [
+      "Question_Answer_Block",
+      "0.820",
+      "0.850",
+      "0.850",
+      "0.850",
+      "0.870",
+      "0.875"
+     ],
+     [
+      "Question_Block",
+      "0.780",
+      "0.800",
+      "0.790",
+      "0.800",
+      "0.820",
+      "0.820"
+     ],
+     [
+      "Question_Paper_Area",
+      "0.880",
+      "0.900",
+      "0.910",
+      "0.900",
+      "0.910",
+      "0.920"
+     ]
+    ],
+    "note": "Higher is better. The Image, Instance and mAP50-95 columns of Table 6 are left out here."
+   }
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "We conclude that two-stage models remain the most effective for fine-grained layout understanding. Detectron2 had the highest mAP, which we credit to its region proposal network and its iterative refinement of boxes. In the paper's figures it is 0.092 above the best one-stage model, YOLOv8, and 0.105 above the best vision-language model, PaLI-Gemma 2. Among the YOLO versions, YOLOv8 is 0.163 mAP ahead of YOLOv12, which we attribute to its feature pyramid network and deeper backbone. PaLI-Gemma 2 detects layouts better than earlier YOLO versions, but its mAP is 0.013 lower than YOLOv8's, so it lacks the spatial precision that fine-grained work needs. DETR and RT-DETR trail, which we put down to their direct set prediction and its poor localisation of small objects."
+  },
+  {
+   "p": "Over-detection may come from overfitting or ambiguous features, and missed Instruction and Description regions lower recall. Layout variability and inconsistent annotation also make detection harder. Better model calibration, more training data and post-processing could raise accuracy."
+  },
+  {
+   "p": "HiLEx has limits that we state. We removed pages in other languages, so it is English only, and the questions come mostly from Indian national exams, plus GMAT, GRE and SAT. The dataset is unbalanced, as the page counts per exam show (Table 1), and Instruction and Description regions are rare. It holds page images and boxes, but not yet the text of the questions."
+  },
+  {
+   "p": "Next we plan to add OCR-based text annotations, so that models that read words and layout together, such as LayoutLMv3, TILT and DocFormer, can be tested. We also plan to add non-English and non-Indian exams, including East Asian, African and European ones, to explore hierarchical and diffusion-based approaches to layout segmentation, and to try vision-language pretraining that helps across layouts and languages. The longer-term aim is a pipeline ready for real use in education and assessment, supporting automated grading, question retrieval and exam digitisation."
   }
  ],
  "acknowledgements": "",

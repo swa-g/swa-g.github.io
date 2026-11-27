@@ -76,10 +76,108 @@
    "callout": "Average precision on BSDS300: 0.65 for our detector, 0.68 for gPb, the top method (Table I)."
   },
   {
-   "h2": "What it does not do"
+   "h2": "Results in more detail"
   },
   {
-   "p": "The results are preliminary, and the paper says so, though it calls them adequate to show the value of using several cues together. We did not use texture. We plan to add it as an extra channel, followed by region information based on the correlation between colour channels."
+   "p": "Table I lists all nine methods we compared. The first column of numbers is average precision (AP) over the whole recall range, the second is speed in frames per second, and the third is the maximum recall each method reaches, meaning the largest share of the human-marked boundary pixels it finds. The paper prints speed as a fraction for the slower methods: 1/47 for ours and 1/240 for gPb."
+  },
+  {
+   "table": {
+    "caption": "Average precision, speed and maximum recall of nine contour detectors on BSDS300",
+    "source": "Table I",
+    "head": [
+     "Method",
+     "Average precision (AP)",
+     "Speed (FPS)",
+     "Maximum recall"
+    ],
+    "rows": [
+     [
+      "gPb",
+      "0.68",
+      "1/240",
+      "0.92"
+     ],
+     [
+      "Our approach",
+      "0.65",
+      "1/47",
+      "0.91"
+     ],
+     [
+      "EDContours",
+      "0.62",
+      "1/2",
+      "0.87"
+     ],
+     [
+      "Setayesh et al.",
+      "0.61",
+      "1/32",
+      "0.85"
+     ],
+     [
+      "Canny",
+      "0.58",
+      "15",
+      "0.96"
+     ],
+     [
+      "Mean Shift",
+      "0.54",
+      "-",
+      "0.82"
+     ],
+     [
+      "Felz-Hutt",
+      "0.53",
+      "10",
+      "0.99"
+     ],
+     [
+      "Sobel",
+      "0.49",
+      "32",
+      "0.97"
+     ],
+     [
+      "Normalized Cuts",
+      "0.43",
+      "-",
+      "0.91"
+     ]
+    ],
+    "note": "All rows of Table I of the paper. A dash means the paper gives no speed."
+   }
+  },
+  {
+   "p": "Our maximum recall is 0.91, next to gPb's 0.92. Felz-Hutt (0.99), Sobel (0.97) and Canny (0.96) reach higher recall but have lower average precision (Table I). The table also lists classic detectors that run faster than ours, such as Canny at 15 and Sobel at 32, which score 0.58 and 0.49 in average precision (Table I). The paper makes its speed comparison with gPb, which it says suffers from inordinate time complexity."
+  },
+  {
+   "p": "The detector was tuned on the 200 BSDS300 training images. Grouping them by scene type gave 11 groups. When we searched for the best superpixel count of each training image, we gave recall extra weight, setting the weighting parameter to 3, so that salient edges are not lost. The search covered counts from 1 up to about 6176, in steps of 20. That upper limit assumes that the smallest object in a 481 by 321 image covers at least 25 pixels."
+  },
+  {
+   "p": "Performance is scored with precision, the share of detected edge pixels that are true, and recall, the share of the ground-truth edge pixels that are found. The F-measure, their harmonic mean, is our evaluation metric. All the boundaries the human annotators marked count as valid, and the average precision is taken over the entire recall range. Figure 4 of the paper plots the precision-recall curve of our detector."
+  },
+  {
+   "figure": {
+    "src": "img/multi-cue-contour-detection/precision-recall.png",
+    "alt": "Plot of precision on the vertical axis against recall on the horizontal axis, both from 0 to 1, with a red curve that falls as recall rises and a box labelled F = 0.65 Our Approach.",
+    "caption": "Precision against recall for our detector on BSDS300, with the F = 0.65 label as printed in the paper.",
+    "source": "Fig. 4"
+   }
+  },
+  {
+   "h2": "Discussion"
+  },
+  {
+   "p": "The conclusion of the paper is that our approach captures object boundaries efficiently and keeps spurious edges to a minimum, while achieving state-of-the-art accuracy. We describe the results as preliminary. They put the detector second of nine in average precision, behind gPb (Table I), and they are adequate, we say, to underscore the significance of using several cues at once."
+  },
+  {
+   "p": "The paper gives three reasons for the design. Colour channels, including hue, separate neighbouring objects that have similar brightness but different colours. Earlier multi-channel methods average the channels with equal weight, which ignores that some cues matter more than others, so we learn the weights by gradient ascent on the F-measure. And superpixels bring in scene-level context. Their borders tend to follow real object borders, we choose their number by scene type, and edges far from those borders are dropped as outliers."
+  },
+  {
+   "p": "We did not use texture. As future work we plan to add a texture channel to carry texture-level information, followed by region information based on the correlation between the colour channels, to capture more semantic information."
   },
   {
    "p": "In the paper's conclusion, combining several cues with scene-level superpixel context captures object boundaries while keeping spurious edges down."
