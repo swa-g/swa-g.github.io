@@ -1,0 +1,94 @@
+{
+ "slug": "thermal-crf-night-segmentation",
+ "title": "Using heat images to sharpen street-scene segmentation at night",
+ "paper_title": "Using thermal intensities to build conditional random fields for object segmentation at night",
+ "date": "2020-02-27",
+ "date_note": "CINE 2020 (4th Int. Conf. on Computational Intelligence and Networks), Kolkata, 27-29 Feb 2020 (from knowledge of the venue; PDF shows only the 2020 IEEE copyright line)",
+ "venue": "4th International Conference on Computational Intelligence and Networks (CINE 2020)",
+ "detail": "",
+ "authors": "A Dutta, B Mandal, Swarnendu Ghosh, N Das",
+ "url": "https://doi.org/10.1109/cine48825.2020.234402",
+ "tags": [
+  "segmentation",
+  "thermal imaging",
+  "autonomous driving",
+  "multispectral imaging"
+ ],
+ "kind": "article",
+ "summary": "After dark, ordinary cameras struggle to separate people and objects. We paired a small colour-plus-thermal network with a clean-up step guided by thermal images, and it labelled night scenes best of those we tried.",
+ "body": [
+  {
+   "p": "After dark, a normal camera sees very little, but a thermal camera still picks out warm things such as people. We built a small network that reads both a colour image and a thermal image of a street and labels every pixel with an object type. We then cleaned up the result using the thermal image to decide where object edges lie. At night, this gave the best scores of the networks we compared."
+  },
+  {
+   "h2": "The problem"
+  },
+  {
+   "p": "Night surveillance is a major use of thermal imaging, because the visible spectrum fails in poor light. Our task was <i>semantic segmentation</i>, which means giving each pixel of a street scene a label such as person, car or bike. The simplest way to use two kinds of image is to stack them into one four-channel input. But the three colour channels depend on each other, while a thermal channel records surface and temperature properties and need not line up with colour pixel by pixel. So we gave each its own encoder."
+  },
+  {
+   "h2": "How it works"
+  },
+  {
+   "p": "The network has two encoders, one for the colour image and one for the thermal image. Both follow the compact SegFast design from our earlier work, which uses cheap depth-wise separable convolutions inside Spark modules. A single decoder then enlarges the features, and at each size it joins the features from both encoders. The last layer gives a label for each pixel."
+  },
+  {
+   "figure": {
+    "src": "img/thermal-crf-night-segmentation/architecture.png",
+    "alt": "Architecture diagram: an RGB encoder on top and a thermal encoder at the bottom both send copied features into a central decoder, which ends in a classifier.",
+    "caption": "Two separate encoders look at the colour and thermal images. The decoder in the middle merges their features at several sizes."
+   }
+  },
+  {
+   "p": "The outlines from a network like this can still be ragged. A <i>conditional random field</i>, or CRF, is a post-processing step that tidies them. It treats neighbouring pixels as linked: nearby pixels with similar intensity should usually share a label. Normally the intensity is taken from the input picture, here the colour image. Our change was to compute that similarity from the thermal image instead. The network's own predictions stay as they are and serve as the starting guess."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "We used a street-scene data set of 1,563 images, 820 taken by day and 743 at night, split roughly 2:1:1 into training, validation and test sets. We compared against SegNet, MFNet and RTFNet, applying both kinds of CRF to all four networks. The tables report average accuracy and mean intersection over union (IoU), which scores how well each predicted region overlaps the true one."
+  },
+  {
+   "p": "On the night images our network with the thermal CRF reached an average accuracy of 0.8185 and a mean IoU of 0.6438. With the colour CRF it got 0.7340 and 0.5784, and with no CRF 0.6119 and 0.5681. The best competitor with the thermal CRF, RTFNet, scored 0.7687 and 0.6293. On the full day-and-night set, our network scored 0.7398 and 0.6333 with the thermal CRF."
+  },
+  {
+   "figure": {
+    "src": "img/thermal-crf-night-segmentation/samples.jpg",
+    "alt": "Grid of two day and two night street scenes showing the colour image, thermal image, true labels, and predictions from SegNet, RTFNet, MFNet and the proposed network with RGB or thermal CRF.",
+    "caption": "In the night scenes, the thermal image shows people clearly even when the colour image is nearly black. The last row is the proposed network with thermal-based refinement."
+   }
+  },
+  {
+   "callout": "At night, our network with a thermal-based CRF reached an average accuracy of 0.8185 and a mean IoU of 0.6438, the best of the compared models."
+  },
+  {
+   "p": "The network is also small. It has 2.05 million parameters and 23.71 GFlops, against 29.45 million and 189.85 for SegNet, and 254.51 million and 337.46 for RTFNet."
+  },
+  {
+   "figure": {
+    "src": "img/thermal-crf-night-segmentation/params.png",
+    "alt": "Bar chart of parameters in millions and GFlops for the proposed network, SegNet, RTFNet and MFNet.",
+    "caption": "The proposed network is far smaller than SegNet and RTFNet, but larger than MFNet."
+   }
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "The benefit of thermal information depends on the time of day. In the daytime, sunlight and shadows make thermal images noisy, and the colour image carries more reliable information. Averaged over the four networks, the colour CRF did a little better by day, and for our network the day-time mean IoU even fell from 0.5259 without a CRF to 0.4601 and 0.4510 with the colour and thermal versions."
+  },
+  {
+   "p": "Results also vary by network. Across the four networks at night, the thermal CRF beat the colour CRF on average (0.7135 against 0.6942 in accuracy). But for RTFNet and SegNet individually, the colour CRF scored slightly higher. The gain for our network came from combining the two-encoder design with the thermal CRF, not from the CRF alone."
+  },
+  {
+   "p": "The authors suggest the next step is a more efficient way of extracting features from several spectra, which would give better starting predictions for the CRF."
+  }
+ ],
+ "acknowledgements": "",
+ "links": [
+  {
+   "label": "Publisher page (IEEE)",
+   "url": "https://doi.org/10.1109/cine48825.2020.234402"
+  }
+ ]
+}

@@ -1,0 +1,102 @@
+{
+ "slug": "segmentation-survey-deep-learning",
+ "title": "A plain-language tour of how deep networks learned to label every pixel",
+ "paper_title": "Understanding deep learning techniques for image segmentation",
+ "date": "2019-08-15",
+ "date_note": "ACM Computing Surveys 52(4), Article 73, publication date August 2019 (from the published PDF; accepted May 2019); mid-month day chosen",
+ "venue": "ACM Computing Surveys (CSUR)",
+ "detail": "Vol. 52, No. 4, pp. 1–35 · ACM",
+ "authors": "Swarnendu Ghosh, N Das, I Das, U Maulik",
+ "url": "https://doi.org/10.1145/3329784",
+ "tags": [
+  "segmentation",
+  "survey"
+ ],
+ "kind": "article",
+ "summary": "A survey that explains why deep-learning segmentation methods are built the way they are, from FCN and U-Net to GANs, weak supervision and tiny networks, with simple diagrams in one common format.",
+ "body": [
+  {
+   "p": "Image segmentation means giving every pixel in a picture a label, so that a road, a person or a tumour comes out as a clean region. Deep learning has produced dozens of ways to do this, and the papers describing them are hard going for newcomers. We wrote this survey to explain, in simple language, why each major method is designed the way it is, what it gets right and where it fails."
+  },
+  {
+   "h2": "What segmentation is"
+  },
+  {
+   "p": "In the classic version, called semantic segmentation, each pixel is assigned to one of a fixed set of classes such as road, sky or car. The survey is careful to say that the right labels depend on the job. A pedestrian detector wants the whole person as one segment. A system that recognises actions may need arms and legs as separate ones. Other variants include saliency detection (find the most eye-catching object) and instance segmentation (give each individual car its own mask, which is needed for counting)."
+  },
+  {
+   "figure": {
+    "src": "img/segmentation-survey-deep-learning/segmentation-example.jpg",
+    "alt": "A street photo on the left and, on the right, the same scene as a colour-coded map in which road, sky, trees, poles, traffic lights and kerb are separate coloured regions.",
+    "caption": "Semantic segmentation: the photo (left) becomes a map (right) in which every pixel carries a class label. The samples are from the Mapillary Vistas dataset."
+   }
+  },
+  {
+   "p": "Before deep learning, people used thresholding, clustering, edge detection, region growing and similar methods. They share one weakness. They depend on features that a human expert chose, and people miss subtle patterns. A convolutional neural network (CNN) learns its own features instead. It slides small filters over the image, and training adjusts the filters to whatever helps the task. Our supplementary section gives a refresher on the older methods."
+  },
+  {
+   "h2": "Why convolutions suit the task"
+  },
+  {
+   "p": "A trained CNN already produces something close to a segmentation. Each filter outputs an activation map, an image showing where a particular pattern was found. In early layers these maps pick out contours and small parts, such as a T-shirt. In later layers they light up on larger things such as people, sky or grass, but with blurrier edges. Most segmentation methods start from this property and try to turn the maps into clean masks."
+  },
+  {
+   "figure": {
+    "src": "img/segmentation-survey-deep-learning/activation-maps.jpg",
+    "alt": "A photo of two children and a dog running in a field, followed by five grey-scale activation maps. Top row: maps from early layers that show contours and clothing. Bottom row: maps from later layers that light up on the field, on the children and on the sky.",
+    "caption": "Activation maps from one CNN. Early layers (top row) are sharp and local. Later layers (bottom row) respond to whole objects, but less crisply."
+   }
+  },
+  {
+   "h2": "The families of methods"
+  },
+  {
+   "p": "We grouped the methods by their main idea and drew almost all the networks in one shared visual format, so that similarities and differences are easy to see."
+  },
+  {
+   "ul": [
+    "<b>CNN-based.</b> FCN removes the final fully connected layers and classifies pixels directly. It scored a pixel accuracy of 90.3% and a mean IoU of 62.7% on PASCAL VOC 2011. Region-proposal networks such as Mask R-CNN add a branch that masks each detected object. DeepLab uses atrous (dilated) convolutions, which widen a filter's field of view without adding parameters, and reached a mean IoU of 79.7 on PASCAL VOC 2012.",
+    "<b>Encoder-decoder.</b> The encoder compresses the image and the decoder expands it back to a full-size label map. This frees the network from a fixed input size. SegNet forwards the positions of max-pooling winners to the decoder. U-Net copies whole feature maps across, so fine detail survives.",
+    "<b>Adversarial.</b> A discriminator network tries to tell the ground-truth masks from the predicted ones, which pushes the segmenter to produce realistic masks.",
+    "<b>Sequential.</b> Convolutional LSTMs and attention models pick out instances of an object one after another.",
+    "<b>Weak, unsupervised and interactive.</b> These need fewer or coarser labels. BoxSup trains from bounding boxes and reached a mean IoU of 75.1 on PASCAL VOC 2012, against 62.2 for FCN. W-Net chains two U-Nets and needs no labels at all. Deep Extreme Cut asks the user for four clicks on the extremes of an object.",
+    "<b>Efficient.</b> ENet has 0.37 million parameters. Deep Layer Cascade handles easy pixels early and spends effort only on hard ones, reaching 23.6 frames per second against 14.6 for SegNet. Our own SegFast has about 0.6 million parameters and runs a forward pass in around 0.38 seconds without a GPU."
+   ]
+  },
+  {
+   "figure": {
+    "src": "img/segmentation-survey-deep-learning/unet.png",
+    "alt": "Diagram of the U-Net. A left-to-right encoding row of blocks that shrink step by step, and a right-to-left decoding row that grows them back. Magenta arrows copy feature maps from each encoder stage across to the matching decoder stage.",
+    "caption": "U-Net in our common diagram style. The magenta arrows are the skip connections that carry sharp detail from the encoder across to the decoder."
+   }
+  },
+  {
+   "h2": "What we concluded"
+  },
+  {
+   "callout": "Methods that need few labels, or none, are still far from saturated, and annotating pixels by hand remains the main cost."
+  },
+  {
+   "p": "Choosing a method means weighing several things. One is how much labelled data you have. Another is whether you can start from a pre-trained network. A third is whether you need instances or only classes, and how much speed matters. Encoder-decoder networks and fully convolutional ones are the usual choice for semantic segmentation. Instance-level work normally adds detection, attention or recurrent parts. For speed, depth-wise separable convolutions and kernel factorization cut parameters a lot without hurting performance too much. GANs were popular in general at the time, yet only a handful of segmentation approaches used them, so we saw room there."
+  },
+  {
+   "p": "The survey also covers applications: image retrieval, medical imaging, object detection, forensics and surveillance. A table lists public datasets for each, from natural scenes and driving to aerial, medical, saliency and scene text."
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "This is a theoretical survey. We explain and compare ideas, but we did not re-run the methods side by side. The numbers quoted above are the ones reported in the original works, and they come from different benchmarks, so please do not read them as a league table. We suggested that an empirical comparison of the discussed methods could follow."
+  },
+  {
+   "p": "The paper is aimed at researchers who want to build new methods, since knowing why a design works is the starting point for improving it."
+  }
+ ],
+ "acknowledgements": "This work was partially supported by project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors also thank the reviewers for their valuable suggestions, which helped to improve the quality of the manuscript.",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1145/3329784"
+  }
+ ]
+}

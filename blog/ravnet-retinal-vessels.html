@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Using a vessel mask as a hint to tell arteries from veins in eye scans | Swarnendu Ghosh</title>
+  <meta name="description" content="RavNet uses two U-Nets in a row. The first finds where the vessels are, and the second uses that map to label arteries and veins separately in infrared scans of the retina.">
+  <meta name="author" content="Swarnendu Ghosh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://swarnendughosh.com/blog/ravnet-retinal-vessels.html">
+  <meta property="og:site_name" content="Swarnendu Ghosh">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Using a vessel mask as a hint to tell arteries from veins in eye scans | Swarnendu Ghosh">
+  <meta property="og:description" content="RavNet uses two U-Nets in a row. The first finds where the vessels are, and the second uses that map to label arteries and veins separately in infrared scans of the retina.">
+  <meta property="og:url" content="https://swarnendughosh.com/blog/ravnet-retinal-vessels.html">
+  <meta property="og:image" content="https://swarnendughosh.com/blog/img/ravnet-retinal-vessels/model2.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-192.png?v=2" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/blog.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Using a vessel mask as a hint to tell arteries from veins in eye scans", "description": "RavNet uses two U-Nets in a row. The first finds where the vessels are, and the second uses that map to label arteries and veins separately in infrared scans of the retina.", "datePublished": "2024-12-13", "dateModified": "2024-12-13", "inLanguage": "en", "author": {"@type": "Person", "name": "Swarnendu Ghosh", "url": "https://swarnendughosh.com/"}, "mainEntityOfPage": "https://swarnendughosh.com/blog/ravnet-retinal-vessels.html", "image": "https://swarnendughosh.com/blog/img/ravnet-retinal-vessels/model2.png", "keywords": "medical imaging, segmentation, ophthalmology", "about": {"@type": "ScholarlyArticle", "name": "RavNet: Conditioning Retinal Vessel Identification Using a Cascaded Multi-objective U-Net", "author": "Swarnendu Ghosh, C Das", "url": "https://doi.org/10.1007/978-981-96-8309-3_5"}}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Swarnendu Ghosh, home"><img class="mark" src="../assets/brand/signature-nav.svg?v=2" alt="" width="62" height="36">Swarnendu Ghosh</a>
+      <div class="nav-right">
+        <nav id="nav-links" class="nav-links" aria-label="Primary"><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">About<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#about">About me</a><a href="../#experience">Experience</a><a href="../#education">Education</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">Research<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#research">Research areas</a><a href="../#projects">Projects</a><a href="../#publications">Publications</a><a href="index.html">Blog</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">People<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#people">Collaborators</a><a href="../#testimonials">Testimonials</a></div></div><a href="../#contact">Contact</a></nav>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="menu-toggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="blog-main">
+    <div class="wrap">
+<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p><div class="tags"><span>medical imaging</span><span>segmentation</span><span>ophthalmology</span></div><h1>Using a vessel mask as a hint to tell arteries from veins in eye scans</h1><p class="byline"><span>By Swarnendu Ghosh</span><time datetime="2024-12-13">13 December 2024</time><span>3 min read</span></p><aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">RavNet: Conditioning Retinal Vessel Identification Using a Cascaded Multi-objective U-Net</div><div class="pa"><b>Swarnendu Ghosh</b>, C Das</div><div class="pv">5th International Conference on Frontiers in Computing and Systems (COMSYS 2024), Vol. 1, pp. 75–87 · Springer · 2024</div><div class="paper-links"><a href="https://doi.org/10.1007/978-981-96-8309-3_5" target="_blank" rel="noopener">Publisher page</a></div></aside><div class="prose"><p>The retina is the only place where tiny blood vessels can be seen directly, without surgery. Doctors read it for signs of diabetes, high blood pressure and even leukemia. We built RavNet, a pair of neural networks that first finds all the vessels in an infrared eye scan and then uses that result to mark arteries and veins separately.</p><h2>The problem</h2><p>Changes in the vessels, such as narrowing or leakage, can point to disease, so the retina works as a window into the body's small blood vessels. Marking each pixel of a scan as artery, vein or background is called segmentation. Doing it by hand takes time, and doing it automatically is what we aimed for.</p><p>We worked with the RAVIR dataset. It holds 46 infrared images taken with a scanning laser ophthalmoscope, a device that sweeps a laser over the retina. The images come from the UCLA Stein Eye Institute and have high contrast. Since 46 images is few, we enlarged the training set with flips and rotations.</p><h2>The idea</h2><p>The standard tool for this job is the U-Net. It is shaped like the letter U. An encoder shrinks the image step by step to capture what is in it, and a decoder expands it back to a full-size label map. Shortcuts called skip connections carry fine detail across the U.</p><p>Deciding vessel or no vessel is a simpler question than deciding artery, vein or background. So the first U-Net only produces a binary mask. We then stack that mask with the original scan and give both to a second network as a hint about where to look.</p><figure><div class="frame"><img src="img/ravnet-retinal-vessels/model2.png" alt="Pipeline diagram: an eye scan goes through a first encoder-decoder to give a binary vessel mask; the scan and mask are stacked and fed to a second encoder that feeds an artery decoder, a vein decoder and an image-reconstruction decoder." width="1113" height="703" loading="lazy" decoding="async"></div><figcaption>The cascade. The first network makes a vessel mask. The second network gets the scan plus that mask and has three decoders.<span class="src">Figure from the paper.</span></figcaption></figure><h2>How it works</h2><p>The second network has one encoder and three decoders. One decoder outputs arteries and one outputs veins. The third rebuilds the input scan, and the paper uses this extra task to regularize the outputs, meaning to keep the network from over-fitting.</p><p>Both networks use residual blocks, dropout and batch normalization, and the encoder works at six resolutions. For training, vessel pixels get a weight of 0.75 in the cross-entropy loss, because they matter most. We combined binary cross-entropy and Dice loss for the vessel outputs and mean squared error for the reconstruction. Dice measures overlap: twice the shared area divided by the total area of both masks.</p><h2>What we found</h2><p>We compared RavNet with four U-Net variants on scans the models had not seen. Its Dice score was the highest for both vessel types. For arteries, RavNet reached 0.7790, against 0.7510 for the plain U-Net and 0.7621 for the best of the others, R2U-Net. For veins it reached 0.7890, against 0.7674 and 0.7826.</p><div class="callout">Dice scores: 0.7790 for arteries and 0.7890 for veins, the best in the comparison with U-Net, Dense U-Net, Residual U-Net and R2U-Net.</div><figure><div class="frame"><img src="img/ravnet-retinal-vessels/output.jpg" alt="Four rows of retinal scans; the columns show the original image, the annotated mask, and RavNet&#x27;s artery and vein outputs." width="1040" height="954" loading="lazy" decoding="async"></div><figcaption>Four example scans. From left: the original image, the annotated mask, and RavNet's artery and vein extractions.<span class="src">Figure from the paper.</span></figcaption></figure><h2>What it does not do</h2><p>The picture is mixed on the other measures. For veins, RavNet had the highest specificity (0.9929) but the lowest sensitivity of the five models (0.7385), so it misses more true vein pixels. For arteries, R2U-Net had slightly higher accuracy (0.9706 against 0.9701). The Dice gains over R2U-Net are 0.017 for arteries and 0.006 for veins. The paper reports no statistical test and uses a small dataset, so these are modest differences. Among its listed next steps are stronger augmentation, other imaging types, real-time use, transfer learning and clinical validation, none of which we have done.</p><p>The idea behind the cascade is simple: one network's answer becomes the next network's input. The motivation is access. The paper points to automated screening in remote or underserved areas, where no specialist is on hand.</p></div><details class="cite-box"><summary>How to cite the paper</summary><pre>Swarnendu Ghosh, C Das (2024). RavNet: Conditioning Retinal Vessel Identification Using a Cascaded Multi-objective U-Net. 5th International Conference on Frontiers in Computing and Systems (COMSYS 2024), Vol. 1, pp. 75–87 · Springer.</pre></details></article><nav class="pager" aria-label="More articles"><a href="hilex-exam-paper-layouts.html"><small>Newer</small>Teaching computers to see the structure of an exam paper</a><a class="next" href="leukemia-compact-cnn.html"><small>Older</small>A small neural network that spots leukemia cells with a fifth of the parameters</a></nav>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <span>© 2026 Swarnendu Ghosh</span>
+        <span>Faculty of Computer and Information Science, University of Ljubljana</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/blog.js"></script>
+</body>
+</html>

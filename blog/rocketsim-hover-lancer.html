@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why a rocket that learned to fly could not learn to hover | Swarnendu Ghosh</title>
+  <meta name="description" content="A short guide to the RocketSim paper: a learning agent kept a booster upright but could not hold its height, and why. The full write-up is on the LANCER project page.">
+  <meta name="author" content="Swarnendu Ghosh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://swarnendughosh.com/blog/rocketsim-hover-lancer.html">
+  <meta property="og:site_name" content="Swarnendu Ghosh">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Why a rocket that learned to fly could not learn to hover | Swarnendu Ghosh">
+  <meta property="og:description" content="A short guide to the RocketSim paper: a learning agent kept a booster upright but could not hold its height, and why. The full write-up is on the LANCER project page.">
+  <meta property="og:url" content="https://swarnendughosh.com/blog/rocketsim-hover-lancer.html">
+  <meta property="og:image" content="https://swarnendughosh.com/blog/img/rocketsim-hover-lancer/flights.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-192.png?v=2" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/blog.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Why a rocket that learned to fly could not learn to hover", "description": "A short guide to the RocketSim paper: a learning agent kept a booster upright but could not hold its height, and why. The full write-up is on the LANCER project page.", "datePublished": "2026-10-08", "dateModified": "2026-10-08", "inLanguage": "en", "author": {"@type": "Person", "name": "Swarnendu Ghosh", "url": "https://swarnendughosh.com/"}, "mainEntityOfPage": "https://swarnendughosh.com/blog/rocketsim-hover-lancer.html", "image": "https://swarnendughosh.com/blog/img/rocketsim-hover-lancer/flights.png", "keywords": "reinforcement learning, rockets, lancer", "about": {"@type": "ScholarlyArticle", "name": "RocketSim: Benchmarking Reinforcement-Learning Hover Control of a Reusable Booster", "author": "Swarnendu Ghosh, David Muhič, Branko Šter"}}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Swarnendu Ghosh, home"><img class="mark" src="../assets/brand/signature-nav.svg?v=2" alt="" width="62" height="36">Swarnendu Ghosh</a>
+      <div class="nav-right">
+        <nav id="nav-links" class="nav-links" aria-label="Primary"><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">About<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#about">About me</a><a href="../#experience">Experience</a><a href="../#education">Education</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">Research<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#research">Research areas</a><a href="../#projects">Projects</a><a href="../#publications">Publications</a><a href="index.html">Blog</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">People<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#people">Collaborators</a><a href="../#testimonials">Testimonials</a></div></div><a href="../#contact">Contact</a></nav>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="menu-toggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="blog-main">
+    <div class="wrap">
+<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p><div class="tags"><span>reinforcement learning</span><span>rockets</span><span>lancer</span></div><h1>Why a rocket that learned to fly could not learn to hover</h1><p class="byline"><span>By Swarnendu Ghosh</span><time datetime="2026-10-08">8 October 2026</time><span>2 min read</span></p><aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">RocketSim: Benchmarking Reinforcement-Learning Hover Control of a Reusable Booster</div><div class="pa"><b>Swarnendu Ghosh</b>, David Muhič, Branko Šter</div><div class="pv">29th International Multiconference Information Society (IS 2026), Vol. 1, pp. 64–67 · 2026</div><div class="paper-links"><a href="../LANCER/paper-rocketsim.html">LANCER page: full write-up</a><a href="../LANCER/papers/rocketsim-is2026.pdf">Paper (PDF)</a></div></aside><div class="prose"><p>This paper is part of <b>LANCER</b>, my research project at the University of Ljubljana on teaching autonomous vehicles to navigate difficult environments with reinforcement learning, meaning learning by trial and error against a reward. Most of the project is about cars. This paper steps sideways to a rocket booster, because a rocket makes one problem very visible: what happens when the reward does not tell the learner clearly what you want.</p><h2>The question</h2><p>Studies of reusable rockets usually ask a learning agent to land. Landing gives it a clear goal: touch down gently. We asked something harder to define. Release a booster at 80 metres and ask it to hold 30 metres above the pad. Nothing special happens at 30 metres, so there is no moment that says “well done”. We built a simulator called <b>RocketSim</b> in the Unity game engine and trained a standard algorithm, PPO, to do it.</p><figure><div class="frame"><img src="img/rocketsim-hover-lancer/flights.png" alt="Five test flights of one trained agent: the plan views show tight lateral control while the altitude traces sag below the 30 metre target, approach the ground, then climb to the ceiling." width="1800" height="725" loading="lazy" decoding="async"></div><figcaption>Five test flights of the same trained agent. It stays over the pad, but its height drifts from near the ground to the ceiling.<span class="src">Figure from the paper.</span></figcaption></figure><h2>What happened</h2><p>The agent learned to stay upright, stay over the pad and keep flying until its fuel ran out. It did not learn to hold the height. With nothing changed except the random seed, the average height error across five training runs ranged from 24 to 105 metres, even though their scores were within 10% of each other.</p><p>We found two separate causes. The reward barely changes with height unless the rocket is very close to the target, so the learner has nothing to follow. And the engine cannot throttle below 39% of its power, so once the booster is lighter than 33.6 tonnes, no setting can hold it in place for the last 55% of the burn. We tried to repair both. Reshaping the reward cut the average error from 36 to 6 metres but still stranded one run in five.</p><p>The lesson: hovering has to be fixed in the reward and in the vehicle together. The project page has the rest.</p></div><div class="cta"><a href="../LANCER/paper-rocketsim.html">Read the full write-up on the LANCER page</a></div><section class="ack"><h2>Acknowledgements</h2><p>This work was co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. It was also supported by the Slovenian Research and Innovation Agency (ARIS), research programme P2-0241, Synergetics of complex systems and processes. Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.</p></section><details class="cite-box"><summary>How to cite the paper</summary><pre>Swarnendu Ghosh, David Muhič, Branko Šter (2026). RocketSim: Benchmarking Reinforcement-Learning Hover Control of a Reusable Booster. 29th International Multiconference Information Society (IS 2026), Vol. 1, pp. 64–67.</pre></details></article><nav class="pager" aria-label="More articles"><a href="dementia-progression-windows.html"><small>Newer</small>Predicting when mild cognitive impairment may become dementia, as a window of years</a><a class="next" href="posthoc-corruptions-lancer.html"><small>Older</small>Darkening a photo is not the same as driving at night</a></nav>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <span>© 2026 Swarnendu Ghosh</span>
+        <span>Faculty of Computer and Information Science, University of Ljubljana</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/blog.js"></script>
+</body>
+</html>

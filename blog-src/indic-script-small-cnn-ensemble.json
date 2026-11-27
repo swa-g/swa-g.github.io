@@ -1,0 +1,107 @@
+{
+ "slug": "indic-script-small-cnn-ensemble",
+ "title": "Telling eleven handwritten Indian scripts apart with a team of small neural networks",
+ "paper_title": "Improved word-level handwritten Indic script identification by integrating small convolutional neural networks",
+ "date": "2019-03-06",
+ "date_note": "Neural Computing and Applications, published online 6 March 2019 (accepted 22 Feb 2019); the paper sits in the Vol. 32 (2020) issue.",
+ "venue": "Neural Computing and Applications",
+ "detail": "Vol. 32, No. 7, pp. 2829–2844 · Springer",
+ "authors": "S Ukil, Swarnendu Ghosh, SM Obaidullah, KC Santosh, K Roy, N Das",
+ "url": "https://doi.org/10.1007/s00521-019-04111-1",
+ "tags": [
+  "handwriting",
+  "script identification",
+  "ensembles",
+  "wavelets"
+ ],
+ "kind": "article",
+ "summary": "Which of eleven Indian scripts is a handwritten word written in? A team of small networks, each trained on a modest GPU, answered correctly about 95% of the time on a public word dataset.",
+ "body": [
+  {
+   "p": "A bank cheque or a postal card in India can mix several scripts on one page. Before software can read such a document, it has to know which script each word is written in. We tackled that for eleven Indian scripts with a team of small convolutional neural networks (CNNs), instead of one big network, so that the whole thing trains on a cheap graphics card."
+  },
+  {
+   "h2": "The problem"
+  },
+  {
+   "p": "India has many scripts, and they share ancestry, so many letter shapes look alike. Handwriting makes it harder: pens differ, writers differ, and the same writer changes from day to day. Doing this for a whole page is too coarse, because one page can change script from line to line or even word to word. So we worked on single words."
+  },
+  {
+   "p": "We used the public PHDIndic_11 collection: 11,000 word images, 1,000 for each of Bangla, Devanagari, Gujarati, Gurumukhi, Kannada, Malayalam, Oriya, Roman, Tamil, Telugu and Urdu. We trained on 8,800 words and tested on the other 2,200."
+  },
+  {
+   "h2": "The idea"
+  },
+  {
+   "p": "A CNN learns to spot patterns by sliding small filters over an image. Deep ones usually need strong, expensive GPUs. We kept every network small and made them different from each other in three ways, then let them work as a committee."
+  },
+  {
+   "ul": [
+    "<b>Depth:</b> two or three layers of convolution and pooling.",
+    "<b>Size:</b> the word image is shrunk to 32×32, 64×64 or 128×128 pixels. A filter covers a larger part of a small image, so each size sees the word differently.",
+    "<b>Wavelets:</b> the image is either left as it is, or passed through a seven-level Haar wavelet transform."
+   ]
+  },
+  {
+   "p": "The wavelet step needs a word of explanation. It splits an image into a blurry, smoothed version and the details, which are mostly edges. We dropped the smoothed part and rebuilt the image from the details alone. The page background fades and the pen strokes stay. That should help a small network, which has little room to learn how to ignore a noisy background on its own."
+  },
+  {
+   "p": "Two depths, three sizes and two kinds of input give twelve networks."
+  },
+  {
+   "figure": {
+    "src": "img/indic-script-small-cnn-ensemble/twelve-networks.png",
+    "alt": "Flow diagram. An input image is rescaled to 128 by 128, then either goes straight on or through a Haar wavelet transformation. Each branch is resized to 32, 64 and 128 pixels and feeds a depth-2 and a depth-3 network, giving twelve networks.",
+    "caption": "The twelve networks: raw images on the left in orange, wavelet-reconstructed images on the right in blue."
+   }
+  },
+  {
+   "figure": {
+    "src": "img/indic-script-small-cnn-ensemble/wavelet-views.jpg",
+    "alt": "Top row: four handwritten word images on a light background. Bottom row: the same words as bright outlines on a dark background after the wavelet reconstruction.",
+    "caption": "Original words on top and the same words rebuilt from wavelet details below. The background is gone and the strokes remain."
+   }
+  },
+  {
+   "h2": "Combining the answers"
+  },
+  {
+   "p": "Each network produces eleven probabilities, one per script. We tried three ways of combining the twelve answers. In max-voting each network votes for its top script and the most popular script wins. In probabilistic voting we average the probabilities and take the largest. In the third method we take the 1024 numbers each network computes just before its final layer and feed them all to a small separate classifier. Each network was trained on its own beforehand. We trained with the Adam optimiser on an Nvidia GT 730 with 4 GB of memory, a card the paper prices at around 90 US dollars."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "Single networks scored between 75.5% and 92.2% accuracy. Merging networks almost always helped, which tells us they make different mistakes. One exception: merging the 64 and 128 pixel wavelet networks lowered accuracy, because the 128 pixel wavelet network did poorly. Wavelets helped most at medium image sizes and hurt at the largest."
+  },
+  {
+   "p": "Averaging probabilities worked best, at about 95% accuracy. Taking the most confident network (max-voting) came close, and simply joining the networks' features (feature concatenation) was a little behind."
+  },
+  {
+   "callout": "On the same word dataset, a feature-based method scored 91.00%, LeNet 82.00% and AlexNet 92.14%. Our probability-averaging team scored 95.45%."
+  },
+  {
+   "figure": {
+    "src": "img/indic-script-small-cnn-ensemble/combination-results.png",
+    "alt": "Bar chart with three groups, CNN max, CNN prob and CNN feat, each showing accuracy, precision, recall and F-measure between about 94.5 and 95.5 percent. CNN prob is highest.",
+    "caption": "The three ways of combining the networks. Probability averaging is highest on all four measures."
+   }
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "Not all scripts are equal. Bangla was the hardest, with an F-measure of 0.888, and Telugu the easiest at 0.991. All of this concerns single words in one dataset of 11,000 images, so it says little about other handwriting collections. We also trained each network separately. Training them together against a common loss would probably have given better features, as the paper says, but we wanted networks that can be trained one by one on small hardware."
+  },
+  {
+   "p": "A group of small, different networks was enough to beat a larger one here. That makes script identification feasible on modest hardware."
+  }
+ ],
+ "acknowledgements": "This work was partially supported by the project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors also thank the reviewers for their valuable suggestions, which helped to improve the quality of the manuscript.",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1007/s00521-019-04111-1"
+  }
+ ]
+}

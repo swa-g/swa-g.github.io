@@ -1,0 +1,57 @@
+{
+ "slug": "posthoc-corruptions-lancer",
+ "title": "Darkening a photo is not the same as driving at night",
+ "paper_title": "Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving",
+ "date": "2026-10-07",
+ "date_note": "Information Society 2026 multiconference, Ljubljana, early October 2026 (proceedings Vol. 1, pp. 60-63); exact day approximate",
+ "venue": "29th International Multiconference Information Society (IS 2026)",
+ "detail": "Vol. 1, pp. 60–63",
+ "authors": "Swarnendu Ghosh, Branko Šter",
+ "url": "",
+ "tags": [
+  "autonomous driving",
+  "robustness",
+  "lancer"
+ ],
+ "kind": "explainer",
+ "summary": "A short guide to the post-hoc corruptions paper: a darkening filter and a simulated night look alike but test a driving agent very differently. Full write-up on the LANCER page.",
+ "cta": "Read the full write-up on the LANCER page",
+ "body": [
+  {
+   "p": "This paper belongs to <b>LANCER</b>, my project at the University of Ljubljana on autonomous navigation in complex environments using reinforcement learning. A part of that work is about testing: how do we know a camera-driven car will cope with night, fog or rain?"
+  },
+  {
+   "h2": "The shortcut we questioned"
+  },
+  {
+   "p": "The common shortcut is to take recorded footage and damage it with image filters, such as darkening it or adding a fog-like veil, then see how badly the vision network copes. It is cheap, but it assumes the filtered picture stands in for the real condition. We checked that assumption in a driving simulator that can produce night and fog in two ways: by filtering the finished picture, and by changing the lighting and air in the scene before it is rendered."
+  },
+  {
+   "figure": {
+    "src": "img/posthoc-corruptions-lancer/night-vs-filter.png",
+    "alt": "Two rows of frames: with simulated night the car leaves the road, while with the matched darkening filter it completes the run; for fog the physical condition and its filter look and behave alike.",
+    "caption": "The same road, agent and random seed. The simulated night puts the car off the road. The filter that matches it does not."
+   }
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "Fog passed the test: the real fog and its filter agree at every strength. Night did not. At a picture change of 38 grey levels, the simulated night cost nine independently trained agents 0.51 of their driving performance, while the matched darkening filter cost nothing measurable. All nine agents agreed (p = 0.004). Training with filters did not help either: an agent trained that way did slightly worse against physical conditions (8.68 laps out of ten, against 9.05 without it), while training on re-rendered conditions completed every lap."
+  },
+  {
+   "p": "So whether a filter is a fair stand-in depends on the physics of the condition it imitates. The details, including a distance-based test we tried and what it can and cannot tell you, are on the project page."
+  }
+ ],
+ "acknowledgements": "This work was co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. It was also supported by the Slovenian Research and Innovation Agency (ARIS), research programme P2-0241, Synergetics of complex systems and processes. Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.",
+ "links": [
+  {
+   "label": "LANCER page: full write-up",
+   "url": "../LANCER/paper-posthoc-corruptions.html"
+  },
+  {
+   "label": "Paper (PDF)",
+   "url": "../LANCER/papers/posthoc-corruptions-is2026.pdf"
+  }
+ ]
+}

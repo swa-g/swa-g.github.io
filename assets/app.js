@@ -41,6 +41,23 @@
     });
   }
 
+  /* ---------- Submenus (desktop: hover, focus or click; inside the mobile panel they are always expanded) ---------- */
+  var groups = $$(".nav-group", links || document);
+  function closeGroups(except) {
+    groups.forEach(function (g) { if (g !== except) { g.classList.remove("open"); $(".nav-btn", g).setAttribute("aria-expanded", "false"); } });
+  }
+  groups.forEach(function (g) {
+    var b = $(".nav-btn", g);
+    b.addEventListener("click", function () {
+      var open = !g.classList.contains("open");
+      closeGroups(g); g.classList.toggle("open", open); b.setAttribute("aria-expanded", String(open));
+    });
+    g.addEventListener("mouseenter", function () { b.setAttribute("aria-expanded", "true"); });
+    g.addEventListener("mouseleave", function () { b.setAttribute("aria-expanded", String(g.classList.contains("open"))); });
+  });
+  document.addEventListener("click", function (e) { if (!e.target.closest || !e.target.closest(".nav-group")) closeGroups(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeGroups(); });
+
   /* ---------- Email (assembled here so it isn't sitting in the HTML for scrapers) ---------- */
   var user = "dr.swarnendu.ghosh", host = "gmail.com";
   $$("[data-email]").forEach(function (el) {
@@ -186,7 +203,10 @@
           "Open PDF</a>"
         : '<a class="reqpdf" href="' + esc(reqHref(p)) + '" title="Opens an email draft to me asking for the PDF of this paper">' +
           '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>' +
-          "Request full PDF</a>") + "</div>";
+          "Request full PDF</a>") +
+        (p.blog ? '<a class="reqpdf readblog" href="' + esc(p.blog) + '" title="A short plain-language article about this paper">' +
+          '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 8h6M8 12h6"/></svg>' +
+          "Read the story</a>" : "") + "</div>";
   }
 
   function render() {
@@ -639,6 +659,9 @@
         if (en.isIntersecting) {
           navLinks.forEach(function (a) {
             a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + en.target.id));
+          });
+          $$("#nav-links .nav-group").forEach(function (g) {
+            $(".nav-btn", g).setAttribute("aria-current", String(!!$("a[aria-current=true]", g)));
           });
         }
       });

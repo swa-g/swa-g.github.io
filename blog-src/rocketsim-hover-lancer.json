@@ -1,0 +1,60 @@
+{
+ "slug": "rocketsim-hover-lancer",
+ "title": "Why a rocket that learned to fly could not learn to hover",
+ "paper_title": "RocketSim: Benchmarking Reinforcement-Learning Hover Control of a Reusable Booster",
+ "date": "2026-10-08",
+ "date_note": "Information Society 2026 multiconference, Ljubljana, early October 2026 (proceedings Vol. 1, pp. 64-67); exact day approximate",
+ "venue": "29th International Multiconference Information Society (IS 2026)",
+ "detail": "Vol. 1, pp. 64–67",
+ "authors": "Swarnendu Ghosh, David Muhič, Branko Šter",
+ "url": "",
+ "tags": [
+  "reinforcement learning",
+  "rockets",
+  "lancer"
+ ],
+ "kind": "explainer",
+ "summary": "A short guide to the RocketSim paper: a learning agent kept a booster upright but could not hold its height, and why. The full write-up is on the LANCER project page.",
+ "cta": "Read the full write-up on the LANCER page",
+ "body": [
+  {
+   "p": "This paper is part of <b>LANCER</b>, my research project at the University of Ljubljana on teaching autonomous vehicles to navigate difficult environments with reinforcement learning, meaning learning by trial and error against a reward. Most of the project is about cars. This paper steps sideways to a rocket booster, because a rocket makes one problem very visible: what happens when the reward does not tell the learner clearly what you want."
+  },
+  {
+   "h2": "The question"
+  },
+  {
+   "p": "Studies of reusable rockets usually ask a learning agent to land. Landing gives it a clear goal: touch down gently. We asked something harder to define. Release a booster at 80 metres and ask it to hold 30 metres above the pad. Nothing special happens at 30 metres, so there is no moment that says “well done”. We built a simulator called <b>RocketSim</b> in the Unity game engine and trained a standard algorithm, PPO, to do it."
+  },
+  {
+   "figure": {
+    "src": "img/rocketsim-hover-lancer/flights.png",
+    "alt": "Five test flights of one trained agent: the plan views show tight lateral control while the altitude traces sag below the 30 metre target, approach the ground, then climb to the ceiling.",
+    "caption": "Five test flights of the same trained agent. It stays over the pad, but its height drifts from near the ground to the ceiling."
+   }
+  },
+  {
+   "h2": "What happened"
+  },
+  {
+   "p": "The agent learned to stay upright, stay over the pad and keep flying until its fuel ran out. It did not learn to hold the height. With nothing changed except the random seed, the average height error across five training runs ranged from 24 to 105 metres, even though their scores were within 10% of each other."
+  },
+  {
+   "p": "We found two separate causes. The reward barely changes with height unless the rocket is very close to the target, so the learner has nothing to follow. And the engine cannot throttle below 39% of its power, so once the booster is lighter than 33.6 tonnes, no setting can hold it in place for the last 55% of the burn. We tried to repair both. Reshaping the reward cut the average error from 36 to 6 metres but still stranded one run in five."
+  },
+  {
+   "p": "The lesson: hovering has to be fixed in the reward and in the vehicle together. The project page has the rest."
+  }
+ ],
+ "acknowledgements": "This work was co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. It was also supported by the Slovenian Research and Innovation Agency (ARIS), research programme P2-0241, Synergetics of complex systems and processes. Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.",
+ "links": [
+  {
+   "label": "LANCER page: full write-up",
+   "url": "../LANCER/paper-rocketsim.html"
+  },
+  {
+   "label": "Paper (PDF)",
+   "url": "../LANCER/papers/rocketsim-is2026.pdf"
+  }
+ ]
+}

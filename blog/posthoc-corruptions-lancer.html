@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Darkening a photo is not the same as driving at night | Swarnendu Ghosh</title>
+  <meta name="description" content="A short guide to the post-hoc corruptions paper: a darkening filter and a simulated night look alike but test a driving agent very differently. Full write-up on the LANCER page.">
+  <meta name="author" content="Swarnendu Ghosh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://swarnendughosh.com/blog/posthoc-corruptions-lancer.html">
+  <meta property="og:site_name" content="Swarnendu Ghosh">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Darkening a photo is not the same as driving at night | Swarnendu Ghosh">
+  <meta property="og:description" content="A short guide to the post-hoc corruptions paper: a darkening filter and a simulated night look alike but test a driving agent very differently. Full write-up on the LANCER page.">
+  <meta property="og:url" content="https://swarnendughosh.com/blog/posthoc-corruptions-lancer.html">
+  <meta property="og:image" content="https://swarnendughosh.com/blog/img/posthoc-corruptions-lancer/night-vs-filter.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-192.png?v=2" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/blog.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Darkening a photo is not the same as driving at night", "description": "A short guide to the post-hoc corruptions paper: a darkening filter and a simulated night look alike but test a driving agent very differently. Full write-up on the LANCER page.", "datePublished": "2026-10-07", "dateModified": "2026-10-07", "inLanguage": "en", "author": {"@type": "Person", "name": "Swarnendu Ghosh", "url": "https://swarnendughosh.com/"}, "mainEntityOfPage": "https://swarnendughosh.com/blog/posthoc-corruptions-lancer.html", "image": "https://swarnendughosh.com/blog/img/posthoc-corruptions-lancer/night-vs-filter.png", "keywords": "autonomous driving, robustness, lancer", "about": {"@type": "ScholarlyArticle", "name": "Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving", "author": "Swarnendu Ghosh, Branko Šter"}}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Swarnendu Ghosh, home"><img class="mark" src="../assets/brand/signature-nav.svg?v=2" alt="" width="62" height="36">Swarnendu Ghosh</a>
+      <div class="nav-right">
+        <nav id="nav-links" class="nav-links" aria-label="Primary"><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">About<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#about">About me</a><a href="../#experience">Experience</a><a href="../#education">Education</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">Research<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#research">Research areas</a><a href="../#projects">Projects</a><a href="../#publications">Publications</a><a href="index.html">Blog</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">People<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#people">Collaborators</a><a href="../#testimonials">Testimonials</a></div></div><a href="../#contact">Contact</a></nav>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="menu-toggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="blog-main">
+    <div class="wrap">
+<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p><div class="tags"><span>autonomous driving</span><span>robustness</span><span>lancer</span></div><h1>Darkening a photo is not the same as driving at night</h1><p class="byline"><span>By Swarnendu Ghosh</span><time datetime="2026-10-07">7 October 2026</time><span>1 min read</span></p><aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving</div><div class="pa"><b>Swarnendu Ghosh</b>, Branko Šter</div><div class="pv">29th International Multiconference Information Society (IS 2026), Vol. 1, pp. 60–63 · 2026</div><div class="paper-links"><a href="../LANCER/paper-posthoc-corruptions.html">LANCER page: full write-up</a><a href="../LANCER/papers/posthoc-corruptions-is2026.pdf">Paper (PDF)</a></div></aside><div class="prose"><p>This paper belongs to <b>LANCER</b>, my project at the University of Ljubljana on autonomous navigation in complex environments using reinforcement learning. A part of that work is about testing: how do we know a camera-driven car will cope with night, fog or rain?</p><h2>The shortcut we questioned</h2><p>The common shortcut is to take recorded footage and damage it with image filters, such as darkening it or adding a fog-like veil, then see how badly the vision network copes. It is cheap, but it assumes the filtered picture stands in for the real condition. We checked that assumption in a driving simulator that can produce night and fog in two ways: by filtering the finished picture, and by changing the lighting and air in the scene before it is rendered.</p><figure><div class="frame"><img src="img/posthoc-corruptions-lancer/night-vs-filter.png" alt="Two rows of frames: with simulated night the car leaves the road, while with the matched darkening filter it completes the run; for fog the physical condition and its filter look and behave alike." width="1500" height="780" loading="lazy" decoding="async"></div><figcaption>The same road, agent and random seed. The simulated night puts the car off the road. The filter that matches it does not.<span class="src">Figure from the paper.</span></figcaption></figure><h2>What we found</h2><p>Fog passed the test: the real fog and its filter agree at every strength. Night did not. At a picture change of 38 grey levels, the simulated night cost nine independently trained agents 0.51 of their driving performance, while the matched darkening filter cost nothing measurable. All nine agents agreed (p = 0.004). Training with filters did not help either: an agent trained that way did slightly worse against physical conditions (8.68 laps out of ten, against 9.05 without it), while training on re-rendered conditions completed every lap.</p><p>So whether a filter is a fair stand-in depends on the physics of the condition it imitates. The details, including a distance-based test we tried and what it can and cannot tell you, are on the project page.</p></div><div class="cta"><a href="../LANCER/paper-posthoc-corruptions.html">Read the full write-up on the LANCER page</a></div><section class="ack"><h2>Acknowledgements</h2><p>This work was co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. It was also supported by the Slovenian Research and Innovation Agency (ARIS), research programme P2-0241, Synergetics of complex systems and processes. Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.</p></section><details class="cite-box"><summary>How to cite the paper</summary><pre>Swarnendu Ghosh, Branko Šter (2026). Questioning Post-hoc Image Corruptions as a Proxy for Environmental Variation in Autonomous Driving. 29th International Multiconference Information Society (IS 2026), Vol. 1, pp. 60–63.</pre></details></article><nav class="pager" aria-label="More articles"><a href="rocketsim-hover-lancer.html"><small>Newer</small>Why a rocket that learned to fly could not learn to hover</a><a class="next" href="hilex-exam-paper-layouts.html"><small>Older</small>Teaching computers to see the structure of an exam paper</a></nav>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <span>© 2026 Swarnendu Ghosh</span>
+        <span>Faculty of Computer and Information Science, University of Ljubljana</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/blog.js"></script>
+</body>
+</html>

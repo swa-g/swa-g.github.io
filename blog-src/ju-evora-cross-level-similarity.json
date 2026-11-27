@@ -1,0 +1,90 @@
+{
+ "slug": "ju-evora-cross-level-similarity",
+ "title": "Judging how close a paragraph is to a sentence by comparing meaning graphs",
+ "paper_title": "JU-Evora: A graph based cross-level semantic similarity analysis using discourse information",
+ "date": "2014-08-23",
+ "date_note": "SemEval 2014 workshop, co-located with COLING 2014, Dublin, 23-24 Aug 2014",
+ "venue": "8th International Workshop on Semantic Evaluation (SemEval 2014)",
+ "detail": "ACL",
+ "authors": "Swarnendu Ghosh, N Das, T Gonçalves, P Quaresma",
+ "url": "https://doi.org/10.3115/v1/s14-2064",
+ "tags": [
+  "language",
+  "graph methods",
+  "semantic similarity"
+ ],
+ "kind": "article",
+ "summary": "Our entry in a 2014 shared task on comparing texts of different sizes. We turned each text into a meaning graph and let a nearest-neighbour model turn graph distances into a similarity score.",
+ "body": [
+  {
+   "p": "SemEval is a series of shared tasks in which research groups attack the same language problem and are scored on the same data. In 2014 one task asked how similar in meaning a smaller piece of text is to a larger one. Our entry, JU-Evora, turned both texts into graphs, measured the distance between the graphs and learned to convert that distance into a score."
+  },
+  {
+   "h2": "The task"
+  },
+  {
+   "p": "The organisers gave four kinds of pairs: a paragraph with a sentence, a sentence with a phrase, a phrase with a word, and a word with one specific sense of a word. For each pair a system had to give a score from 0 to 4. A 0 means the two share no concept, and a 4 means they carry the same concept. Think of asking how well a one-line summary captures a whole paragraph."
+  },
+  {
+   "h2": "How the system works"
+  },
+  {
+   "p": "Each text goes through the C&C parser and Boxer, which write out its meaning as a discourse representation structure. That structure lists the things mentioned and the relations between them. We converted it into a graph: things become nodes, relations become edges, and a property of a single thing becomes a loop on its node."
+  },
+  {
+   "figure": {
+    "src": "img/ju-evora-cross-level-similarity/common-subgraph.png",
+    "alt": "Four small graphs. Graphs a and b describe Mary drinks water and David drinks water. Graph c is the part they share, drink and water joined by a patient edge. Graph d is both graphs merged.",
+    "caption": "Two sentences that differ in one word. Their shared part (c) is drinking water, and the merged graph (d) is the two sentences laid on top of each other."
+   }
+  },
+  {
+   "p": "To compare two graphs we used five distance formulas. They are built from the maximum common subgraph, the largest structure that both graphs contain, and the minimum common supergraph, the two graphs merged. Finding the exact common subgraph is NP-hard, which means it quickly becomes too slow. We used a faster approximation in which the node pairs with the most matching loops go in first."
+  },
+  {
+   "p": "Labels did not have to match letter for letter. We used WordNet, a large dictionary of word relations, and Wu and Palmer's measure. It calls two words close when their most specific shared ancestor sits deep in the dictionary's tree of concepts."
+  },
+  {
+   "p": "Each pair of texts therefore got several distance values. A k-nearest-neighbour model, trained on the organisers' gold-standard scores, turned them into the final 0 to 4 score, with k chosen by cross-validation."
+  },
+  {
+   "h2": "Words and phrases"
+  },
+  {
+   "p": "A single word has no sentence structure to parse, so for the two smallest levels we looked up each word in WordNet and used its definition instead. When a word has several definitions, we joined them into one sentence with the word \"or\" and built the graph from that."
+  },
+  {
+   "h2": "How it did"
+  },
+  {
+   "p": "The paper calls the result fair. The organisers' baseline, listed there as LCS, scored higher than us on seven of the eight scores we report. The exception is the paragraph-to-sentence level, where our Pearson correlation was 0.536 against 0.527."
+  },
+  {
+   "ul": [
+    "Paragraph to sentence: Pearson 0.536 (baseline 0.527), Spearman 0.533 (baseline 0.613)",
+    "Sentence to phrase: Pearson 0.442 (baseline 0.562), Spearman 0.440 (baseline 0.626)",
+    "Phrase to word: Pearson 0.090 (baseline 0.165), Spearman 0.096 (baseline 0.162)",
+    "Word to sense: Pearson 0.091 (baseline 0.109), Spearman 0.075 (baseline 0.130)"
+   ]
+  },
+  {
+   "callout": "At the paragraph-to-sentence level, JU-Evora scored a Pearson correlation of 0.536, just above the baseline's 0.527."
+  },
+  {
+   "p": "Correlation measures how well our scores rise and fall with the human ratings: 1 would be a perfect match and 0 no relation. Pearson compares the scores themselves, Spearman compares only their rankings."
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "The method works best on the larger texts, where there is a sentence to parse. At the word and phrase levels our correlations were around 0.09, which is very weak. The system uses only what its parser and WordNet provide, and we name the use of external knowledge sources as the next step."
+  }
+ ],
+ "acknowledgements": "",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.3115/v1/s14-2064"
+  }
+ ]
+}

@@ -1,0 +1,89 @@
+{
+ "slug": "ravnet-retinal-vessels",
+ "title": "Using a vessel mask as a hint to tell arteries from veins in eye scans",
+ "paper_title": "RavNet: Conditioning Retinal Vessel Identification Using a Cascaded Multi-objective U-Net",
+ "date": "2024-12-13",
+ "date_note": "COMSYS 2024 (5th Int. Conf. on Frontiers in Computing and Systems), BITS Pilani Goa campus, 13-15 Dec 2024; Springer volume published 2025",
+ "venue": "5th International Conference on Frontiers in Computing and Systems (COMSYS 2024)",
+ "detail": "Vol. 1, pp. 75–87 · Springer",
+ "authors": "Swarnendu Ghosh, C Das",
+ "url": "https://doi.org/10.1007/978-981-96-8309-3_5",
+ "tags": [
+  "medical imaging",
+  "segmentation",
+  "ophthalmology"
+ ],
+ "kind": "article",
+ "summary": "RavNet uses two U-Nets in a row. The first finds where the vessels are, and the second uses that map to label arteries and veins separately in infrared scans of the retina.",
+ "body": [
+  {
+   "p": "The retina is the only place where tiny blood vessels can be seen directly, without surgery. Doctors read it for signs of diabetes, high blood pressure and even leukemia. We built RavNet, a pair of neural networks that first finds all the vessels in an infrared eye scan and then uses that result to mark arteries and veins separately."
+  },
+  {
+   "h2": "The problem"
+  },
+  {
+   "p": "Changes in the vessels, such as narrowing or leakage, can point to disease, so the retina works as a window into the body's small blood vessels. Marking each pixel of a scan as artery, vein or background is called segmentation. Doing it by hand takes time, and doing it automatically is what we aimed for."
+  },
+  {
+   "p": "We worked with the RAVIR dataset. It holds 46 infrared images taken with a scanning laser ophthalmoscope, a device that sweeps a laser over the retina. The images come from the UCLA Stein Eye Institute and have high contrast. Since 46 images is few, we enlarged the training set with flips and rotations."
+  },
+  {
+   "h2": "The idea"
+  },
+  {
+   "p": "The standard tool for this job is the U-Net. It is shaped like the letter U. An encoder shrinks the image step by step to capture what is in it, and a decoder expands it back to a full-size label map. Shortcuts called skip connections carry fine detail across the U."
+  },
+  {
+   "p": "Deciding vessel or no vessel is a simpler question than deciding artery, vein or background. So the first U-Net only produces a binary mask. We then stack that mask with the original scan and give both to a second network as a hint about where to look."
+  },
+  {
+   "figure": {
+    "src": "img/ravnet-retinal-vessels/model2.png",
+    "alt": "Pipeline diagram: an eye scan goes through a first encoder-decoder to give a binary vessel mask; the scan and mask are stacked and fed to a second encoder that feeds an artery decoder, a vein decoder and an image-reconstruction decoder.",
+    "caption": "The cascade. The first network makes a vessel mask. The second network gets the scan plus that mask and has three decoders."
+   }
+  },
+  {
+   "h2": "How it works"
+  },
+  {
+   "p": "The second network has one encoder and three decoders. One decoder outputs arteries and one outputs veins. The third rebuilds the input scan, and the paper uses this extra task to regularize the outputs, meaning to keep the network from over-fitting."
+  },
+  {
+   "p": "Both networks use residual blocks, dropout and batch normalization, and the encoder works at six resolutions. For training, vessel pixels get a weight of 0.75 in the cross-entropy loss, because they matter most. We combined binary cross-entropy and Dice loss for the vessel outputs and mean squared error for the reconstruction. Dice measures overlap: twice the shared area divided by the total area of both masks."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "We compared RavNet with four U-Net variants on scans the models had not seen. Its Dice score was the highest for both vessel types. For arteries, RavNet reached 0.7790, against 0.7510 for the plain U-Net and 0.7621 for the best of the others, R2U-Net. For veins it reached 0.7890, against 0.7674 and 0.7826."
+  },
+  {
+   "callout": "Dice scores: 0.7790 for arteries and 0.7890 for veins, the best in the comparison with U-Net, Dense U-Net, Residual U-Net and R2U-Net."
+  },
+  {
+   "figure": {
+    "src": "img/ravnet-retinal-vessels/output.jpg",
+    "alt": "Four rows of retinal scans; the columns show the original image, the annotated mask, and RavNet's artery and vein outputs.",
+    "caption": "Four example scans. From left: the original image, the annotated mask, and RavNet's artery and vein extractions."
+   }
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "The picture is mixed on the other measures. For veins, RavNet had the highest specificity (0.9929) but the lowest sensitivity of the five models (0.7385), so it misses more true vein pixels. For arteries, R2U-Net had slightly higher accuracy (0.9706 against 0.9701). The Dice gains over R2U-Net are 0.017 for arteries and 0.006 for veins. The paper reports no statistical test and uses a small dataset, so these are modest differences. Among its listed next steps are stronger augmentation, other imaging types, real-time use, transfer learning and clinical validation, none of which we have done."
+  },
+  {
+   "p": "The idea behind the cascade is simple: one network's answer becomes the next network's input. The motivation is access. The paper points to automated screening in remote or underserved areas, where no specialist is on hand."
+  }
+ ],
+ "acknowledgements": "",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1007/978-981-96-8309-3_5"
+  }
+ ]
+}

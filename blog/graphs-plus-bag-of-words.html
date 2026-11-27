@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mixing meaning graphs with word counts lifted text classification to 56% | Swarnendu Ghosh</title>
+  <meta name="description" content="Meaning graphs matched word counting on 20 Reuters topics. Averaging the two methods&#x27; votes did better than either alone, reaching up to 56.00% accuracy.">
+  <meta name="author" content="Swarnendu Ghosh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://swarnendughosh.com/blog/graphs-plus-bag-of-words.html">
+  <meta property="og:site_name" content="Swarnendu Ghosh">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Mixing meaning graphs with word counts lifted text classification to 56% | Swarnendu Ghosh">
+  <meta property="og:description" content="Meaning graphs matched word counting on 20 Reuters topics. Averaging the two methods&#x27; votes did better than either alone, reaching up to 56.00% accuracy.">
+  <meta property="og:url" content="https://swarnendughosh.com/blog/graphs-plus-bag-of-words.html">
+  <meta property="og:image" content="https://swarnendughosh.com/blog/img/graphs-plus-bag-of-words/pipeline.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-192.png?v=2" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/blog.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Mixing meaning graphs with word counts lifted text classification to 56%", "description": "Meaning graphs matched word counting on 20 Reuters topics. Averaging the two methods' votes did better than either alone, reaching up to 56.00% accuracy.", "datePublished": "2014-09-17", "dateModified": "2014-09-17", "inLanguage": "en", "author": {"@type": "Person", "name": "Swarnendu Ghosh", "url": "https://swarnendughosh.com/"}, "mainEntityOfPage": "https://swarnendughosh.com/blog/graphs-plus-bag-of-words.html", "image": "https://swarnendughosh.com/blog/img/graphs-plus-bag-of-words/pipeline.png", "keywords": "language, graph methods", "about": {"@type": "ScholarlyArticle", "name": "Using graphs and semantic information to improve text classifiers", "author": "N Das, Swarnendu Ghosh, T Gonçalves, P Quaresma", "url": "https://doi.org/10.1007/978-3-319-10888-9_33"}}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Swarnendu Ghosh, home"><img class="mark" src="../assets/brand/signature-nav.svg?v=2" alt="" width="62" height="36">Swarnendu Ghosh</a>
+      <div class="nav-right">
+        <nav id="nav-links" class="nav-links" aria-label="Primary"><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">About<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#about">About me</a><a href="../#experience">Experience</a><a href="../#education">Education</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">Research<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#research">Research areas</a><a href="../#projects">Projects</a><a href="../#publications">Publications</a><a href="index.html">Blog</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">People<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#people">Collaborators</a><a href="../#testimonials">Testimonials</a></div></div><a href="../#contact">Contact</a></nav>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="menu-toggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="blog-main">
+    <div class="wrap">
+<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p><div class="tags"><span>language</span><span>graph methods</span></div><h1>Mixing meaning graphs with word counts lifted text classification to 56%</h1><p class="byline"><span>By Swarnendu Ghosh</span><time datetime="2014-09-17">17 September 2014</time><span>3 min read</span></p><aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">Using graphs and semantic information to improve text classifiers</div><div class="pa">N Das, <b>Swarnendu Ghosh</b>, T Gonçalves, P Quaresma</div><div class="pv">9th International Conference on Natural Language Processing (PolTAL 2014), pp. 324–336 · Springer Nature · 2014</div><div class="paper-links"><a href="https://doi.org/10.1007/978-3-319-10888-9_33" target="_blank" rel="noopener">Publisher page</a></div></aside><div class="prose"><p>A text classifier that counts words and one that reads relations between words make different mistakes. We built the second kind by turning summaries into graphs, then asked whether letting both vote would help. On a set of Reuters news stories it did. The two together reached up to 56.00% accuracy, against 49.50% for word counting and at most 51.50% for the graphs alone.</p><h2>Two ways to read a document</h2><p>The standard approach, bag-of-words, counts which words occur and ignores how they relate. Our approach keeps the relations. A parser called C&C and a tool called Boxer turn each sentence into a discourse representation structure, a list of the things mentioned and the facts connecting them. We then turn that list into a graph, where things are nodes and facts are labelled edges.</p><p>To keep the computing manageable, we first cut each document down to two or three sentences, choosing the ones whose words are the most frequent in the topic. Two graphs are then compared with distance formulas based on their maximum common subgraph (the largest structure both contain) and their minimum common supergraph (the two merged). The exact common subgraph is NP-hard to find, so we used an approximate version that starts from the node pairs sharing the most loops.</p><figure><div class="frame"><img src="img/graphs-plus-bag-of-words/pipeline.png" alt="Flow chart in three dashed boxes: (a) text is summarised and parsed into a discourse structure, (b) the structure becomes a graph and common subgraph and supergraph are computed, (c) similarity measures feed a nearest-neighbour classifier." width="986" height="846" loading="lazy" decoding="async"></div><figcaption>The system in three stages: reading the text (a), building and comparing graphs (b), and classifying with the nearest neighbours (c).<span class="src">Figure from the paper.</span></figcaption></figure><h2>Graphs alone</h2><p>We used 20 Reuters topics with 10 training and 10 test documents each, and a k-nearest-neighbour classifier that labels a document by majority vote among the k most similar training documents. As in our earlier study, edge-based measures did better on the whole than node-based ones, and three-sentence summaries did better than two-sentence ones. The best graph result was 51.50%, while word counting scored 49.50% on the same three-sentence summaries.</p><figure><div class="frame"><img src="img/graphs-plus-bag-of-words/accuracy.png" alt="Two bar charts of recognition accuracy for five distance measures. Left: vertex-based bars are lower than edge-based bars. Right: two-sentence bars are lower than three-sentence bars." width="1400" height="551" loading="lazy" decoding="async"></div><figcaption>Edge-based measures beat vertex-based ones (left), and three-sentence summaries beat two-sentence ones (right). Both vertical axes start above zero, so the gaps look larger than they are.<span class="src">Figure from the paper.</span></figcaption></figure><p>Per topic, the two methods disagree in telling ways. Bag-of-words wins on carcass, where words like "beef" and "pork" are enough, with an F1 score of 0.95 against 0.32 for graphs. Graphs win on gold, 0.71 against 0.25. The word "gold" also appears in the copper and alum topics, and rare words such as "ounces" and "carat", which counting overlooks, are tied to "gold" by the graph. Averaged over topics, both methods score an F1 of 0.51.</p><h2>Letting both vote</h2><p>Since the errors differ, we combined the methods. The k-nearest-neighbour classifier from the Weka toolkit gives a confidence for each topic. For every document we averaged the word-count confidence and the graph confidence for each topic and picked the topic with the highest average.</p><div class="callout">Combined accuracy reached 56.00% with three-sentence summaries; word counting alone got 49.50%.</div><p>With three-sentence summaries, every combination scored between 54.00% and 56.00%. That is 3.5 to 8.5 points above the same graph measure used alone, and above every individual result. The average was 54.5% for node-based and 55.5% for edge-based measures. With two-sentence summaries the gains ranged from 1.5 to 10.5 points. We read this as evidence that the graphs hold some information the word counts do not.</p><h2>What it does not show</h2><p>The test set is small, only 200 documents, and every figure comes from one corpus and one kind of classifier. The summarising step is also untested. We want to try more sentences or other summarisers, and to try support vector machines with a graph kernel, a way of comparing graphs inside such a classifier.</p><p>The combination went beyond our first study. The graphs did not replace word counts but added to them.</p></div><details class="cite-box"><summary>How to cite the paper</summary><pre>N Das, Swarnendu Ghosh, T Gonçalves, P Quaresma (2014). Using graphs and semantic information to improve text classifiers. 9th International Conference on Natural Language Processing (PolTAL 2014), pp. 324–336 · Springer Nature.</pre></details></article><nav class="pager" aria-label="More articles"><a href="oriya-digits-common-subgraph.html"><small>Newer</small>Recognising handwritten Oriya digits by comparing skeleton graphs</a><a class="next" href="ju-evora-cross-level-similarity.html"><small>Older</small>Judging how close a paragraph is to a sentence by comparing meaning graphs</a></nav>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <span>© 2026 Swarnendu Ghosh</span>
+        <span>Faculty of Computer and Information Science, University of Ljubljana</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/blog.js"></script>
+</body>
+</html>

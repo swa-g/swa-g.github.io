@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finding object outlines in photos by combining seven cues and superpixels | Swarnendu Ghosh</title>
+  <meta name="description" content="A contour detector that looks at seven views of an image and uses superpixels to throw out false edges. On the BSDS300 benchmark it came second in precision and ran about five times faster than the leader.">
+  <meta name="author" content="Swarnendu Ghosh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://swarnendughosh.com/blog/multi-cue-contour-detection.html">
+  <meta property="og:site_name" content="Swarnendu Ghosh">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Finding object outlines in photos by combining seven cues and superpixels | Swarnendu Ghosh">
+  <meta property="og:description" content="A contour detector that looks at seven views of an image and uses superpixels to throw out false edges. On the BSDS300 benchmark it came second in precision and ran about five times faster than the leader.">
+  <meta property="og:url" content="https://swarnendughosh.com/blog/multi-cue-contour-detection.html">
+  <meta property="og:image" content="https://swarnendughosh.com/blog/img/multi-cue-contour-detection/channels.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-192.png?v=2" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/blog.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Finding object outlines in photos by combining seven cues and superpixels", "description": "A contour detector that looks at seven views of an image and uses superpixels to throw out false edges. On the BSDS300 benchmark it came second in precision and ran about five times faster than the leader.", "datePublished": "2016-09-21", "dateModified": "2016-09-21", "inLanguage": "en", "author": {"@type": "Person", "name": "Swarnendu Ghosh", "url": "https://swarnendughosh.com/"}, "mainEntityOfPage": "https://swarnendughosh.com/blog/multi-cue-contour-detection.html", "image": "https://swarnendughosh.com/blog/img/multi-cue-contour-detection/channels.jpg", "keywords": "edge detection, superpixels", "about": {"@type": "ScholarlyArticle", "name": "A multi-cue information based approach to contour detection by utilizing superpixel segmentation", "author": "S Choudhuri, N Das, Swarnendu Ghosh, M Nasipuri", "url": "https://doi.org/10.1109/icacci.2016.7732184"}}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Swarnendu Ghosh, home"><img class="mark" src="../assets/brand/signature-nav.svg?v=2" alt="" width="62" height="36">Swarnendu Ghosh</a>
+      <div class="nav-right">
+        <nav id="nav-links" class="nav-links" aria-label="Primary"><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">About<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#about">About me</a><a href="../#experience">Experience</a><a href="../#education">Education</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">Research<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#research">Research areas</a><a href="../#projects">Projects</a><a href="../#publications">Publications</a><a href="index.html">Blog</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">People<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#people">Collaborators</a><a href="../#testimonials">Testimonials</a></div></div><a href="../#contact">Contact</a></nav>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="menu-toggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="blog-main">
+    <div class="wrap">
+<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p><div class="tags"><span>edge detection</span><span>superpixels</span></div><h1>Finding object outlines in photos by combining seven cues and superpixels</h1><p class="byline"><span>By Swarnendu Ghosh</span><time datetime="2016-09-21">21 September 2016</time><span>3 min read</span></p><aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">A multi-cue information based approach to contour detection by utilizing superpixel segmentation</div><div class="pa">S Choudhuri, N Das, <b>Swarnendu Ghosh</b>, M Nasipuri</div><div class="pv">International Conference on Advances in Computing, Communications and Informatics (ICACCI), pp. 1057–1063 · IEEE · 2016</div><div class="paper-links"><a href="https://doi.org/10.1109/icacci.2016.7732184" target="_blank" rel="noopener">Publisher page</a></div></aside><div class="prose"><p>A contour is the line where one object ends and another begins. Finding it is a basic step in computer vision, and it is harder than it sounds, because shadows, texture and noise also create sharp changes in a picture. We built a detector that looks at an image through seven different channels. It then uses superpixels, small patches of similar pixels, to remove the edges that are not real object boundaries.</p><h2>The problem</h2><p>Classical edge detectors look for places where brightness changes quickly. They cannot tell an object boundary from a shadow, a patch of texture or a speck of noise, so they produce false edges. They also break real contours into pieces where the boundary is faint. Methods that fix this by linking edges together tend to ignore the picture as a whole, or take a long time.</p><h2>Seven views of one image</h2><p>We turn each image into seven channels. Three come from the CIELAB colour space, which describes brightness and two colour axes in a way that is closer to human perception. The fourth is hue, the pure colour, taken from the HSV colour space. Two objects of the same brightness but different colour then differ in at least one channel. The last three come from an "intrinsic image" built from how much each pair of red, green and blue values differs in the original.</p><figure><div class="frame"><img src="img/multi-cue-contour-detection/channels.jpg" alt="A photo of two women in a field, followed by its lightness, two colour, hue and three intrinsic channels, one intermediate edge map, and the combined edge map of all seven cues." width="900" height="623" loading="lazy" decoding="async"></div><figcaption>The seven channels of one photo and how they combine. The last two panels show the edge map from one channel and the combined map from all seven.<span class="src">Figure from the paper.</span></figcaption></figure><p>In each channel we measure "busyness", an idea from Dondes and Rosenfeld in 1980: the average difference between pairs of neighbouring pixels in a small window. Around each pixel we compare busyness histograms on the two sides of a circle, over eight orientations and three image sizes, and take the strongest response. The seven channel results are added up with weights we learned from the training images, by repeatedly nudging the weights to raise the F-measure. That is a score that balances finding true edges against reporting false ones.</p><h2>Superpixels as a filter</h2><p>Next we cut the image into superpixels with SLICO, a version of the SLIC method that needs no tuning of patch compactness. Superpixel borders tend to follow real object borders. We keep only those edges that lie close to a superpixel border.</p><p>The number of superpixels matters. Too few and real edges are lost, too many and false edges survive. We grouped the 200 training images by scene type, using k-means clustering on spatial-pyramid and colour-histogram features. A statistical method, the gap statistic, found 11 groups. For each group we found, by gradient ascent on the F-measure, the superpixel count that worked best. A new image gets the count of the group whose centre is nearest.</p><figure><div class="frame"><img src="img/multi-cue-contour-detection/superpixels.jpg" alt="Three panels: a photo covered by small superpixel patches, the patch borders alone, and the final edge map of the two women." width="779" height="431" loading="lazy" decoding="async"></div><figcaption>The filtering step: superpixels laid over the photo (a), their borders (b), and the final edge map (c).<span class="src">Figure from the paper.</span></figcaption></figure><h2>What we found</h2><p>We tested on the Berkeley Segmentation Dataset (BSDS300), where people drew the boundaries they see in each photo. Our average precision was 0.65, second of nine methods, behind only gPb at 0.68. The remaining methods in the table scored between 0.62 and 0.43. Our speed was listed as 1/47 against 1/240 for gPb in the paper's "frames per second" column, which makes ours roughly five times faster.</p><figure><div class="frame"><img src="img/multi-cue-contour-detection/comparison.jpg" alt="Three rows of photos. Columns show each photo, the human-drawn boundaries, our edge map, the EDContours method and the thresholded gPb method." width="900" height="782" loading="lazy" decoding="async"></div><figcaption>Three BSDS300 photos. Columns, left to right: the photo, the human-drawn boundaries, our result, EDContours, and gPb.<span class="src">Figure from the paper.</span></figcaption></figure><div class="callout">Average precision on BSDS300: 0.65 for our detector, 0.68 for gPb, the top method.</div><h2>What it does not do</h2><p>The results are preliminary, and the paper says so. Our maximum recall of 0.91 sits below Canny (0.96), Felzenszwalb and Huttenlocher (0.99) and Sobel (0.97). We did not use texture, which we plan to add as an extra channel, together with colour relations between channels.</p><p>The authors call the results preliminary but good enough to show the value of using several cues together.</p></div><details class="cite-box"><summary>How to cite the paper</summary><pre>S Choudhuri, N Das, Swarnendu Ghosh, M Nasipuri (2016). A multi-cue information based approach to contour detection by utilizing superpixel segmentation. International Conference on Advances in Computing, Communications and Informatics (ICACCI), pp. 1057–1063 · IEEE.</pre></details></article><nav class="pager" aria-label="More articles"><a href="graph-kernels-two-decades.html"><small>Newer</small>How computers learned to compare networks: a twenty-year tour of graph kernels</a><a class="next" href="image-captions-concept-graphs.html"><small>Older</small>Finding similar photos by comparing the meaning graphs of their captions</a></nav>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <span>© 2026 Swarnendu Ghosh</span>
+        <span>Faculty of Computer and Information Science, University of Ljubljana</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/blog.js"></script>
+</body>
+</html>

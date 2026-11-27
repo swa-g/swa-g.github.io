@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Turning news summaries into meaning graphs to sort them by topic | Swarnendu Ghosh</title>
+  <meta name="description" content="We turned short news summaries into graphs of who did what to whom, compared five ways of measuring graph distance, and found they sort Reuters stories about as well as plain word counting.">
+  <meta name="author" content="Swarnendu Ghosh">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://swarnendughosh.com/blog/graph-distances-text-classification.html">
+  <meta property="og:site_name" content="Swarnendu Ghosh">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Turning news summaries into meaning graphs to sort them by topic | Swarnendu Ghosh">
+  <meta property="og:description" content="We turned short news summaries into graphs of who did what to whom, compared five ways of measuring graph distance, and found they sort Reuters stories about as well as plain word counting.">
+  <meta property="og:url" content="https://swarnendughosh.com/blog/graph-distances-text-classification.html">
+  <meta property="og:image" content="https://swarnendughosh.com/blog/img/graph-distances-text-classification/sentence-to-graph.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+  <link rel="icon" href="/assets/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-192.png?v=2" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/blog.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Turning news summaries into meaning graphs to sort them by topic", "description": "We turned short news summaries into graphs of who did what to whom, compared five ways of measuring graph distance, and found they sort Reuters stories about as well as plain word counting.", "datePublished": "2014-06-16", "dateModified": "2014-06-16", "inLanguage": "en", "author": {"@type": "Person", "name": "Swarnendu Ghosh", "url": "https://swarnendughosh.com/"}, "mainEntityOfPage": "https://swarnendughosh.com/blog/graph-distances-text-classification.html", "image": "https://swarnendughosh.com/blog/img/graph-distances-text-classification/sentence-to-graph.png", "keywords": "language, graph methods", "about": {"@type": "ScholarlyArticle", "name": "Comparison of different graph distance metrics for semantic text based classification", "author": "N Das, Swarnendu Ghosh, T Gonçalves, P Quaresma", "url": "https://doi.org/10.17562/pb-49-6"}}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Swarnendu Ghosh, home"><img class="mark" src="../assets/brand/signature-nav.svg?v=2" alt="" width="62" height="36">Swarnendu Ghosh</a>
+      <div class="nav-right">
+        <nav id="nav-links" class="nav-links" aria-label="Primary"><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">About<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#about">About me</a><a href="../#experience">Experience</a><a href="../#education">Education</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">Research<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#research">Research areas</a><a href="../#projects">Projects</a><a href="../#publications">Publications</a><a href="index.html">Blog</a></div></div><div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">People<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button><div class="nav-sub"><a href="../#people">Collaborators</a><a href="../#testimonials">Testimonials</a></div></div><a href="../#contact">Contact</a></nav>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="menu-toggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="blog-main">
+    <div class="wrap">
+<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p><div class="tags"><span>language</span><span>graph methods</span></div><h1>Turning news summaries into meaning graphs to sort them by topic</h1><p class="byline"><span>By Swarnendu Ghosh</span><time datetime="2014-06-16">16 June 2014</time><span>4 min read</span></p><aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">Comparison of different graph distance metrics for semantic text based classification</div><div class="pa">N Das, <b>Swarnendu Ghosh</b>, T Gonçalves, P Quaresma</div><div class="pv">Polibits, Vol. 49 · 2014</div><div class="paper-links"><a href="https://doi.org/10.17562/pb-49-6" target="_blank" rel="noopener">Publisher page</a></div></aside><div class="prose"><p>Most programs that sort documents by topic count words and ignore how the words connect. We asked whether a graph that records who did what to whom could do the job instead. We converted short summaries of Reuters news stories into graphs, tried five different ways of measuring how far apart two graphs are, and used them to sort the stories into 20 topics.</p><h2>The problem</h2><p>The usual method is called bag-of-words. It treats a document as a pile of words, counts them, and hands the counts to a learning algorithm. It works well, but it cannot tell "the dog bit the man" from "the man bit the dog". For tasks such as opinion mining, the paper points out, that loss of meaning matters.</p><p>A graph is a drawing made of dots (nodes) joined by lines (edges). It is a natural way to store meaning: the dots are things, the lines are the relations between them. The catch is cost. The standard way to compare two graphs is to find the biggest piece they share, called the maximum common subgraph. Finding it exactly is an NP-hard problem, which in practice means the running time explodes as the graphs grow.</p><h2>From a sentence to a graph</h2><p>We first shrank each document to its two or three most typical sentences, picked by how often their words occur in the topic. Smaller texts give smaller graphs, and smaller graphs keep the comparison affordable.</p><p>Then we used two existing tools, the C&C parser and Boxer, to read each sentence and write out a discourse representation structure. That is a list of the things mentioned (called referents) and the facts that hold between them (called conditions). For "He drinks water" the facts are: x1 is male, x2 is water, x3 is a drinking event, x1 is the agent of the event, and x2 is its patient. We turned this into a graph. Each referent became a node, a fact about two referents became a labelled edge, and a fact about one referent became a loop on its node.</p><figure><div class="frame"><img src="img/graph-distances-text-classification/sentence-to-graph.png" alt="Three panels showing the parser output for the sentence Adam drinks water, the discourse structure Boxer builds from it, and the resulting graph with nodes x0, x1, x2 and labelled edges agent and patient." width="1119" height="796" loading="lazy" decoding="async"></div><figcaption>The same sentence in three forms: the parser output (a), the discourse structure (b) and the graph (c). The words adam, drink and water sit on loops, and agent and patient label the edges.<span class="src">Figure from the paper.</span></figcaption></figure><h2>Measuring the distance between two graphs</h2><p>We used five distance formulas taken from earlier work on recognising objects in images. All of them rest on two quantities. One is the maximum common subgraph, the largest structure that appears in both graphs. The other is the minimum common supergraph, which is simply the two graphs laid on top of each other. The formulas compare their sizes, and each can count either nodes or edges, so we ended up with ten measures.</p><p>Because exact matching is too slow, we used an approximation. We ranked pairs of nodes, one from each graph, by how many matching loops they carry, then built the shared subgraph greedily from the best pairs. Finally, a k-nearest-neighbour classifier gave each test document the majority label of its k closest training documents.</p><figure><div class="frame"><img src="img/graph-distances-text-classification/pipeline.png" alt="Flow chart: a text document is summarised, parsed into a discourse structure, converted to a graph, compared with other graphs through common subgraph and supergraph, and classified with nearest neighbours." width="1015" height="798" loading="lazy" decoding="async"></div><figcaption>The whole pipeline. Everything inside the box on the left is done with the Natural Language Toolkit.<span class="src">Figure from the paper.</span></figcaption></figure><h2>What we found</h2><p>We used 20 topics from the Reuters-21578 collection, with 10 documents per topic for training and 10 for testing, and tried k = 3, 5 and 7. The best graph result was 51.50% accuracy, from the edge-based version of the fifth distance with three-sentence summaries and k = 7. The worst was 35.50%. Bag-of-words, run on the same summaries, scored between 48.50% and 50.50%.</p><p>Two patterns stood out. The measures that counted edges did better than their node-counting twins, which suggests the relations carry real information. And three-sentence summaries did better than two-sentence ones. The five distances behaved alike: averaged over k, their three-sentence edge-based accuracy was 49.43 ± 0.38%.</p><div class="callout">Best graph measure: 51.50% accuracy on 20 Reuters topics (three-sentence summaries, k = 7). Bag-of-words, same setting: 49.00%.</div><p>Topic by topic, the picture is mixed. For the gold topic, the F-measure (a single score that balances finding the right documents against picking wrong ones) rose from 0.25 with word counts to 0.71 with graphs. Words such as "ounces" and "carat" are rare, so counting overlooks them, while the graph ties them to "gold". For carcass it went the other way, 0.95 against 0.32, because "beef" and "pork" are enough on their own. Averaged over all topics the two methods tie at 0.51.</p><h2>What it does not show</h2><p>The test set is small, only 200 documents, and the graph method matched bag-of-words rather than clearly beating it. We also did not study how much the summarising step helps or hurts. We list that as future work, along with trying support vector machines on graph kernels.</p><p>A companion paper mixed these graph measures with word counts, and the combination gained accuracy.</p></div><section class="ack"><h2>Acknowledgements</h2><p>This work was funded by Emma in the framework of the EU Erasmus Mundus Action 2.</p></section><details class="cite-box"><summary>How to cite the paper</summary><pre>N Das, Swarnendu Ghosh, T Gonçalves, P Quaresma (2014). Comparison of different graph distance metrics for semantic text based classification. Polibits, Vol. 49.</pre></details></article><nav class="pager" aria-label="More articles"><a href="ju-evora-cross-level-similarity.html"><small>Newer</small>Judging how close a paragraph is to a sentence by comparing meaning graphs</a><span></span></nav>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <span>© 2026 Swarnendu Ghosh</span>
+        <span>Faculty of Computer and Information Science, University of Ljubljana</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/blog.js"></script>
+</body>
+</html>

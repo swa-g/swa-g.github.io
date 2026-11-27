@@ -1,0 +1,110 @@
+{
+ "slug": "hilex-exam-paper-layouts",
+ "title": "Teaching computers to see the structure of an exam paper",
+ "paper_title": "HiLEx: Image-Based Hierarchical Layout Extraction from Question Papers",
+ "date": "2025-09-16",
+ "date_note": "ICDAR 2025, Wuhan, China, 16-21 Sep 2025 (conference dates from my knowledge of the venue; the PDF is the Springer LNCS version, pp. 485-505)",
+ "venue": "Document Analysis and Recognition – ICDAR 2025",
+ "detail": "pp. 485–505 · Springer (LNCS)",
+ "authors": "U Aich, S Chakraborty, D Sadhukhan, Swarnendu Ghosh, T Saha",
+ "url": "https://link.springer.com/chapter/10.1007/978-3-032-04627-7_28",
+ "tags": [
+  "document analysis",
+  "object detection",
+  "education",
+  "dataset"
+ ],
+ "kind": "article",
+ "summary": "We built HiLEx, 1,965 labelled pages from eight exams, and tested ten detection models on finding questions, answers and instructions on a page.",
+ "body": [
+  {
+   "p": "Past exam papers are a goldmine for students, but many of them only exist as scans or PDFs, where a computer sees pixels and not questions. We built HiLEx, a collection of 1,965 exam pages in which every question, answer block and instruction is marked by hand. Then we tested ten well-known detection models on it, to see how well today's software can read the structure of a page."
+  },
+  {
+   "h2": "The problem"
+  },
+  {
+   "p": "Turning a stack of old papers into a searchable question bank sounds simple. It is not. A page may have one column or two. A question may sit above its answer options, or next to them. Instructions and explanations are squeezed in between, often as a single line of text."
+  },
+  {
+   "p": "The field that studies this is called document layout analysis: finding the parts of a page and what role each one plays. Plenty of datasets exist for scientific papers, magazines and reports. None of the ones we looked at marks the question and answer structure that an exam page has."
+  },
+  {
+   "h2": "What is in HiLEx"
+  },
+  {
+   "p": "We collected pages from eight exams: GMAT, SAT, GRE, GATE, UGC-NET, BANK, JEE and UPSC. Most are multiple-choice, and some also have descriptive questions. The papers are publicly available as previous years' papers or free mock exams, and we turned the relevant pages into images."
+  },
+  {
+   "p": "Each page is labelled with boxes of six kinds. The names are a little technical, but the idea is plain. The whole printed area is the Question_Paper_Area. Inside it sit Question_Answer_Blocks, and inside those the Question_Block and the Answer_Block. Separate from them are Instruction and Description, which hold guidance for the candidate and the explanation of a solution."
+  },
+  {
+   "figure": {
+    "src": "img/hilex-exam-paper-layouts/hierarchy.png",
+    "alt": "Two schematic pages, one single-column and one two-column, with coloured boxes nested inside each other and arrows naming the six region types.",
+    "caption": "The labels are nested like boxes inside boxes, for a single-column page on the left and a two-column page on the right."
+   }
+  },
+  {
+   "p": "Three expert annotators did the labelling in Roboflow over two months. They first practised on 10 sample papers. Each also labelled the same 100 shared pages, so that we could measure how much they agreed, using a score called Cohen's kappa. We set the bar at 0.90. The annotations come in two common formats, YOLO and COCO, so other researchers can load them directly."
+  },
+  {
+   "figure": {
+    "src": "img/hilex-exam-paper-layouts/samples.png",
+    "alt": "Two annotated exam pages, a single-column page with explanations and a two-column UGC NET page, with coloured rectangles around each region and a colour legend.",
+    "caption": "Hand-made labels on a single-column page and on a crowded two-column page. Notice how small and tightly packed the answer boxes get."
+   }
+  },
+  {
+   "h2": "How we tested it"
+  },
+  {
+   "p": "We trained ten models, in four families. The YOLO models (versions 8 to 12) look at the page once and propose all boxes at the same time. DETR and RT-DETR use attention, the mechanism behind modern language models. Detectron2 first proposes candidate regions and then refines them. Florence-2 and PaLI-Gemma 2 are large models trained on both images and text."
+  },
+  {
+   "p": "Each model trained for 25 epochs on an NVIDIA A100 GPU. We held back 10% of the pages for testing, which gave 199 pages with 1,918 labelled regions. The main score is mAP50. Roughly, a predicted box counts as correct if it overlaps the true box by at least half, and the score averages over all classes. A stricter version, mAP50-95, demands tighter overlaps."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "Large regions are easy. YOLOv8 finds the Question_Paper_Area with an mAP50 of 0.984. Small, rare regions are hard. Description boxes, with only 320 labelled examples in the whole dataset, reached 0.478 at best among the YOLO models, and as low as 0.104 for YOLOv12. DETR managed 0.071."
+  },
+  {
+   "figure": {
+    "src": "img/hilex-exam-paper-layouts/results.png",
+    "alt": "Bar chart of mAP50 for five YOLO versions across the six region classes. All versions score high on large regions and low on Description.",
+    "caption": "Every YOLO version does well on big blocks and badly on Description. The newest version, YOLOv12, falls furthest behind."
+   }
+  },
+  {
+   "p": "Across all classes, YOLOv8 scored 0.848 mAP50, PaLI-Gemma 2 scored 0.835, YOLOv11 0.822, YOLOv9 0.818 and Florence-2 0.810. RT-DETR reached 0.606 and DETR 0.502. YOLOv12, the newest, scored 0.685, below its older siblings. Newer or larger did not mean better here."
+  },
+  {
+   "callout": "On the paper’s headline score Detectron2 comes first, at mAP50 0.940. On the stricter mAP50-95, YOLOv11 is ahead: 0.689 against 0.673."
+  },
+  {
+   "p": "Looking at the mistakes, we saw two patterns. Some models draw many redundant, overlapping boxes. Others miss Instruction and Description regions altogether."
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "HiLEx has limits that we state in the paper. The pages are English only, and mostly come from Indian national exams plus GMAT, GRE and SAT. The dataset is unbalanced: GATE has 668 pages, UPSC just 36. It contains page images and boxes, but no text of the questions yet."
+  },
+  {
+   "p": "Next we want to add the text itself, so that models which read words and layout together can be tested, and to add exams in other languages and from other regions. That is what would turn this from a benchmark into a tool for building question banks."
+  }
+ ],
+ "acknowledgements": "",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-032-04627-7_28"
+  },
+  {
+   "label": "HiLEx dataset on GitHub",
+   "url": "https://github.com/HiLEx-DLA/HiLEx"
+  }
+ ]
+}

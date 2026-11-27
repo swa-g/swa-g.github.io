@@ -1,0 +1,103 @@
+{
+ "slug": "two-phase-capsule-routing",
+ "title": "Letting small image regions negotiate before a capsule network decides",
+ "paper_title": "Two-phase dynamic routing for micro and macro-level equivariance in multi-column capsule networks",
+ "date": "2021-01-15",
+ "date_note": "Pattern Recognition vol. 109 (January 2021 issue); article 107595 was published online 18 Aug 2020 (accepted 15 Aug 2020); mid-month day chosen",
+ "venue": "Pattern Recognition",
+ "detail": "Vol. 109, 107595 · Elsevier",
+ "authors": "B Mandal, R Sarkhel, Swarnendu Ghosh, N Das, M Nasipuri",
+ "url": "https://doi.org/10.1016/j.patcog.2020.107595",
+ "tags": [
+  "capsule networks",
+  "image classification",
+  "multi-column networks",
+  "handwriting"
+ ],
+ "kind": "article",
+ "summary": "Many image classifiers are committees of small networks that vote. We built a capsule network where the committee members, each seeing a piece of the picture, first agree with each other and then decide.",
+ "body": [
+  {
+   "p": "Many image classifiers are really committees. Several small networks each look at a different part of the picture, and a final step combines their answers. Usually that step is a vote or an average. We asked whether the members could instead negotiate, and we built a two-stage routing scheme for capsule networks that lets them do so."
+  },
+  {
+   "h2": "The problem"
+  },
+  {
+   "p": "A standard convolutional neural network slides small filters over an image. At every spot a filter reports one number: how strongly its pattern appears here. One number can say 'present' or 'absent', but it says nothing about how the feature is bent, tilted or stretched."
+  },
+  {
+   "p": "Capsule networks replace that single number with a short list of numbers, called a vector. They also add a rule named routing by agreement. A low-level capsule sends its output to the higher-level capsules whose own output agrees with it. We hoped this would model how parts fit into a whole, even when the parts can deform independently."
+  },
+  {
+   "p": "The second ingredient is the multi-column network. Each column is a small network that reads a different region of the image: the whole picture, its quarters, and so on. Columns are usually trained separately and combined by majority vote or by averaging their probabilities. Both keep only the strongest opinion of each column. Weak opinions that happen to agree with each other are thrown away."
+  },
+  {
+   "h2": "The idea"
+  },
+  {
+   "p": "We made every column a small capsule network and replaced the vote with routing. Because small parts and whole objects are different levels of detail, we split the routing into two phases. The first phase deals with micro-level features from the individual regions. The second phase gathers the result into the macro-level answer for each class."
+  },
+  {
+   "h2": "How it works"
+  },
+  {
+   "p": "Each region goes through its own region-specific capsule network. It has one convolutional layer with 256 channels, followed by a capsule layer of 32 blocks of 8-number vectors. We tried two designs. Caps-5 has five columns: the whole image plus its four quadrants, each scaled up to full size. Caps-21 adds the sixteen smaller tiles, so it has 21 columns."
+  },
+  {
+   "figure": {
+    "src": "img/two-phase-capsule-routing/caps5.png",
+    "alt": "Diagram of the Caps-5 network: the whole image goes to a primary capsule network, four stacked image quadrants go to a secondary one, and both feed a multi-level dynamic routing step that produces one output capsule per class.",
+    "caption": "Caps-5 reads the whole image and four scaled-up quadrants, then combines all of it in a single routing step."
+   }
+  },
+  {
+   "p": "In phase one, the capsules of all regions vote on what the image shows, and votes that agree with each other get more weight. This produces intermediate capsules that summarise the whole image from the regions' consensus. In phase two, those intermediate capsules are routed to the final class capsules, again by agreement. Picture a panel of experts who each see one corner of a photo. They first reconcile their notes with each other, and only then does a chair write down the verdict."
+  },
+  {
+   "figure": {
+    "src": "img/two-phase-capsule-routing/routing.png",
+    "alt": "Diagram of the two routing levels: image regions pass through region-specific capsule networks, a first-level routing step merges their contributions, and a second-level routing step produces the output capsules.",
+    "caption": "The two routing levels. The first merges what the regions say, the second turns that into the output for each class."
+   }
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "We tested on seven public datasets: handwritten digits in Bengali, Devanagari, Arabic and Telugu (only 2,000 to 4,000 training images each), plus Fashion-MNIST (clothing), Not-MNIST (letters in many typefaces) and SVHN (house numbers from street photos). No data augmentation was used."
+  },
+  {
+   "p": "Caps-5 beat both a plain capsule network and a LeNet5 baseline on all seven datasets. Caps-21 beat LeNet5 everywhere but trailed the plain capsule network on the Bengali and Devanagari digits and on SVHN. On the Telugu digits, Caps-5 reached 98.00% against 95.40% for the plain capsule network and 92.20% for LeNet5. Caps-5 did best on the digit sets and SVHN, while Caps-21 did best on Fashion-MNIST (91.27%) and Not-MNIST (95.66%), where objects vary more within a class."
+  },
+  {
+   "p": "We also built ordinary multi-column convolutional networks with the same inputs. On SVHN, Caps-5 scored 90.19% against 81.87% for the five-column convolutional version, and the 21-column version fell to 57.79%. Replacing our routing with majority voting or probability averaging usually cost accuracy too. The gap was largest on SVHN: 90.19% for our routing against 87.71% for voting and 87.59% for averaging in Caps-5. Majority voting did win on Fashion-MNIST for Caps-5 (91.49% against 90.96%). A statistical test, McNemar's, showed that some improvements, mostly on the small digit sets, could be down to chance."
+  },
+  {
+   "callout": "A region that is accurate on its own is not always the one that gets the most weight in routing. Regions count when they agree with the overall consensus."
+  },
+  {
+   "p": "That last point explains why routing can beat voting. When we tested each region alone, the full image was best, the quadrants slightly weaker and the small tiles weakest. Yet in the routing weights, many small regions carried contributions comparable to the full image."
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "Our networks do not match the best convolutional networks. Training is slow, which limits how far the idea can scale, and the paper says so directly. Without augmentation, Caps-5 and Caps-21 reached only 68.87% and 68.97% on CIFAR-10. With another capsule paper's data loader the numbers rose to 74.67% and 75.82%, in the range of the 75.70% reported for MS-CapsNet, though the paper notes that the pre-processing differs between the setups."
+  },
+  {
+   "p": "We meant the two-level scheme as a step toward deeper capsule networks with several routing layers. The paper leaves that extension, and hierarchies with more than two levels, as an open direction."
+  }
+ ],
+ "acknowledgements": "This work was supported by the project sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1016/j.patcog.2020.107595"
+  },
+  {
+   "label": "Code on GitHub",
+   "url": "https://github.com/DVLP-CMATERJU/TwoPhaseDynamicRouting"
+  }
+ ]
+}

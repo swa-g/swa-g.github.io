@@ -1,0 +1,95 @@
+{
+ "slug": "indic-script-multiscale-cnn-features",
+ "title": "Letting neural networks pick the features for telling handwritten Indian scripts apart",
+ "paper_title": "Deep learning for word-level handwritten Indic script identification",
+ "date": "2020-01-03",
+ "date_note": "RTIP2R 2020 (CCIS 1380, Springer 2021); the conference was held in Aurangabad, India, on 3-4 January 2020 from my knowledge of the venue. The PDFs show only the 2020 conference name and the 2021 print year.",
+ "venue": "International Conference on Recent Trends in Image Processing and Pattern Recognition (RTIP2R)",
+ "detail": "pp. 499–510 · Springer",
+ "authors": "S Ukil, Swarnendu Ghosh, SM Obaidullah, KC Santosh, K Roy, N Das",
+ "url": "https://doi.org/10.1007/978-981-16-0507-9_42",
+ "tags": [
+  "handwriting",
+  "script identification",
+  "feature extraction",
+  "wavelets"
+ ],
+ "kind": "article",
+ "summary": "Instead of hand-designing features, ten small neural networks learn them from images of handwritten words. Fed to a simple classifier, they identified eleven Indian scripts with 94.73% accuracy.",
+ "body": [
+  {
+   "p": "Which script is a handwritten word written in? For eleven Indian scripts, earlier work answered this with features that people designed by hand, such as measurements of stroke shapes. We asked whether a neural network could pick better features by itself. Ten small networks, fed with the word at different sizes and in two different forms, produced the features, and a simple classifier made the final call."
+  },
+  {
+   "h2": "Why script matters"
+  },
+  {
+   "p": "Optical character recognition, the software that turns a scanned page into text, is built for one script at a time. In India a single postal card or business form can contain several scripts, so a program first has to decide which script it is looking at. Doing it per word is the finest level, and it copes with a page that changes script mid-line."
+  },
+  {
+   "figure": {
+    "src": "img/indic-script-multiscale-cnn-features/pipeline.png",
+    "alt": "Block diagram. The input image is rescaled to 32, 48 and 128 pixels, and a wavelet-transformed copy is rescaled to 32 and 48 pixels. Ten convolutional networks each output 1024 numbers, which are joined into a 10240 long vector and passed through layers of size 1024, 512 and 11.",
+    "caption": "The whole system. Ten networks each produce 1,024 features; these are joined into one list of 10,240 numbers and passed to a small classifier that outputs 11 scores, one per script."
+   }
+  },
+  {
+   "h2": "The idea"
+  },
+  {
+   "p": "A convolutional neural network (CNN) learns its own filters from examples, so we did not have to say what makes Bangla look different from Tamil. We trained ten of them, each with a different view of the same word."
+  },
+  {
+   "ul": [
+    "Spatial views: the plain grey-scale word, shrunk to 32×32, 48×48 or 128×128 pixels.",
+    "Frequency views: the word run through a seven-level Haar wavelet transform and rebuilt from its high-frequency parts, which keeps the pen strokes and suppresses the background. These were shrunk to 32×32 and 48×48.",
+    "Each size comes in two depths, with two or three rounds of convolution and pooling."
+   ]
+  },
+  {
+   "p": "Each network was trained separately on 8,800 word images from the PHDIndic_11 collection, which has 1,000 words for each of the 11 scripts. The last hidden layer of each network holds 1,024 numbers that summarise the word. We took that layer from each network, joined the ten summaries into a list of 10,240 numbers and trained a multi-layer perceptron (a small, fully connected neural network) on top. We tested on the remaining 2,200 words. Training used an Nvidia GT 730 graphics card with 4 GB of memory."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "The best single network, which saw the plain word at 128×128 pixels with three layers, got 90% accuracy. Combining the two depths at that size gave 91.41%. Joining all spatial networks gave 94.14%, while the wavelet networks together reached 90.27%. The wavelet networks scored lower alone, but they added something: with both groups joined, accuracy rose to 94.73%."
+  },
+  {
+   "callout": "With all ten networks combined, 94.73% of the test words were assigned to the right script, against 91.00% for an earlier feature-based method on the same dataset."
+  },
+  {
+   "figure": {
+    "src": "img/indic-script-multiscale-cnn-features/results.png",
+    "alt": "Bar chart of accuracy, precision, recall and f-score for each single network, for the networks grouped by size, for all spatial networks, all frequency networks and all combined. The last group, all combined, is the tallest at about 94.7 percent.",
+    "caption": "Individual networks sit between about 86% and 90%. Grouping them lifts the score, and the group of all ten is highest."
+   }
+  },
+  {
+   "p": "We also compared with two standard networks on this dataset. LeNet reached 82.00% and AlexNet 92.14%. The paper adds that AlexNet needs a stronger graphics card, such as a GTX 1080. Our ten networks together beat both, and it is the combination that does it: no single network of ours reached 91% on its own."
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "It still makes mistakes, and the paper shows examples. A Bangla word was labelled Gurumukhi, a Devanagari word Tamil, a Gujarati word Gurumukhi. We did not test on any other dataset, and the claim of the biggest dataset for this task is made to the best of our knowledge."
+  },
+  {
+   "figure": {
+    "src": "img/indic-script-multiscale-cnn-features/misclassified.png",
+    "alt": "Six handwritten word images. Under each is the script the system predicted, with the true script in brackets, for example Gurumukhi (Bangla) and Tamil (Devanagari).",
+    "caption": "Mistakes. The first line under each word is what the system said, and the bracket is the true script."
+   }
+  },
+  {
+   "p": "The result shows that features learned by networks, and not designed by people, can do this job on handwritten words, and that views at several sizes and in two forms complement each other."
+  }
+ ],
+ "acknowledgements": "",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1007/978-981-16-0507-9_42"
+  }
+ ]
+}

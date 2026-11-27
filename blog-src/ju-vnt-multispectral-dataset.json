@@ -1,0 +1,101 @@
+{
+ "slug": "ju-vnt-multispectral-dataset",
+ "title": "A photo collection of desk objects in visible, near-infrared and thermal light",
+ "paper_title": "JU-VNT: a multi-spectral dataset of indoor object recognition using visible, near-infrared and thermal spectrum",
+ "date": "2021-02-12",
+ "date_note": "Multimedia Tools and Applications, published online 12 February 2021 (received 19 Jan 2020, accepted 22 Dec 2020).",
+ "venue": "Multimedia Tools and Applications",
+ "detail": "Vol. 80, No. 12, pp. 17807–17826 · Springer",
+ "authors": "Swarnendu Ghosh, N Das, P Sarkar, M Nasipuri",
+ "url": "https://doi.org/10.1007/s11042-020-10302-z",
+ "tags": [
+  "dataset",
+  "multispectral imaging",
+  "thermal imaging",
+  "object recognition"
+ ],
+ "kind": "article",
+ "summary": "We photographed 25 desk objects, alone and in pairs, with three cameras that see visible, near-infrared and thermal light, and released 7,800 aligned images with labels and benchmark results.",
+ "body": [
+  {
+   "p": "An ordinary camera sees what our eyes see, and that is not always enough. In fog or poor light it struggles, and some materials look the same to it. We built JU-VNT, a collection of 7,800 photographs of everyday desk objects taken in three kinds of light: visible, near-infrared and thermal. We labelled the images, lined them up with each other, and tested standard neural networks on them."
+  },
+  {
+   "h2": "Why three kinds of light"
+  },
+  {
+   "p": "Each spectrum shows something different. Visible light gives colour, texture and shape. Near-infrared (NIR) light sits just beyond red. A camera that only accepts it keeps working in fog, and an infrared lamp can light a scene at night. It also copes better than visible light with glass, which bends and reflects light. Thermal cameras record heat, so they do not depend on the light source at all, although they are expensive and can struggle in warm surroundings."
+  },
+  {
+   "p": "Datasets that pair two of these spectra exist, for example visible with thermal for street scenes. We found none that had all three. Having three cameras also brings practical complications, such as different lenses, viewpoints, sharpness and noise, which the dataset also carries."
+  },
+  {
+   "h2": "How the photos were taken"
+  },
+  {
+   "p": "We used a Nikon D3200 for visible light, a Watec WAT-902H2 camera with a filter that blocks everything below 830 nm for NIR, and a FLIR A655SC for thermal. The three cameras stood on tripods of different heights so that none blocked another, looking at a table covered in white paper, with an infrared lamp on the ceiling above it."
+  },
+  {
+   "figure": {
+    "src": "img/ju-vnt-multispectral-dataset/camera-setup.jpg",
+    "alt": "Three cameras on tripods side by side: a FLIR thermal camera on the left, a Nikon DSLR in the middle and a small near-infrared camera on the right.",
+    "caption": "The camera rig: thermal, visible and near-infrared, from left to right."
+   }
+  },
+  {
+   "p": "There are 25 objects, made of wood, plastic, glass, ceramic, metal and other materials. They include a stapler, scissors, a key, a cup, a pair of spectacles and a power bank. We rotated each object in 45 degree steps to get 8 views. That gives 600 images of single objects (25 objects, 8 angles, 3 spectra). We did the same for every pair of objects, which gives 7,200 more."
+  },
+  {
+   "p": "The three cameras do not see the table from the same spot, so their images do not line up. Before each set we took one extra shot with three vertical metal markers around the objects. The marker tips gave us three matching points. From those, an affine transformation (a mix of rotation, scaling and skewing) maps the NIR and thermal images onto the visible one, and we then tidied the result by hand. All three images are cropped with one window, found from the NIR image. We also give the objects' bounding boxes, in XML, and sort the images into folders by class."
+  },
+  {
+   "figure": {
+    "src": "img/ju-vnt-multispectral-dataset/visible-vs-thermal.jpg",
+    "alt": "Top row: a visible-light photo of a whiteboard marker and a photo of three small wooden blocks. Bottom row: the thermal images of the same scenes, a faint grey rod for the marker and one bright block among duller ones.",
+    "caption": "Top: visible light. Bottom: thermal. The printing on the marker disappears, and one of the blocks glows brighter than the others."
+   }
+  },
+  {
+   "h2": "What the benchmarks show"
+  },
+  {
+   "p": "We trained four standard networks, ResNet18, Inception-V3, DenseNet-121 and MobileNetV2, on a random 3:1 train and test split. We tried each spectrum alone and every combination, with and without random flips of the images as data augmentation."
+  },
+  {
+   "p": "Single objects were easy. Several networks reached 98 to 100% on RGB or NIR alone, so the differences between spectra are small at that level. Pairs were harder. Thermal alone did poorly: averaged over the four networks it reached 65.41% without augmentation, against 93.85% for RGB. The paper explains that when two objects have similar temperatures, the network sees one blob."
+  },
+  {
+   "callout": "On pairs of objects, with augmentation, RGB plus NIR averaged 97.52% over the four networks. Adding thermal as a third input gave 95.61%."
+  },
+  {
+   "p": "Adding the third spectrum slightly lowered the average in both datasets, with or without augmentation. The paper reads this as a sign that standard networks are not built to fuse more than two spectra, and it offers JU-VNT as a testbed for that problem. The best score on pairs was 99.00%, from MobileNetV2 on RGB plus NIR with augmentation."
+  },
+  {
+   "figure": {
+    "src": "img/ju-vnt-multispectral-dataset/benchmarks.png",
+    "alt": "Four bar charts of accuracy for each spectrum combination and each of four networks. The top row is single objects and the bottom row is pairs of objects; the left column is without augmentation and the right is with augmentation. Thermal alone is low for pairs.",
+    "caption": "Accuracy for every spectrum combination and network. Top row: single objects. Bottom row: pairs. Left: without augmentation. Right: with augmentation."
+   }
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "The registration is approximate. The cameras view the table from slightly different angles, so a pixel-exact match is technically impossible, as the paper says. The objects are ordinary desk items photographed indoors on white paper, so this is a controlled setting, not a street."
+  },
+  {
+   "p": "We see it as a starting point. Beyond classification and finding objects, the paper suggests translating images from one spectrum to another and generating rotated views of an object. The dataset is on GitHub."
+  }
+ ],
+ "acknowledgements": "This work is supported by the project sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors thank the team that made the collection of the dataset possible. Image capturing: Subham Jana and Puspendu Khan. Data preprocessing: Tathagata Bandyopadhyay, Anwesha Sen and Soupik Chowdhury. Data annotation: Osman Goni, Priyam Sarkar, Rounak Dutta, Supriyo Das, Debarati Roy and Ujjwal Misra. Benchmarks: Somenath Kuiry and Bodhisatwa Mondal. Special thanks to Somenath Kuiry for his contribution during revision.",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1007/s11042-020-10302-z"
+  },
+  {
+   "label": "Dataset on GitHub",
+   "url": "https://github.com/DVLP-CMATERJU/JU-VNT"
+  }
+ ]
+}

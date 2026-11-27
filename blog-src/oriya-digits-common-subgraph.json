@@ -1,0 +1,88 @@
+{
+ "slug": "oriya-digits-common-subgraph",
+ "title": "Recognising handwritten Oriya digits by comparing skeleton graphs",
+ "paper_title": "Handwritten Oriya digit recognition using maximum common subgraph based similarity measures",
+ "date": "2016-01-08",
+ "date_note": "Springer AISC vol. 435 (c) 2016; INDIA 2016 proceedings, which I recall as held in Visakhapatnam in early Jan 2016; the PDF itself only gives the year, so the day is a best guess",
+ "venue": "Information Systems Design and Intelligent Applications",
+ "detail": "Advances in Intelligent Systems and Computing, Vol. 435, pp. 165–173 · Springer",
+ "authors": "Swarnendu Ghosh, N Das, M Kundu, M Nasipuri",
+ "url": "https://doi.org/10.1007/978-81-322-2757-1_18",
+ "tags": [
+  "handwriting",
+  "graph methods"
+ ],
+ "kind": "article",
+ "summary": "We turned handwritten Oriya digits into small graphs and recognised them by how much each graph overlaps with training examples. The method reached 97.64% accuracy on 2200 test images.",
+ "body": [
+  {
+   "p": "Oriya is a language of India, and its handwritten digits have received far less attention from researchers than those of many other scripts. We show a way to recognise them by turning each digit into a small graph and measuring how much it overlaps with graphs of known digits. After training on 5000 images, the method reached 97.64% accuracy on 2200 test images."
+  },
+  {
+   "h2": "Collecting and cleaning the digits"
+  },
+  {
+   "p": "The samples came from students of the National Institute of Science and Technology Orissa, who wrote digit sequences naturally on a form designed for the purpose. The data set was developed at the Center for Microprocessor Applications for Training Education and Research, in the Computer Science and Engineering Department at Jadavpur University. In total there were 7200 images, 720 per digit."
+  },
+  {
+   "p": "We scanned the forms, cropped out each digit by hand, and converted it to black and white using a threshold of 80%. We trimmed it to the first black pixel on each side, resized it to 64 by 64 pixels and skeletonised it. Skeletonising peels away the edge of the pen stroke until only a line one pixel wide is left, without breaking the stroke apart."
+  },
+  {
+   "figure": {
+    "src": "img/oriya-digits-common-subgraph/digits.png",
+    "alt": "A row of ten handwritten Oriya digits from zero to nine, and below each its thin white skeleton on a black square.",
+    "caption": "Top: the ten handwritten digits from zero to nine. Bottom: the same digits after skeletonising."
+   }
+  },
+  {
+   "h2": "From a skeleton to a graph"
+  },
+  {
+   "p": "We cut the 64 by 64 image into a four by four grid of blocks, each 16 by 16 pixels. Every block becomes one of 16 nodes. Two neighbouring blocks are joined by an edge when the pen stroke continues across the border between them. The paper gives separate rules for the right, lower, lower-left and lower-right neighbours. The result is a graph whose shape follows the digit's shape."
+  },
+  {
+   "figure": {
+    "src": "img/oriya-digits-common-subgraph/grid-graph.png",
+    "alt": "A four by four grid of numbered blocks with a dark stroke winding through them and arrows showing which blocks are connected.",
+    "caption": "How a skeleton becomes a graph. Each numbered block is a node, and an arrow means the stroke continues into the next block. The paper draws a simplified 16 by 16 version for clarity."
+   }
+  },
+  {
+   "h2": "Similarity and classification"
+  },
+  {
+   "p": "To compare two graphs we look for their maximum common subgraph, the largest structure that appears in both. The more alike two digits are, the larger that shared part. The similarity score combines the fraction of nodes shared and the fraction of edges shared."
+  },
+  {
+   "p": "For each image we computed its average similarity to the training images of each of the ten digits. That gives ten numbers, one per digit, which serve as the features for a k-nearest-neighbour classifier. It labels a new image by majority vote among the k closest training samples. We ran it in the Weka toolkit."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "We trained on 5000 images, 500 per digit, and tested on 2200 images, 220 per digit. Accuracy was 97.72% on the training set and 97.64% on the test set. We tried k = 1, 3 and 5 and the accuracy did not change."
+  },
+  {
+   "callout": "Test accuracy: 97.64% on 2200 handwritten Oriya digit images."
+  },
+  {
+   "p": "Digits 0, 3 and 8 were recognised perfectly. Digit 7 was the hardest. Of its 220 test images, 196 were correct, 15 were read as a 2 and 9 as a 6. Earlier published work on Oriya handwriting, such as a 2007 system with 94.60% accuracy on 18,190 test samples, dealt with characters rather than digits, so the numbers are not a like-for-like comparison."
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "We tested one dataset of one script. The method also depends on a skeletonising routine that we took from MATLAB, and the paper suggests that tuning the thinning step could improve results further. We named two next steps: running the method on more datasets and scripts, and using graph kernels for similarity."
+  },
+  {
+   "p": "The same similarity idea had already been used by us for classifying text."
+  }
+ ],
+ "acknowledgements": "",
+ "links": [
+  {
+   "label": "Publisher page",
+   "url": "https://doi.org/10.1007/978-81-322-2757-1_18"
+  }
+ ]
+}
