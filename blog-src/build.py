@@ -68,6 +68,7 @@ def bibtex(d, pub):
 
 # ---------- thumbnails for the index cards (640x360; photos are cropped to fill, diagrams sit on white)
 def pick_thumb_source(d):
+    if d.get('thumb'): return d['thumb']
     figs = [b['figure'] for b in d['body'] if 'figure' in b]
     if not figs: return None
     for pref in ('sample', 'output', 'example', 'predict', 'retriev', 'result', 'photo', 'night'):
@@ -94,9 +95,21 @@ def make_thumb(d):
 CHEV = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>'
 
 
+NAV_ICONS = {
+    'About': '<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-1.5a4.5 4.5 0 0 0-4.5-4.5h-7A4.5 4.5 0 0 0 4 19.5V21"/><circle cx="12" cy="7.5" r="3.5"/></svg>',
+    'Research': '<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6.2L4.6 18.3A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-2.7L14 9.2V3"/><path d="M7.5 15h9"/></svg>',
+    'People': '<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-1.6a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V21"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M22 21v-1.6a4 4 0 0 0-3-3.85"/><path d="M16 4.15a3.5 3.5 0 0 1 0 6.7"/></svg>',
+    'Contact': '<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6.5L20.5 7"/></svg>',
+}
+
+# kinds that describe LANCER talks and datasets rather than a published paper
+LANCER_KINDS = {'explainer', 'talk', 'seminar', 'dataset'}
+NOUN = {'article': 'paper', 'explainer': 'paper', 'talk': 'talk', 'seminar': 'seminar', 'dataset': 'dataset'}
+
+
 def nav(index_page):
     def grp(label, items):
-        s = '<div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">%s%s</button><div class="nav-sub">' % (label, CHEV)
+        s = '<div class="nav-group"><button class="nav-btn" type="button" aria-haspopup="true" aria-expanded="false">%s%s%s</button><div class="nav-sub">' % (NAV_ICONS[label], label, CHEV)
         for h, t in items:
             cur = ' aria-current="true"' if (h == 'index.html' and index_page) else ''
             s += '<a href="%s"%s>%s</a>' % (h, cur, t)
@@ -105,7 +118,7 @@ def nav(index_page):
             + grp('About', [('../#about', 'About me'), ('../#experience', 'Experience'), ('../#education', 'Education')])
             + grp('Research', [('../#research', 'Research areas'), ('../#projects', 'Projects'), ('../#publications', 'Publications'), ('index.html', 'Blog')])
             + grp('People', [('../#people', 'Collaborators'), ('../#testimonials', 'Testimonials')])
-            + '<a href="../#contact">Contact</a></nav>')
+            + '<a href="../#contact">' + NAV_ICONS['Contact'] + 'Contact</a></nav>')
 
 
 def page(title, desc, canon, body, jsonld='', og_image='/assets/og-image.jpg', og_type='website', index_page=False, extra_head=''):
@@ -200,12 +213,17 @@ def render_block(b, d):
         rows = ''.join('<tr>%s</tr>' % ''.join(cell(c, 'td', j) for j, c in enumerate(r)) for r in t['rows'])
         note = (t['note'] + ' ') if t.get('note') else ''
         return ('<figure class="tbl"><div class="tbl-wrap"><table><caption>%s</caption><thead>%s</thead><tbody>%s</tbody></table></div>'
-                '<figcaption>%s<span class="src">Source: %s of the paper.</span></figcaption></figure>') % (t['caption'], head, rows, note, E(t['source']))
+                '<figcaption>%s<span class="src">Source: %s.</span></figcaption></figure>') % (t['caption'], head, rows, note, src_text(d, t['source']))
     if 'figure' in b:
         f = b['figure']; im = Image.open(os.path.join(BLOG, f['src'])); w, h = im.size
         return ('<figure><div class="frame"><img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async"></div>'
-                '<figcaption>%s<span class="src">Source: %s of the paper.</span></figcaption></figure>') % (f['src'], E(f['alt']), w, h, f['caption'], E(f['source']))
+                '<figcaption>%s<span class="src">Source: %s.</span></figcaption></figure>') % (f['src'], E(f['alt']), w, h, f['caption'], src_text(d, f['source']))
     raise ValueError(b)
+
+
+def src_text(d, source):
+    # papers: "Fig. 3" -> "Fig. 3 of the paper"; talks and datasets give their own wording
+    return E(source) if d['kind'] in ('talk', 'seminar', 'dataset') else E(source) + ' of the paper'
 
 
 def reading_minutes(d):
@@ -228,14 +246,15 @@ def build_article(d, prev, nxt, pub):
     tags = ''.join('<span>%s</span>' % E(t) for t in d['tags'])
     bib = bibtex(d, pub)
     links = ''.join('<a href="%s"%s>%s</a>' % (E(l['url']), '' if (not l['url'].startswith('http')) or 'swarnendughosh.com' in l['url'] else ' target="_blank" rel="noopener"', E(l['label'])) for l in d['links'])
-    if d['kind'] == 'explainer' and d['links']:
+    noun = NOUN[d['kind']]
+    if d['kind'] in LANCER_KINDS and d['links']:
         cta = '<div class="cta"><a href="%s">%s</a></div>' % (E(d['links'][0]['url']), E(d.get('cta', 'Read the full write-up on the LANCER page')))
     else:
         cta = ''
-    box = ('<aside class="paper-box" aria-label="The paper"><div class="lbl">The paper</div><div class="pt">%s</div>'
+    box = ('<aside class="paper-box" aria-label="The %s"><div class="lbl">The %s</div><div class="pt">%s</div>'
            '<div class="pa">%s</div><div class="pv">%s%s · %s</div>%s</aside>') % (
-        E(d['paper_title']), authors_html(d['authors']), E(d['venue']), (', ' + E(d['detail'])) if d.get('detail') else '', d['date'][:4],
-        '<div class="paper-links">%s<button type="button" class="cite-btn" data-copy-target="bibtex" aria-label="Copy the BibTeX entry of this paper">Cite this paper</button></div>' % links)
+        noun, noun, E(d['paper_title']), authors_html(d['authors']), E(d['venue']), (', ' + E(d['detail'])) if d.get('detail') else '', d['date'][:4],
+        '<div class="paper-links">%s<button type="button" class="cite-btn" data-copy-target="bibtex" aria-label="Copy the BibTeX entry of this %s">Cite this %s</button></div>' % (links, noun, noun))
     body = ''.join(render_block(b, d) for b in d['body'])
     ack = ''
     if d['acknowledgements'].strip():
@@ -246,10 +265,10 @@ def build_article(d, prev, nxt, pub):
         rows = ''
         if figs: rows += '<li><b>Figures:</b> %s</li>' % ', '.join(E(x) for x in figs)
         if d['tables_used']: rows += '<li><b>Tables:</b> %s</li>' % '; '.join(E(x) for x in d['tables_used'])
-        src = '<section class="sources"><h2>Sources</h2><p>The figures and tables listed here are taken from the paper cited at the top of this page; the numbers quoted in the text come from the paper too.</p><ul>%s</ul></section>' % rows
-    cite = ('<section class="cite-box" id="cite"><h2>Cite the paper</h2><p>%s</p>'
+        src = '<section class="sources"><h2>Sources</h2><p>The figures and tables listed here are taken from the %s cited at the top of this page; the numbers quoted in the text come from it too.</p><ul>%s</ul></section>' % (noun, rows)
+    cite = ('<section class="cite-box" id="cite"><h2>Cite the %s</h2><p>%s</p>'
             '<div class="bib-head"><span>BibTeX</span><button type="button" class="cite-btn" data-copy-target="bibtex">Copy BibTeX</button></div>'
-            '<pre id="bibtex">%s</pre></section>') % (E(citation(d, pub)), E(bib))
+            '<pre id="bibtex">%s</pre></section>') % (noun, E(citation(d, pub)), E(bib))
     pager = '<nav class="pager" aria-label="More articles">'
     pager += ('<a href="%s.html"><small>Newer</small>%s</a>' % (nxt['slug'], E(nxt['title']))) if nxt else '<span></span>'
     pager += ('<a class="next" href="%s.html"><small>Older</small>%s</a>' % (prev['slug'], E(prev['title']))) if prev else '<span></span>'
@@ -283,14 +302,14 @@ def build_index(posts):
     for y in sorted(years, reverse=True):
         cards = ''
         for p in years[y]:
-            badge = '<span class="badge">LANCER</span>' if p['kind'] == 'explainer' else ''
+            badge = '<span class="badge">LANCER</span>' if p['kind'] in LANCER_KINDS else ''
             th = make_thumb(p)
             img = ('<div class="thumb"><img src="%s" alt="" width="640" height="360" loading="lazy" decoding="async"></div>' % th) if th else ''
             cards += ('<a class="post-card" href="%s.html" data-tags="%s">%s<div class="pc-body"><div class="meta">%s%s</div><h3>%s</h3><p>%s</p><div class="venue">%s</div></div></a>') % (
                 p['slug'], E('|'.join(t.lower() for t in p['tags'])), img, long_date(p['date']), badge, E(p['title']), E(p['summary']), E(p['venue']))
         blocks += '<section class="year-block"><h2>%s</h2><div class="posts">%s</div></section>' % (y, cards)
     body = ('<div class="blog-head"><div class="eyebrow">Blog</div><h1>My papers, in plain language</h1>'
-            '<p class="lead">One short article for each of my papers: what problem we tackled, what we did, what we found. '
+            '<p class="lead">One short article for each of my papers, plus the talks and the dataset of the LANCER project: what problem we tackled, what we did, what we found. '
             'No background in machine learning needed.</p></div>'
             '<div class="tag-row" role="group" aria-label="Filter by topic">%s</div><p class="post-count" id="post-count" aria-live="polite">%d articles</p>%s'
             '<p class="blog-note">Each article is dated to when its paper appeared, not to the day it was written here. The papers themselves are listed, with links, on the <a href="../#publications">publications</a> section of the home page.</p>') % (chips, len(posts), blocks)

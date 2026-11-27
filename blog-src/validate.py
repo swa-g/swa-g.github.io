@@ -15,9 +15,11 @@ def check(slug):
     if d['slug'] != slug: errs.append('slug field != filename')
     try: datetime.date.fromisoformat(d['date'])
     except Exception: errs.append('date must be YYYY-MM-DD')
-    if d['kind'] not in ('article', 'explainer'): errs.append('kind must be article|explainer')
+    if d['kind'] not in ('article', 'explainer', 'talk', 'seminar', 'dataset'): errs.append('kind must be article|explainer|talk|seminar|dataset')
+    lancer = d['kind'] in ('talk', 'seminar', 'dataset')
     if len(d['summary']) > 220: errs.append('summary > 220 chars (%d)' % len(d['summary']))
     n = 0; figs = 0; tables_blocks = 0
+    if lancer: d['tables_used'] = []
     if not isinstance(d['tables_used'], list) or any(not re.match(r'^Table\s*[IVX\d]+', t) for t in d['tables_used']):
         errs.append('tables_used must be a list of strings like "Table 2: what it shows"')
     alltext = ' '.join((' '.join(v) if isinstance(v, list) else (v['caption'] if isinstance(v, dict) else v)) for b in d['body'] if 'table' not in b for v in b.values())
@@ -26,7 +28,7 @@ def check(slug):
         if 'table' in b and re.match(r'^Table\s*([IVX\d]+)', b['table'].get('source', '')): cited.add(re.match(r'^Table\s*([IVX\d]+)', b['table']['source']).group(1))
     listed = set(re.match(r'^Table\s*([IVX\d]+)', t).group(1) for t in d['tables_used'] if re.match(r'^Table\s*([IVX\d]+)', t))
     if listed - cited: warns.append('tables_used lists tables never cited inline: %s' % sorted(listed - cited))
-    if cited - listed: errs.append('tables cited inline but missing from tables_used: %s' % sorted(cited - listed))
+    if cited - listed and not lancer: errs.append('tables cited inline but missing from tables_used: %s' % sorted(cited - listed))
     for b in d['body']:
         keys = set(b) & BLOCKS
         if len(keys) != 1: errs.append('bad block %r' % list(b)[:3]); continue
@@ -36,7 +38,7 @@ def check(slug):
             for f in tf:
                 if f not in v: errs.append('table missing ' + f)
             if all(f in v for f in tf):
-                if not re.match(r'^Table\s*[IVX\d]+', v['source']): errs.append('table source must look like "Table 3": %r' % v['source'])
+                if not lancer and not re.match(r'^Table\s*[IVX\d]+', v['source']): errs.append('table source must look like "Table 3": %r' % v['source'])
                 if not (2 <= len(v['head']) <= 8): errs.append('table needs 2-8 columns')
                 if not (1 <= len(v['rows']) <= 14): errs.append('table needs 1-14 rows')
                 if any(len(r) != len(v['head']) for r in v['rows']): errs.append('table row length != head length')
@@ -48,7 +50,7 @@ def check(slug):
             figs += 1
             for f in ('src', 'alt', 'caption', 'source'):
                 if f not in v: errs.append('figure missing ' + f)
-            if 'source' in v and not re.match(r'^(Fig\.|Figure)\s*\d+', v['source']): errs.append('figure source must look like "Fig. 3" or "Fig. 4(a)": %r' % v['source'])
+            if 'source' in v and not lancer and not re.match(r'^(Fig\.|Figure)\s*\d+', v['source']): errs.append('figure source must look like "Fig. 3" or "Fig. 4(a)": %r' % v['source'])
             fp = os.path.join(BLOG, v.get('src', ''))
             if not os.path.isfile(fp): errs.append('figure file not found: ' + fp)
             elif os.path.getsize(fp) > 450_000: errs.append('figure > 450 KB: ' + v['src'])
@@ -56,7 +58,7 @@ def check(slug):
         else: n += words(txt)
         for t in re.findall(r'</?\s*([a-zA-Z0-9]+)', txt if isinstance(txt, str) else ''):
             if t.lower() not in ALLOWED: errs.append('disallowed html tag <%s>' % t)
-    lo, hi = (750, 1600) if d['kind'] == 'article' else (120, 340)
+    lo, hi = (750, 1600) if d['kind'] == 'article' else ((300, 950) if lancer else (120, 340))
     if not lo <= n <= hi: errs.append('body words %d outside %d-%d' % (n, lo, hi))
     if d['kind'] == 'article' and figs == 0: warns.append('no figures')
     if d['kind'] == 'article' and figs > 5: warns.append('more than 5 figures')

@@ -1,0 +1,86 @@
+{
+ "slug": "lancer-research-talk",
+ "title": "Why the road is next: a research talk on autonomous driving and LANCER",
+ "paper_title": "Autonomous Driving in Complex Environments",
+ "date": "2026-05-28",
+ "date_note": "Date of the slide file on the LANCER page; the day the talk was given is not recorded in the slides",
+ "venue": "LANCER project, research talk",
+ "detail": "slides",
+ "authors": "Swarnendu Ghosh",
+ "url": "",
+ "tags": ["autonomous driving", "reinforcement learning", "lancer", "talk"],
+ "kind": "talk",
+ "summary": "A walk through my LANCER research talk: why roads come first for automation, what a self-driving car senses, where the gaps are, and why we train driving agents with rewards in simulation.",
+ "cta": "Read the talk write-up and open the slides on the LANCER page",
+ "body": [
+  {"p": "This talk opens <b>LANCER</b>, my postdoctoral project at the University of Ljubljana on teaching vehicles to navigate difficult environments by reinforcement learning, that is, learning from trial, error and reward. It sets the scene: where driving automation stands, what is missing, and which part of the problem we picked. This article follows the slides in order; the full write-up and the slides are on the LANCER page."},
+  {"h2": "Why roads"},
+  {"p": "The talk starts by comparing the ways people move: suburban and urban roads, motorways, subways and metros, and low-speed and high-speed railways. The numbers behind it come from road, rail and safety statistics for 2023 to 2025, from sources such as the World Bank, the OECD, the World Health Organization and the European Commission. One source slide mentions the Commission's preliminary 2026 road-safety statistics, with a split of road fatalities of 53% rural, 38% urban and 8% motorway."},
+  {"p": "The argument fits on one slide: five observations about roads, such as that the network is massive and that roadways are dangerous, lead to the conclusion that roadway automation is inevitable."},
+  {"figure": {
+    "src": "img/lancer-research-talk/why-automation.png",
+    "alt": "A slide with five short reasons that point down to five conclusions and, at the bottom, the sentence 'Roadway automation is inevitable'.",
+    "caption": "The talk's argument for road automation: five observations about roads lead to the conclusion on the bottom bar.",
+    "source": "Slide 13 of the talk"}},
+  {"p": "The next slide splits the problem. In rural areas it runs from lane keeping to unmapped roads, with little vehicle-to-everything (V2X) infrastructure. In cities it is the interactive complexity of pedestrians, cyclists and traffic signals."},
+  {"h2": "Levels of automation and a case study"},
+  {"p": "The talk then lays out the six SAE J3016 levels of automation. At level 0 the driver is always in full control. At level 1 the car helps with steering or with speed, not both, and at level 2 with both while the driver supervises constantly. At level 3 it can take over under very specific conditions but may ask the driver to take back control. At level 4 it drives itself within a defined area or conditions, and at level 5 anywhere a human can drive."},
+  {"p": "Several slides present a case study of the Waymo driving system, with the disclaimer that I am not an authorised spokesperson and show only what Waymo has published. The timeline starts in 2009 with the Google self-driving car project. In 2015 Steve Mahan, who is legally blind, took the first fully self-driving ride on public roads, in Austin, Texas. The sensor slides give each sensor a role: LiDAR is the 3D architect, precise to centimetres and independent of light; the cameras, 13 of them overlapping, are the semantic eye that reads lights and signs and sees obstacles over 500 m away; radar is the weather specialist that measures speed and works through heavy fog, rain and snow."},
+  {"h2": "Gaps, opportunities and threats"},
+  {"p": "The talk groups what is missing into four kinds of gaps. Technical gaps include long-tailed events, extreme weather and data scarcity. Cognitive gaps include semantic intelligence and social norms. Infrastructure gaps include road quality, V2X and 5G. Regulatory gaps include new policies, uniform traffic laws and AI certification."},
+  {"figure": {
+    "src": "img/lancer-research-talk/gaps.png",
+    "alt": "A slide with four columns headed Technical, Cognitive, Infrastructure and Regulatory, each with a bullet list of gaps.",
+    "caption": "Four groups of gaps on the way to automated driving.",
+    "source": "Slide 43 of the talk"}},
+  {"p": "The opportunities are services such as mobility as a service, logistics, where automated trucks can operate more than 20 hours a day, safety, and a market that is largest in the densest cities. The threats are security, trust, labour and ethics, such as who will be accused or defended after a crash. Two slides survey what exists today: computing and software stacks, and physical test sites."},
+  {"table": {
+    "caption": "A selection of the physical test facilities shown in the talk",
+    "source": "Slide 47 of the talk",
+    "head": ["Facility", "Country", "What the slide says it offers"],
+    "rows": [
+      ["ZalaZone", "Hungary", "250-hectare site with a Smart City zone, high-speed handling and V2X communication testing"],
+      ["AstaZero", "Sweden", "Full-scale independent test environment with multilane and rural road setups for edge cases"],
+      ["MIRA Technology Park", "UK", "Mobility R&D cluster with over 35 global OEMs, cybersecurity testing and a human-centred design centre"],
+      ["American Center for Mobility", "USA (Michigan)", "500-acre campus with a 2.5-mile high-speed highway loop, tunnels and urban intersections"],
+      ["K-City / Gwangju City", "South Korea", "The city of Gwangju is a regulatory sandbox with 200 software-centric vehicles collecting data around the clock"],
+      ["Transpolis", "France", "A 1:1 scale urban living lab with reconfigurable buildings"]
+    ],
+    "note": "Six of the facilities on the slide, in the slide's own words, shortened."}},
+  {"h2": "Where LANCER comes in"},
+  {"p": "LANCER develops reinforcement learning systems that train driving agents, with a focus on complex environments with high entropy: changing conditions, other agents and the dynamics of traffic. The talk gives four reasons for choosing reinforcement learning. It copes with the long tail of rare events better than hard-coded rules, it suits dynamic traffic where other agents must be anticipated, it balances safety, efficiency and comfort through one reward function, and it replaces thousands of if-else rules with one learning framework. The slide puts it in one line: we do not want to tell the car how to drive, we want to tell it what good driving looks like."},
+  {"p": "The agent observes raw sensor data and derived information such as road markings, the positions of pedestrians and vehicles, drivable area and traffic signals. Its actions are continuous, with throttle and brake in [0, 1] and steering in [-1, 1], or a few discrete commands such as stay in lane. It can act at three levels: raw torque and voltage, a waypoint handed to a PID or MPC controller, or a strategic decision. The talk lists reward signals as examples."},
+  {"table": {
+    "caption": "Example reward signals from the talk",
+    "source": "Slides 70 and 71 of the talk",
+    "head": ["Signal", "Kind", "Example value"],
+    "rows": [
+      ["Reaching the destination", "Reward", "+1000"],
+      ["Passing a waypoint", "Reward", "+50"],
+      ["Stopping at a red light", "Reward", "+10 for each step stopped"],
+      ["Staying near the lane centre", "Reward", "+1.0 when the offset is below a threshold"],
+      ["Time consumed", "Penalty", "-0.1 per unit time"],
+      ["Collision", "Penalty", "-1000"],
+      ["Missing a waypoint", "Penalty", "-500"],
+      ["Traffic violation", "Penalty", "-200"],
+      ["Illegal lane change", "Penalty", "-50 (or -2 if legal but not mandatory)"]
+    ],
+    "note": "A selection of the rows; the slides also list distance-based, speed and comfort terms with weights."}},
+  {"p": "The case for simulation follows: crashes cost nothing, many instances run in parallel and faster than real time, and rare accidents can be scripted and repeated. For a policy to carry over to a real car the simulator needs realistic physics, photorealistic rendering and programmable traffic. The talk shows several simulators, including CARLA, SUMO and MetaDrive."},
+  {"h2": "Discussion"},
+  {"p": "The talk is a survey and a plan, not a set of results. The reward values are examples, and the Waymo material is public information, not a measurement of ours. What we take from it is that rare events, changing conditions and other road users are where hand-written rules run out."},
+  {"figure": {
+    "src": "img/lancer-research-talk/our-goal.png",
+    "alt": "A slide titled Our goal with four coloured columns: Simulation, Integration, Safety and Inclusivity, each with three bullet points.",
+    "caption": "The four goals that close the talk.",
+    "source": "Slide 74 of the talk"}},
+  {"p": "The talk ends with four goals. Simulation: a customizable traffic simulation platform with variable entropy and edge-case events. Integration: multi-agent interactions, with competition, cooperation and adversarial agents. Safety: safe reinforcement learning agents, safety parameterized in the reward and threat prediction. Inclusivity: agents that move from static to adaptive, with entropy modelling and entropy-guided parameter estimation. The first concrete step is the data-collection pipeline described in <a href=\"lancer-carla-dataset.html\">the dataset article</a>, and the same ideas are taught from scratch in <a href=\"lancer-student-seminar.html\">the student seminar</a>."}
+ ],
+ "acknowledgements": "LANCER is part of the postdoctoral project of Dr. Swarnendu Ghosh at the University of Ljubljana. It is co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. Views and opinions expressed are those of the author only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.",
+ "links": [
+  {"label": "LANCER page: research talk", "url": "../LANCER/blog-research-talk.html"},
+  {"label": "Slides (PDF)", "url": "../LANCER/Research%20Talk.pdf"}
+ ],
+ "tables_used": [],
+ "bibtex": "@misc{ghosh2026lancertalk,\n  author       = {Ghosh, Swarnendu},\n  title        = {Autonomous Driving in Complex Environments},\n  howpublished = {Research talk, LANCER project, University of Ljubljana},\n  year         = {2026},\n  note         = {Slides: https://swarnendughosh.com/LANCER/Research\\%20Talk.pdf}\n}"
+}

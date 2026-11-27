@@ -104,3 +104,7 @@
 .tbl td.num, .tbl th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tbl tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--chip) 45%, transparent); }
 .prose figure.tbl figcaption { margin-top: 10px; }
+
+/* icons beside the four top-bar headings */
+.nav-links > a, .nav-btn { display: inline-flex; align-items: center; gap: 6px; }
+.nav-btn svg.ni, .nav-links > a svg.ni { width: 16px; height: 16px; flex: none; opacity: .85; transform: none !important; }

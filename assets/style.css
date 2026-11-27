@@ -97,7 +97,7 @@ a:hover { text-decoration-thickness: 2px; }
   .nav-links > a { padding: 12px 14px; font-size: 1.02rem; }
   .nav-group { display: flex; flex-direction: column; }
   .nav-btn { pointer-events: none; padding: 12px 14px 4px; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: none; }
-  .nav-btn svg { display: none; }
+  .nav-btn svg:not(.ni) { display: none; }
   .nav-sub, .nav-group:hover .nav-sub { display: flex; position: static; min-width: 0; padding: 0 0 0 10px; border: 0; box-shadow: none; background: none; }
   .nav-sub a { padding: 10px 14px; font-size: 1.02rem; }
 }
@@ -524,3 +524,7 @@ body.modal-open { overflow: hidden; }
 }
 @keyframes introOut { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { #intro { display: none !important; } }
+
+/* icons beside the four top-bar headings */
+.nav-links > a, .nav-btn { display: inline-flex; align-items: center; gap: 6px; }
+.nav-btn svg.ni, .nav-links > a svg.ni { width: 16px; height: 16px; flex: none; opacity: .85; transform: none !important; }
