@@ -1,7 +1,7 @@
 {
-  "updated": "2026-11-26T15:18:35.619Z",
+  "updated": "2026-11-27T15:06:39.875Z",
   "source": "Google Scholar via SerpAPI",
-  "total": 1345,
+  "total": 1341,
   "h_index": 13,
   "i10_index": 17,
   "graph": [
@@ -19,7 +19,7 @@
     },
     {
       "year": 2018,
-      "citations": 26
+      "citations": 25
     },
     {
       "year": 2019,
@@ -43,11 +43,11 @@
     },
     {
       "year": 2024,
-      "citations": 203
+      "citations": 202
     },
     {
       "year": 2025,
-      "citations": 199
+      "citations": 197
     },
     {
       "year": 2026,
@@ -55,12 +55,12 @@
     }
   ],
   "papers": {
-    "understandingdeeplearningtechniquesforimagesegmentation": 695,
+    "understandingdeeplearningtechniquesforimagesegmentation": 692,
     "thejourneyofgraphkernelsthroughtwodecades": 111,
     "reshapinginputsforconvolutionalneuralnetworksomecommonanduncommonmethods": 89,
     "improvedwordlevelhandwrittenindicscriptidentificationbyintegratingsmallconvolutionalneuralnetworks": 60,
-    "segfastv2semanticimagesegmentationwithlessparametersindeeplearningforautonomousdriving": 51,
     "deeplearningmodelsformedicalimaging": 50,
+    "segfastv2semanticimagesegmentationwithlessparametersindeeplearningforautonomousdriving": 50,
     "chapter2deeplearningareview": 48,
     "deeplearningforwordlevelhandwrittenindicscriptidentification": 39,
     "handwrittenindiccharacterrecognitionusingcapsulenetworks": 33,
@@ -103,7 +103,7 @@
       "publication": "ACM computing surveys (CSUR) 52 (4), 1-35, 2019",
       "year": 2019,
       "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:IjCSPb-OGe4C",
-      "cited_by": 695
+      "cited_by": 692
     },
     {
       "title": "The journey of graph kernels through two decades",
@@ -130,19 +130,19 @@
       "cited_by": 60
     },
     {
-      "title": "SegFast-V2: Semantic image segmentation with less parameters in deep learning for autonomous driving",
-      "authors": "S Ghosh, A Pal, S Jaiswal, KC Santosh, N Das, M Nasipuri",
-      "publication": "International Journal of Machine Learning and Cybernetics 10 (11), 3145-3154, 2019",
-      "year": 2019,
-      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:W7OEmFMy1HYC",
-      "cited_by": 51
-    },
-    {
       "title": "Deep Learning Models for Medical Imaging",
       "authors": "KC Santosh, N Das, S Ghosh",
       "publication": "Academic Press, 2021",
       "year": 2021,
       "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:_FxGoFyzp5QC",
+      "cited_by": 50
+    },
+    {
+      "title": "SegFast-V2: Semantic image segmentation with less parameters in deep learning for autonomous driving",
+      "authors": "S Ghosh, A Pal, S Jaiswal, KC Santosh, N Das, M Nasipuri",
+      "publication": "International Journal of Machine Learning and Cybernetics 10 (11), 3145-3154, 2019",
+      "year": 2019,
+      "link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=B_44F14AAAAJ&pagesize=100&citation_for_view=B_44F14AAAAJ:W7OEmFMy1HYC",
       "cited_by": 50
     },
     {
