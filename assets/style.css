@@ -479,14 +479,14 @@ body.modal-open { overflow: hidden; }
    (the overlay ignores the pointer). The signature writes itself on the glass (S, u, u, then the g in one unbroken stroke; 0.35s-3.08s, timed inside the SVG file).
    When the file has loaded JS adds .go: at 3.18s (0.1s after the last stroke) the signature starts to zoom out and travel onto
    the mark in the top bar, where it stays (sharp, above the still-blurred header) until the overlay is removed and the real mark shows;
-   at 3.6s, once it is already moving, the glass starts to lose its tint and blur (done at 6.0s). The header, which has its
+   the glass loses its tint and blur over exactly the same 1.15s, with the same easing (3.18s-4.33s). The header, which has its
    own blur and so cannot be frosted by the glass, is blurred and washed out in step with it. */
 #intro { display: none; }
 .intro #intro { display: grid; place-items: center; position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
 #intro .glass { position: absolute; inset: -90px; background: var(--bg); opacity: .8; -webkit-backdrop-filter: blur(24px) saturate(1.2); backdrop-filter: blur(24px) saturate(1.2); }
 #intro img { position: relative; width: min(62vw, 440px); height: auto; will-change: transform, opacity; }
 [data-theme="dark"] #intro img { filter: invert(1) hue-rotate(180deg) brightness(.95); }
-.intro #intro.go .glass { animation: introClear 2.4s linear 3.6s forwards; }
+.intro #intro.go .glass { animation: introClear 1.15s cubic-bezier(.6, 0, .2, 1) 3.18s forwards; }
 /* the signature zooms out and settles exactly on the mark in the top bar (JS sets --dx/--dy/--s from the mark's measured box);
    the real mark stays hidden until the overlay is removed, so it looks as if the signature was placed there */
 .intro #intro.go img { animation: introLand 1.15s cubic-bezier(.6, 0, .2, 1) 3.18s forwards; }
@@ -494,7 +494,7 @@ body.modal-open { overflow: hidden; }
 .intro #intro.skip ~ .nav .brand .mark { opacity: 1; transition: opacity .3s ease; }
 .intro #intro.skip { animation: introOut .35s ease forwards; }
 .intro .nav { filter: blur(18px); opacity: .55; transition: filter .3s ease, opacity .3s ease; }
-.intro #intro.go ~ .nav { animation: introNav 2.4s linear 3.6s forwards; }
+.intro #intro.go ~ .nav { animation: introNav 1.15s cubic-bezier(.6, 0, .2, 1) 3.18s forwards; }
 .intro #intro.skip ~ .nav { animation: none; filter: none; opacity: 1; }
 @keyframes introNav { to { filter: blur(0); opacity: 1; } }
 @keyframes introLand { from { transform: translate(0, 0) scale(1); } to { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--s, .14)); } }
