@@ -18,7 +18,7 @@
  "summary": "A small multi-column network tells leukemia cells from healthy ones in microscope images, matching a much larger ensemble to within 1.3 accuracy points while using about a fifth of its parameters.",
  "body": [
   {
-   "p": "Acute lymphoblastic leukemia is a cancer of the blood and bone marrow. Early screening matters, and we wanted a neural network that could tell leukemic cells from healthy ones in microscope images without needing a huge model. Our network does this with 7.5 million parameters, about a fifth of the size of the best ensemble we compared against."
+   "p": "Acute lymphoblastic leukemia is a cancer of the blood and bone marrow. Early screening matters, and we wanted a neural network that could tell leukemic cells from healthy ones in microscope images without needing a huge model. Our network does this with 7.5 million parameters, about a fifth of the size of the best published model we compared against."
   },
   {
    "h2": "The problem"
@@ -27,44 +27,45 @@
    "p": "In this disease the bone marrow makes too many immature white blood cells, called lymphoblasts, which crowd out healthy blood cells. It is the most common leukemia in children, about 25% of pediatric cancer diagnoses by the paper's figure. We used the ISBI 2019 C-NMC challenge dataset, which has segmented images of lymphoblasts: 10,661 training images from 73 patients and 1,867 test images from 28 patients."
   },
   {
-   "p": "Two things make the task hard for a neural network. Staining the cells introduces colour differences that have nothing to do with the cell itself. And the strongest published results rely on large models, which are difficult to deploy in a real clinic. A parameter is one learned number inside the network, so a count of parameters is a rough measure of size."
+   "p": "Two things shape the task. Staining the cells introduces colour differences that have nothing to do with the cell itself, and we wanted the network to focus on the cell rather than the pigment. The second is size. Some published results reach high accuracy with a huge number of parameters and extra overhead, and the paper argues that a network has to be compact before it can be deployed in real life. A parameter is one learned number inside the network, so a count of parameters is a rough measure of size."
   },
   {
    "h2": "The idea"
   },
   {
-   "p": "We split each colour image into its three channels, red, green and blue, and gave each its own small network, or column. Looking at one channel at a time pushes the network to attend to variations in intensity rather than the colour tint. In the second half the three columns are joined and the network continues on the combined features."
+   "p": "We split each colour image into its three channels, red, green and blue, and gave each its own small network, or column. Looking at one channel at a time pushes the network to attend to variations in intensity rather than the colour tint. The model has two phases. The first has three layers of channel-specific feature extraction. Then the three outputs are joined, and the second phase has three more layers that work on the combined features. For training we used standard data augmentation: linear transformations, added noise, and random changes in intensity and colour."
   },
   {
-   "p": "To keep the model small, we built it from depth-wise separable convolutions. A standard convolution mixes space and channels in one costly step. Here a cheap 1 × 1 step first changes the number of channels and then one or more 3 × 3 steps handle the spatial pattern. Max pooling shrinks the image between blocks. A final 7 × 7 average pooling turns the features into a vector for a small classifier."
+   "p": "To keep the model small, we built it from depth-wise separable convolutions. In each block a 1 × 1 step first maps the features to more channels, and then one or more 3 × 3 steps handle the spatial pattern. Max pooling shrinks the image between blocks. In the last block a 7 × 7 average pooling turns the spatial features into a flat vector for a small classifier, a multi-layer perceptron."
   },
   {
    "figure": {
     "src": "img/leukemia-compact-cnn/architecture.png",
     "alt": "Diagram of the network: a cell image is split into three colour channels, each passes through its own depth-wise separable convolutions, the results are concatenated, further convolutions follow, and a small classifier outputs the decision.",
-    "caption": "The three colour channels get their own early layers. The features are then joined and processed together before the classifier."
+    "caption": "The three colour channels get their own early layers (left). The features are then concatenated and processed together before the classifier (right).",
+    "source": "Fig. 1"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "The network reached 97.5% test accuracy, with precision 0.973 and recall 0.972. The best approach we compared against combines DenseNet121, ResNet50 and MobileNet with a random forest, a second classifier on top. It scored 98.8% with 38 million parameters. We therefore lose 1.3 accuracy points and use almost five times fewer parameters, and we need no extra classifier."
+   "p": "The network reached 97.5% test accuracy, with precision 0.973 and recall 0.972. The state-of-the-art model we compared against combines DenseNet121, ResNet50 and MobileNet with a random forest, a second classifier that works on their outputs. It scored 98.8% with 38 million parameters, plus the overhead of that second classifier. Even against this top model our network loses only 1.3% in accuracy, with almost five times fewer parameters, and it needs no additional classifier."
   },
   {
-   "callout": "97.5% accuracy with 7.5 million parameters, against 98.8% with 38 million for the best ensemble in our comparison."
+   "callout": "97.5% accuracy with 7.5 million parameters, against 98.8% with 38 million for the state-of-the-art model."
   },
   {
-   "p": "Single standard networks did worse in the same table: DenseNet121 reached 94.0%, ResNet50 93.5% and MobileNet 94.2%. The comparison is not one-sided, though. A DenseNet121 and MobileNet pair with a random forest scored 98.5% with 12.4 million parameters, which is more accurate than ours at under twice the size. The paper's table lists the random forest cost as an unquantified term."
+   "p": "The standard networks on their own scored lower. DenseNet121 (8.1 million parameters) reached 94.00%, ResNet50 (25.6 million) 93.50% and MobileNet (4.3 million) 94.20% (Table 1). The paper concludes that, in its experiments, models of comparable size perform much worse than ours."
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "All reported results come from this single dataset, so we cannot say how the model behaves on images from other laboratories or stains. The paper also compares accuracy and size but reports no running times."
+   "p": "All results come from one dataset, the ISBI 2019 C-NMC challenge data. We did not test other datasets, and the paper reports no experiments on images from other sources."
   },
   {
-   "p": "Unless a model is compact, it cannot leave the lab, which is why we put the size limit first."
+   "p": "Our conclusion is that the model meets two aims together: it counters staining artefacts and stays small. That makes it more suitable for real-world deployment than the large ensembles."
   }
  ],
  "acknowledgements": "",
@@ -73,5 +74,8 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1109/codec60112.2023.10465891"
   }
+ ],
+ "tables_used": [
+  "Table 1: parameter counts, accuracy, recall and precision of standard networks and the proposed model"
  ]
 }

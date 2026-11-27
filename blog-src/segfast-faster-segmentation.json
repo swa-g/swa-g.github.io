@@ -14,7 +14,7 @@
   "efficient networks"
  ],
  "kind": "article",
- "summary": "SegFast labels every pixel of a street scene with about 49 times fewer parameters than SegNet, and runs about 5.1 times faster on a plain CPU, with accuracy that is close to SegNet's.",
+ "summary": "SegFast labels every pixel of a street scene with about 49 times fewer parameters than SegNet, and runs about 5.1 times faster on a plain CPU, with accuracy comparable to SegNet's.",
  "body": [
   {
    "p": "A self-driving car has to know what every part of its camera image is: road, sky, building, pedestrian. This pixel-by-pixel labelling is called semantic segmentation. The best networks for it usually need expensive graphics cards, which keeps the technology out of cheap cars. We built SegFast, a much smaller network that still labels street scenes well and runs quickly on an ordinary processor."
@@ -23,7 +23,7 @@
    "h2": "The problem"
   },
   {
-   "p": "Most segmentation networks are large. A network is a long chain of small mathematical filters, and each filter has numbers (parameters) that the computer learns during training. More parameters means more memory and more arithmetic for every image. Two older networks make a good yardstick: FCN, with about 134.5 million parameters, and SegNet, with about 29.5 million."
+   "p": "Most segmentation networks are large. A network is a long chain of small mathematical filters, and each filter has numbers (parameters) that the computer learns during training. More parameters means more memory and more arithmetic for every image. Two older networks make a good yardstick: FCN, with about 134.5 million parameters, and SegNet, with about 29.5 million (Table 5)."
   },
   {
    "p": "Speed matters for safety too. A system that spots a danger but reacts late is not much help. So we wanted a balance: fast and small, without giving up much accuracy. We were thinking in particular of countries like India, where most vehicles are in the low-budget range."
@@ -38,48 +38,50 @@
    "p": "We made that block even smaller. A normal 3×3 filter looks at all the channels at once. A depth-wise separable convolution splits the job in two. First, one flat filter works on each channel on its own. Then a 1×1 filter mixes the channels together. The result is similar, but it needs far fewer numbers. We swapped this into the fire module and called the result a “spark” module."
   },
   {
-   "p": "The second change is on the way back up. A segmentation network shrinks the image to understand it, then has to blow it up again to label each pixel. We built that upsampling part from depth-wise separable transposed convolutions, which is the same trick applied in reverse. As far as we know, this had only been used for ordinary convolutions before."
+   "p": "The second change is on the way back up. A segmentation network shrinks the image to understand it, then has to blow it up again to label each pixel. We built that upsampling part from depth-wise separable transposed convolutions, which is the same trick applied in reverse. The paper notes that this trick had normally been used only for ordinary convolutions."
   },
   {
    "figure": {
     "src": "img/segfast-faster-segmentation/architecture.png",
     "alt": "Diagram of the SegFast encoder-decoder. The input image passes through a strided convolution, pooling and spark modules that shrink it, then through transposed convolutions that grow it back to a segmentation map. Dotted arrows copy features from the left side to the right.",
-    "caption": "The encoder (top row) shrinks the image with spark modules. The decoder (bottom row) grows it back, and the dotted arrows pass details across so the edges of objects stay sharp."
+    "caption": "The encoder (top row) shrinks the image with spark modules. The decoder (bottom row) grows it back, and the dotted arrows copy encoder features across and join them to the decoder's features of the same size.",
+    "source": "Fig. 1"
    }
   },
   {
    "h2": "How we tested it"
   },
   {
-   "p": "We trained SegFast, FCN and SegNet on four driving datasets: BDD, CamVid, Synthia and Mapillary. All images were resized to 224×224 pixels, and we did no data augmentation. We also trained SegFast-Basic, the same network with ordinary convolutions, to see what the depth-wise trick alone contributes. For timing we deliberately used only a CPU (an Intel Xeon with 16 threads), because the graphics card we had was too powerful to show any difference."
+   "p": "We trained SegFast, FCN and SegNet on four driving datasets: BDD, CamVid, Synthia and Mapillary (Table 1). All images were resized to 224×224 pixels, and we did no data augmentation. We also trained SegFast-Basic, the same network with ordinary convolutions, to see what the depth-wise trick alone contributes. For timing we deliberately used only a CPU (an Intel Xeon with 16 threads), because the graphics card we had was too powerful to show any significant difference."
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "SegFast has 603,288 parameters. That is about 223 times fewer than FCN and about 49 times fewer than SegNet. The depth-wise trick alone cuts the parameter count by almost a factor of 5 compared with SegFast-Basic (2,965,976). On one 224×224 image, SegFast needs about 703 MiB of GPU memory, against 1,515 MiB for SegNet and 3,447 MiB for FCN."
+   "p": "SegFast has 603,288 parameters. That is about 223 times fewer than FCN and about 49 times fewer than SegNet. The depth-wise trick alone cuts the parameter count by almost a factor of 5 compared with SegFast-Basic, which has 2,965,976. On one 224×224 image, SegFast needs about 703 MiB of GPU memory, against 1,515 MiB for SegNet and 3,447 MiB for FCN (Table 5)."
   },
   {
-   "callout": "On a CPU, one forward pass takes about 0.39 seconds with SegFast, roughly 5.1 times faster than SegNet (1.977 s) and 8.7 times faster than FCN (3.385 s)."
+   "callout": "On a CPU, one forward pass takes about 0.39 seconds with SegFast, roughly 5.1 times faster than SegNet (1.977 s) and 8.7 times faster than FCN (3.385 s) (Table 4)."
   },
   {
-   "p": "Accuracy held up. In pixel accuracy, SegFast scored 83.48% on BDD and 93.58% on Synthia, the best of the four networks on both. SegNet did slightly better on CamVid (88.70% against 85.08%) and Mapillary (82.46% against 81.63%). SegFast beat FCN everywhere. The mean intersection over union, a stricter measure of how well predicted regions overlap the true ones, tells the same story."
+   "p": "Accuracy held up. In pixel accuracy, SegFast scored 83.48% on BDD and 93.58% on Synthia, the best of the networks we compared on both. SegNet did slightly better on CamVid (88.70% against 85.08%) and Mapillary (82.46% against 81.63%). SegFast beat FCN on every dataset (Table 2). The mean intersection over union, a stricter measure of how well predicted regions overlap the true ones, tells the same story (Table 3)."
   },
   {
    "figure": {
     "src": "img/segfast-faster-segmentation/samples.jpg",
     "alt": "A grid of four street scenes, one per row. Columns show the original image, the ground-truth labels, and the outputs of FCN, SegNet and SegFast, drawn as flat colours for road, sky, trees, cars and so on.",
-    "caption": "Rows are BDD, CamVid, Mapillary and Synthia. From left: photo, true labels, FCN, SegNet, SegFast. SegFast's outlines are about as sharp as SegNet's, and in places it avoids SegNet's noisy patches."
+    "caption": "Rows are BDD, CamVid, Mapillary and Synthia. From left: photo, true labels, FCN-8s, SegNet, SegFast. SegFast's boundaries are comparable to SegNet's, and in some cases it avoids SegNet's noisy predictions.",
+    "source": "Fig. 4"
    }
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "SegFast does not win everywhere. It did worse on CamVid, which has only 367 training images, and on Mapillary, which has 66 classes. Our reading is that it works best when the number of classes and the amount of training data are well balanced. With so few parameters it simply has less room to learn. A deeper or wider version would probably help, but it would be slower. The speed result also applies to the CPU setting; on a big GPU the time difference would be small."
+   "p": "SegFast does not win everywhere. It did worse than SegNet on CamVid, which has only 367 training images, and on Mapillary, which has 66 classes (Table 1). Our reading is that it works best when the number of classes and the amount of training data are well balanced. With so few parameters it has less room to learn. To improve it one would need a deeper or wider network, but that would be less efficient in speed. The speed result also applies to the CPU setting; on the highly parallel hardware of a GPU the difference in time would be negligible."
   },
   {
-   "p": "The aim was never to beat every record. It was to show that a car with cheap hardware can still get a decent picture of the road. In future we hope the same compression can be applied to deeper networks."
+   "p": "The aim was not to beat every record. It was to offer a method that can run on cheap hardware and so reach more people. In future we hope the same compression can be applied to deeper networks."
   }
  ],
  "acknowledgements": "This work is sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -88,5 +90,12 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1145/3293353.3293406"
   }
+ ],
+ "tables_used": [
+  "Table 1: size and number of classes of the four driving datasets",
+  "Table 2: pixel accuracy of each network on each dataset",
+  "Table 3: mean intersection over union of each network on each dataset",
+  "Table 4: forward and backward pass time on a CPU",
+  "Table 5: number of parameters and memory of each network"
  ]
 }

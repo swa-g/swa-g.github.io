@@ -122,7 +122,7 @@ def render_block(b, d):
     if 'figure' in b:
         f = b['figure']; im = Image.open(os.path.join(BLOG, f['src'])); w, h = im.size
         return ('<figure><div class="frame"><img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async"></div>'
-                '<figcaption>%s<span class="src">Figure from the paper.</span></figcaption></figure>') % (f['src'], E(f['alt']), w, h, f['caption'])
+                '<figcaption>%s<span class="src">Source: %s of the paper.</span></figcaption></figure>') % (f['src'], E(f['alt']), w, h, f['caption'], E(f['source']))
     raise ValueError(b)
 
 
@@ -157,6 +157,13 @@ def build_article(d, prev, nxt, pub):
     ack = ''
     if d['acknowledgements'].strip():
         ack = '<section class="ack"><h2>Acknowledgements</h2><p>%s</p></section>' % d['acknowledgements']
+    figs = [b['figure']['source'] for b in d['body'] if 'figure' in b]
+    src = ''
+    if figs or d['tables_used']:
+        rows = ''
+        if figs: rows += '<li><b>Figures:</b> %s</li>' % ', '.join(E(x) for x in figs)
+        if d['tables_used']: rows += '<li><b>Tables:</b> %s</li>' % '; '.join(E(x) for x in d['tables_used'])
+        src = '<section class="sources"><h2>Sources</h2><p>The figures and tables listed here are taken from the paper cited at the top of this page; the numbers quoted in the text come from the paper too.</p><ul>%s</ul></section>' % rows
     cite = '<details class="cite-box"><summary>How to cite the paper</summary><pre>%s</pre></details>' % E(citation(d, pub))
     pager = '<nav class="pager" aria-label="More articles">'
     pager += ('<a href="%s.html"><small>Newer</small>%s</a>' % (nxt['slug'], E(nxt['title']))) if nxt else '<span></span>'
@@ -173,8 +180,8 @@ def build_article(d, prev, nxt, pub):
     main = ('<article class="article"><p class="crumbs"><a href="index.html">← All articles</a></p>'
             '<div class="tags">%s</div><h1>%s</h1>'
             '<p class="byline"><span>By Swarnendu Ghosh</span><time datetime="%s">%s</time><span>%d min read</span></p>%s'
-            '<div class="prose">%s</div>%s%s%s</article>%s') % (
-        tags, E(d['title']), d['date'], long_date(d['date']), mins, box, body, cta, ack, cite, pager)
+            '<div class="prose">%s</div>%s%s%s%s</article>%s') % (
+        tags, E(d['title']), d['date'], long_date(d['date']), mins, box, body, cta, src, ack, cite, pager)
     out = page(d['title'] + ' | Swarnendu Ghosh', d['summary'], '%s/blog/%s.html' % (BASE, slug), main, jsonld, og_img, 'article')
     io.open(os.path.join(BLOG, slug + '.html'), 'w', encoding='utf8', newline='\n').write(out)
 

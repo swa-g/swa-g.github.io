@@ -26,13 +26,13 @@
    "p": "Most learning methods boil down to asking how similar two samples are. For two lists of numbers this is easy, since you can measure the distance between them. For two graphs it is not. The obvious method is to find the parts they share. A graph with n nodes has 2ⁿ possible subgraphs, so that search explodes quickly. We quote Horst Bunke's remark that comparing objects is linear in the number of data items for feature vectors, quadratic for strings and exponential for graphs."
   },
   {
-   "p": "Checking whether two graphs are identical (graph isomorphism) has no known fast algorithm either. Even the best measures of partial overlap are costly. One classic method for finding the largest shared piece needed more than 3 hours on the hardware of its day to compare two graphs of just 24 nodes, because it works on a combined “product graph” of roughly 600 nodes."
+   "p": "Checking whether two graphs are identical (graph isomorphism) is not known to have a fast algorithm either. Measures of partial overlap are costly too. One classic way to find common pieces, the Bron–Kerbosch algorithm, needed more than 3 hours on the hardware of its day when the combined “product graph” of two graphs of size 24 had roughly 600 nodes."
   },
   {
    "h2": "What a kernel does"
   },
   {
-   "p": "A kernel is a function that scores the similarity of two samples. It is used with the support vector machine, a classifier that separates classes with a boundary. Some data cannot be split by a straight boundary. The kernel trick maps the samples into a new space, called a Hilbert space, where closeness means similarity and the split becomes easy. The important point is that the kernel gives you that similarity without you ever building the new space by hand. A graph kernel is therefore a clever, fast way to score how alike two graphs are."
+   "p": "A kernel is a function that scores the similarity of two samples. It is used with the support vector machine, a classifier that separates classes with a boundary. Some data cannot be split by a straight boundary. The kernel trick maps the samples into a new space, called a Hilbert space, where closeness means similarity and the split becomes easier. The useful part is that the kernel gives you that similarity without you ever building the new space by hand. A graph kernel is a kernel that scores how alike two graphs are."
   },
   {
    "h2": "A map of the field"
@@ -44,14 +44,16 @@
    "figure": {
     "src": "img/graph-kernels-two-decades/taxonomy.png",
     "alt": "A tree diagram. Graph kernels split into model driven, syntax driven, propagation kernels and deep graph kernels. Syntax driven splits again into walks and paths, subgraphs, and subtrees, each with named kernels beneath.",
-    "caption": "The survey's map of graph kernels. Most of the named methods hang under the syntax-driven branch."
+    "caption": "The survey's map of graph kernels. Most of the named methods hang under the syntax-driven branch.",
+    "source": "Fig. 7"
    }
   },
   {
    "figure": {
     "src": "img/graph-kernels-two-decades/timeline.png",
-    "alt": "A timeline from 1998 to 2016 with boxes naming each kernel and its authors. Red arrows mark first appearances and green arrows mark upgrades of existing kernels.",
-    "caption": "Red boxes mark the first appearance of a kernel, green boxes an upgrade to an existing one. Most of the activity falls in the second decade."
+    "alt": "A timeline from 1998 to 2016 with boxes naming each kernel and its authors. Red boxes mark first appearances and green boxes mark upgrades of existing kernels.",
+    "caption": "Red boxes mark the first appearance of a kernel, green boxes an upgrade to an existing one.",
+    "source": "Fig. 13"
    }
   },
   {
@@ -61,35 +63,36 @@
    "p": "Random walk kernels count the walks two graphs have in common, as if two walkers wandered through both graphs and we compared their trails. The first version was slow, with a cost of the order of n⁶ in the number of nodes. Later work brought it to n³ and then to n² using a low-rank approximation. Walks have a flaw we call tottering: a walker can bounce back and forth along one shared edge and push the similarity score up for no good reason."
   },
   {
-   "p": "Shortest-path kernels avoid this by comparing only shortest paths, which never revisit a node. In one experiment the survey reports, on 540 proteins from 6 enzyme classes, shortest-path variants reached roughly 93% to 94% accuracy, while walk kernels of length 4 to 7 were at roughly 88% to 90% (read off the paper's bar chart)."
+   "p": "Path-based kernels avoid this, because a path never passes through the same node twice. The shortest-path kernel compares only shortest paths. One experiment in the survey, on 540 proteins from 6 EC classes with 10-fold cross-validation, compares shortest-path variants with walk kernels of length 4 to 7. In its chart the shortest-path bars are the tallest, and the walk bars get lower as the walks get longer."
   },
   {
    "figure": {
     "src": "img/graph-kernels-two-decades/walk-vs-shortest-path.png",
-    "alt": "A bar chart of prediction accuracy. Three shortest-path variants score between about 93 and 94.5 percent, and walks of length 4, 5, 6 and 7 score between about 88 and 89.5 percent.",
-    "caption": "Shortest-path kernels beat walk kernels on the protein task, and longer walks did progressively worse."
+    "alt": "A bar chart of prediction accuracy. Three shortest-path variants on the left are the tallest bars. Bars for walks of length 4, 5, 6 and 7 are lower and get shorter as the walk length grows.",
+    "caption": "Prediction accuracy on 540 proteins from 6 EC classes. The shortest-path bars (left) sit above the walk bars, which fall as walks get longer.",
+    "source": "Fig. 12"
    }
   },
   {
-   "p": "Graphlet kernels count small subgraphs of a fixed size and compare the two count vectors. The Weisfeiler-Lehman kernel repeatedly gives each node a new label built from the labels of its neighbours, then counts how many labels the two graphs share. Propagation kernels use the way information spreads through a graph, and cope with graphs whose labels are missing. Deep graph kernels treat small substructures like words in a sentence and learn which ones are similar, using the neural language models behind word embeddings."
+   "p": "Graphlet kernels count small subgraphs of a fixed size and compare the two count vectors. The Weisfeiler-Lehman kernel repeatedly gives each node a new label built from the labels of its neighbours, then counts how many labels the two graphs share. Propagation kernels use the way information spreads through a graph, and can cope with graphs whose labels are missing. Deep graph kernels treat small substructures like words in a sentence and learn which ones are similar, using the neural language models behind word embeddings."
   },
   {
-   "callout": "In the experiments the survey reports for deep graph kernels, the deep version of the graphlet, shortest-path and Weisfeiler-Lehman kernels did better than the original on all six benchmark datasets."
+   "callout": "In the experiments the survey reports for deep graph kernels, the deep versions of the graphlet, shortest-path and Weisfeiler-Lehman kernels did better than the originals on all six benchmark datasets (Table 8)."
   },
   {
    "h2": "Choosing a kernel, and where they are used"
   },
   {
-   "p": "No kernel wins everywhere. The right one depends on the size of the graph, the type of labels, how far meaning travels across the graph, and the risk of tottering. Subgraph and subtree kernels, for example, may miss similarity when far-apart nodes matter a lot. We list uses in chemistry (predicting toxicity or drug effect from molecule graphs), protein function, social networks, the web, language parse trees and image analysis."
+   "p": "No single kernel is the right choice for every graph. The choice depends on the size of the graph, the type of labels, how far meaning travels across the graph, and the risk of tottering. Subgraph and subtree kernels, for example, might not capture similarity accurately when nodes that are far apart carry a lot of meaning. We list uses in chemistry (predicting toxicity or drug effect from molecule graphs), protein function, social networks, the web, language parse trees and image analysis."
   },
   {
    "h2": "What this survey does not do"
   },
   {
-   "p": "It does not run new experiments. The accuracy figures are taken from the original papers, which often use different datasets, so they show trends rather than a fair league table. We also did not claim a winner."
+   "p": "It does not run new experiments. The results it shows, such as the protein chart above, come from the original papers. Our own advice is that it is not easy to pick the best-performing kernel without knowing the type of graph you are dealing with, so the survey does not name a winner."
   },
   {
-   "p": "Our outlook was that graph kernels and deep learning could help each other, and that graph kernels, which are mostly matrix operations, should be able to use GPUs well."
+   "p": "Our outlook was that graph kernels and deep learning could strengthen each other. Graphs and relational information are where graph kernels are strong, while deep learning is strong on raw data. We also noted that graph kernels mostly consist of matrix operations, so they should be able to benefit from GPUs, although better software for using them would be needed."
   }
  ],
  "acknowledgements": "This work is partially supported by the project entitled “Development of knowledge graph from images using deep learning”, sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -98,5 +101,8 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1016/j.cosrev.2017.11.002"
   }
+ ],
+ "tables_used": [
+  "Table 8: accuracy of three graph kernels and their deep versions on six benchmark datasets"
  ]
 }

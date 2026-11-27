@@ -18,32 +18,33 @@
  "cta": "Read the full write-up on the LANCER page",
  "body": [
   {
-   "p": "This paper is part of <b>LANCER</b>, my research project at the University of Ljubljana on teaching autonomous vehicles to navigate difficult environments with reinforcement learning, meaning learning by trial and error against a reward. Most of the project is about cars. This paper steps sideways to a rocket booster, because a rocket makes one problem very visible: what happens when the reward does not tell the learner clearly what you want."
+   "p": "This paper is part of <b>LANCER</b>, my postdoctoral project at the University of Ljubljana on teaching autonomous vehicles to navigate difficult environments with reinforcement learning, which is learning by trial and error against a reward. This paper steps sideways to a rocket booster and asks what happens when the learner has no clear goal event."
   },
   {
    "h2": "The question"
   },
   {
-   "p": "Studies of reusable rockets usually ask a learning agent to land. Landing gives it a clear goal: touch down gently. We asked something harder to define. Release a booster at 80 metres and ask it to hold 30 metres above the pad. Nothing special happens at 30 metres, so there is no moment that says “well done”. We built a simulator called <b>RocketSim</b> in the Unity game engine and trained a standard algorithm, PPO, to do it."
+   "p": "Earlier learning-based work on reusable rockets targets landing, where touchdown gives the learner a clear goal. We asked about hovering instead: release a booster at 80 metres and ask it to hold 30 metres above the pad. We built a simulator called <b>RocketSim</b> in the Unity game engine and trained an agent with PPO, a standard algorithm."
   },
   {
    "figure": {
     "src": "img/rocketsim-hover-lancer/flights.png",
     "alt": "Five test flights of one trained agent: the plan views show tight lateral control while the altitude traces sag below the 30 metre target, approach the ground, then climb to the ceiling.",
-    "caption": "Five test flights of the same trained agent. It stays over the pad, but its height drifts from near the ground to the ceiling."
+    "caption": "Five test flights of one trained agent. It stays over the pad, but its height sags below the target, nears the ground, then climbs to the ceiling.",
+    "source": "Fig. 3"
    }
   },
   {
    "h2": "What happened"
   },
   {
-   "p": "The agent learned to stay upright, stay over the pad and keep flying until its fuel ran out. It did not learn to hold the height. With nothing changed except the random seed, the average height error across five training runs ranged from 24 to 105 metres, even though their scores were within 10% of each other."
+   "p": "The agent learned to stay upright, stay over the pad and fly until its tanks ran dry, but not to hold the commanded height. With nothing changed but the random seed, its final altitude ranged from the ground to the ceiling. Across five seeds the score varied by less than ±10%, yet the mean altitude error ranged from 24 to 105 metres. Repeated runs used a faster, simplified version of the task."
   },
   {
-   "p": "We found two separate causes. The reward barely changes with height unless the rocket is very close to the target, so the learner has nothing to follow. And the engine cannot throttle below 39% of its power, so once the booster is lighter than 33.6 tonnes, no setting can hold it in place for the last 55% of the burn. We tried to repair both. Reshaping the reward cut the average error from 36 to 6 metres but still stranded one run in five."
+   "p": "There are two causes. Far from the target the reward barely changes with height, so PPO has no gradient to follow, although a hand-written controller that obeys the command scores 23% more. And below 33.6 tonnes the engine cannot throttle under its 39% floor, so for the last 55% of the burn no setting holds altitude."
   },
   {
-   "p": "The lesson: hovering has to be fixed in the reward and in the vehicle together. The project page has the rest."
+   "p": "We tried to repair both. Three reshaped objectives cut the mean final error from 36 to 6 metres but still strand one seed in five, and a vehicle that can throttle down sinks instead. Hover has to be fixed in the reward and in the vehicle together. RocketSim is uncalibrated against flight data, so it is an algorithmic simulation, not a trajectory predictor. The project page has the rest."
   }
  ],
  "acknowledgements": "This work was co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. It was also supported by the Slovenian Research and Innovation Agency (ARIS), research programme P2-0241, Synergetics of complex systems and processes. Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.",
@@ -56,5 +57,6 @@
    "label": "Paper (PDF)",
    "url": "../LANCER/papers/rocketsim-is2026.pdf"
   }
- ]
+ ],
+ "tables_used": []
 }

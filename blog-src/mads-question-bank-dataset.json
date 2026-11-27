@@ -1,0 +1,103 @@
+{
+ "slug": "mads-question-bank-dataset",
+ "title": "A small dataset for teaching computers to take exam questions apart",
+ "paper_title": "MADS: A Multi-modal Academic Document Segmentation Dataset for Smart Question Bank Management",
+ "date": "2024-04-25",
+ "date_note": "2nd Symposium on NLP for Social Good, Liverpool, 25-26 April 2024 (stated in the paper's footer); CEUR-WS Vol. 3764",
+ "venue": "2nd Symposium on NLP for Social Good (NSG)",
+ "detail": "CEUR-WS, Vol. 3764",
+ "authors": "U Aich, Swarnendu Ghosh, T Saha",
+ "url": "https://ceur-ws.org/Vol-3764/#paper1",
+ "tags": ["document analysis", "object detection", "education", "dataset"],
+ "kind": "article",
+ "summary": "We built MADS, 230 labelled pages of competitive-exam questions, and tested two object detectors on finding text, equations, numbers and images on each page.",
+ "tables_used": ["Table 1: accuracy, precision and recall of Faster R-CNN and YOLO-v8 at two overlap thresholds, by class"],
+ "body": [
+  {
+   "p": "Old exam papers are full of useful questions, but many of them exist only as printed pages or scans. A computer sees pixels, not questions. We built MADS, a collection of 230 pages from well-known competitive exams, in which every piece of text, equation, number and picture is marked with a box. We then tried two standard detection models on it to see how well they find those pieces."
+  },
+  {
+   "h2": "The problem"
+  },
+  {
+   "p": "Think of a student preparing for an entrance exam. A teacher would like a question bank that software can search, sort and use to build practice tests. The printed question papers that already exist are not much help, because a question is not just a paragraph. It has a number in the margin, perhaps a diagram, a formula in the middle of a sentence, and a list of answer options below."
+  },
+  {
+   "p": "Ordinary text recognition (OCR) copes badly with this mixture. Equations and numbers look a little like text, so they confuse it. Before a system can answer such questions, it first has to split the page into its parts. This task is called document segmentation. In our case the parts are marked as rectangles, which is called bounding box detection."
+  },
+  {
+   "p": "We found plenty of work on question banks that are already digital, and datasets for other kinds of documents. We did not find one that marks equations, diagrams, numbers and text on questions that exist only as images."
+  },
+  {
+   "h2": "What is in MADS"
+  },
+  {
+   "p": "We took pages from five exams: GMAT, GRE, GATE, SAT and UGC-NET. For GATE and UGC-NET we used the official question papers, and for the others, sample or mock questions that anyone can download. We turned the pages into PNG images. The biggest share comes from GATE, at 32.3% of the pages, followed by UGC-NET, GMAT, GRE and SAT (Fig. 2). Some pages have two columns, some put an equation and a picture side by side, and some have numbers, words and formulas on the same line."
+  },
+  {
+   "figure": {
+    "src": "img/mads-question-bank-dataset/samples.jpg",
+    "alt": "Four exam pages from GMAT, UGC-NET, GRE and GATE. The top row shows the original pages, the bottom row the same pages with coloured boxes drawn around text, numbers, images and equations.",
+    "caption": "The top row shows the original pages and the bottom row the hand-drawn boxes. Red marks text, orange numbers, yellow images and blue equations.",
+    "source": "Fig. 1"
+   }
+  },
+  {
+   "p": "Four kinds of box are used: text, number, image and equation. The numbers are things like question numbers and option labels. Three annotators drew the boxes in an open-source tool called Label Studio. They each first labelled 10 practice samples, which we checked and corrected, and then split the rest between them. To count a box as correct, we required the overlap between boxes (an IoU score) to be at least 80, and Cohen's kappa, a measure of how well two people agree beyond chance, to be above 90%."
+  },
+  {
+   "p": "The labels are lopsided, and we say so in the paper. Text boxes make up about 75% of all annotations, numbers 1,243 (17%), equations 369 (5%) and images only 191 (3%) (Fig. 2)."
+  },
+  {
+   "h2": "How we tested it"
+  },
+  {
+   "p": "We tried two well-known detectors. YOLO-v8 is a one-pass model: it looks at the whole page once and predicts all the boxes together. We fine-tuned the medium version, which has 25.9 million parameters, starting from a model that had already been trained on other images. Faster R-CNN works in two steps. It first proposes regions of the page that might hold something, then decides what each one is. We trained it on MADS, with a ResNet-50 as its backbone."
+  },
+  {
+   "p": "We used the default settings for both models. The pages were split 85 to 15 into training and test sets. We ran every experiment five times and report the average. We scored the models at two strictness levels. At IoU 50, a predicted box counts if it overlaps the true one by at least half. At IoU 90, it must overlap almost completely."
+  },
+  {
+   "h2": "What we found"
+  },
+  {
+   "p": "YOLO-v8 did better than Faster R-CNN in almost every case. At the looser IoU 50 level its accuracy was 93.7%, against 79.1% for Faster R-CNN, a gap of about 15 points (Table 1). The mean average precision (mAP, the average over the four classes of how well boxes are found and labelled) was 84.25% for YOLO-v8 and 59.6% for Faster R-CNN. At IoU 90 the gap shrank to about 3 points: 97.1% against 94.5% accuracy (Table 1)."
+  },
+  {
+   "p": "Text is the easiest class, which fits with it being the most common. At IoU 50, YOLO-v8's precision was 96.5% on text, but 73.4% on equations and 80.5% on images. For Faster R-CNN, equations (47.6%) and images (35.9%) were much weaker (Table 1). At the strict IoU 90 level, one case went the other way: Faster R-CNN beat YOLO-v8 at finding number boxes."
+  },
+  {
+   "figure": {
+    "src": "img/mads-question-bank-dataset/predictions.jpg",
+    "alt": "The four exam pages from the sample figure, this time with the boxes predicted by YOLO-v8 drawn over them in red, orange, yellow and blue.",
+    "caption": "Boxes predicted by YOLO-v8 on the same four pages as above, with the same colours. The paper reports that equations and images are the hard classes.",
+    "source": "Fig. 3"
+   }
+  },
+  {
+   "h2": "What it does not do"
+  },
+  {
+   "p": "MADS is small. It has 230 pages, and we say that more data is needed for better results and that we are still collecting it. Both models struggled when equations and images sit together, because it is hard to separate them and still keep their relationship to the question."
+  },
+  {
+   "figure": {
+    "src": "img/mads-question-bank-dataset/hard-cases.jpg",
+    "alt": "Two page snippets. On the left a science passage with a data table and a footnote, on the right a GATE page with questions, an equation and four answer options.",
+    "caption": "Snippets the paper picks out as challenging, where passage text, a table, formulas and answer options share the page.",
+    "source": "Fig. 4"
+   }
+  },
+  {
+   "p": "We also used default settings throughout and expect that tuning would help. Because text dominates, the models lean towards text, and the other classes may need special training. Right now the dataset only separates text, equations, figures and numbers. It does not yet read what is inside them."
+  },
+  {
+   "p": "Our next steps are a larger and broader dataset, and questions that large language models and vision-language models can process. We also want to build on it for personalised mock tests. The sample is released under a Creative Commons licence on GitHub."
+  }
+ ],
+ "acknowledgements": "Swarnendu Ghosh is thankful for the infrastructure support from the IEM Centre of Excellence for Data Science and the Innovation & Entrepreneurship Development Cell, IEM Kolkata.",
+ "links": [
+  {"label": "Publisher page", "url": "https://ceur-ws.org/Vol-3764/#paper1"},
+  {"label": "MADS dataset on GitHub", "url": "https://github.com/MADS-dataset/MADS_Dataset_official"}
+ ]
+}

@@ -26,7 +26,7 @@
    "p": "Text in the wild is awkward. Lighting is uncontrolled, backgrounds are cluttered, and many ordinary objects happen to look like letters. Text also comes in every size, from a word that fills the frame to a few pixels in a corner, and it can be tilted or curved."
   },
   {
-   "p": "Popular object detectors draw boxes. They start from a set of preset box shapes, called anchor boxes, which are chosen by clustering the boxes in the training data. Text boxes vary so much in size and aspect ratio that a fixed set of shapes fits them badly. Since text finding only needs a yes or no answer, we dropped boxes altogether. The network outputs a mask, a black and white picture the size of the input, where white pixels are text. This is binary segmentation, and it handles curved text without extra effort."
+   "p": "Popular object detectors draw boxes. They start from a set of preset box shapes, called anchor boxes, which are chosen by clustering the boxes in the training data. Text boxes vary so much in size and aspect ratio that a fixed set of shapes fits them badly. Since text finding only needs a yes or no answer, we dropped boxes altogether. The network outputs a mask, a black and white picture the size of the input, where white pixels are text. This is binary segmentation, and it can mark curved text as well."
   },
   {
    "h2": "The idea"
@@ -51,7 +51,8 @@
    "figure": {
     "src": "img/mirror-skip-text-localization/architecture.png",
     "alt": "Diagram of an encoder-decoder network with coloured blocks shrinking and then growing again. Boxes labelled Mirror Skip link each encoder layer to its mirror layer in the decoder, and small loops mark internal skips. A street-sign photo goes in and a black and white mask comes out.",
-    "caption": "The base network. The long arcs labelled Mirror Skip are the connections we studied, and the short loops are the internal skips."
+    "caption": "The base network. The long arcs labelled Mirror Skip are the connections we studied, and the short loops are the internal skips.",
+    "source": "Fig. 1"
    }
   },
   {
@@ -64,39 +65,41 @@
    "figure": {
     "src": "img/mirror-skip-text-localization/ensemble.png",
     "alt": "Three encoder-decoder networks labelled 3x3, 5x5 and 7x7 kernel each produce an output; a large arrow merges the three outputs by a logical and into the final output.",
-    "caption": "The three networks with different kernel sizes are merged with a logical and."
+    "caption": "The three networks with different kernel sizes are merged with a logical and.",
+    "source": "Fig. 5"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "We tested on ICDAR 2003, SVT, ICDAR 2015 and Total-Text. The first three label text with rectangles. Total-Text contains curved text. We held back roughly 20% of the training data for tuning. We report the F-score, one number between 0 and 1 that mixes precision (how much of the marked text is real) with recall (how much of the real text was found)."
+   "p": "We tested on ICDAR 2003, SVT, ICDAR 2015 and Total-Text. The first three label text with rectangles. Total-Text contains curved text (Table 2). We held back roughly 20% of the training data for tuning. We report the F-score, one number between 0 and 1 that mixes precision (how much of the marked text is real) with recall (how much of the real text was found)."
   },
   {
-   "p": "Single networks were uneven. On SVT, for example, individual F-scores ranged from 0.57 to 0.74, and no kernel size or connection type won everywhere. The pattern only showed once we merged the three window sizes. The parametric version then gave the best F-score on SVT (0.84), ICDAR 2003 (0.87) and ICDAR 2015 (0.79). The linear U-Net-style connection came behind it on all four datasets."
+   "p": "Single networks were uneven. On SVT, for example, individual F-scores ranged from 0.57 to 0.74 (Table 4), and no kernel size or connection type won everywhere. The pattern only showed once we merged the three window sizes. The parametric version then gave the best F-score on SVT (0.84), ICDAR 2003 (0.87) and ICDAR 2015 (0.79) (Table 3), and we conclude that it works best overall. The plain linear connection did not do as well."
   },
   {
-   "callout": "On curved text (Total-Text) the merged models scored F-scores of 0.89 (parametric) and 0.90 (convolutional). SegNet, U-Net and PSPNet scored 0.71, 0.75 and 0.75."
+   "callout": "On curved text (Total-Text) the merged models scored F-scores of 0.89 (parametric) and 0.90 (convolutional). SegNet, U-Net and PSPNet scored 0.71, 0.75 and 0.75 (Table 3)."
   },
   {
-   "p": "The convolutional connection came out slightly ahead only on Total-Text, which suggests that curved masks profit from its finer control. The sample masks agree with the numbers. Parametric networks drew cleaner shapes and showed less uncertainty in their soft masks, the raw probabilities before we threshold them at 0.5."
+   "p": "The convolutional connection came out slightly ahead only on Total-Text, which suggests that curved masks profit from its finer control. In the sample masks, the parametric networks drew cleaner shapes and showed less uncertainty in their soft masks, which are the raw probabilities before we threshold them at 0.5."
   },
   {
    "figure": {
     "src": "img/mirror-skip-text-localization/results-total-text.jpg",
     "alt": "A grid of four street-scene photos at the top with curved text on signs, and below them the ground truth mask followed by soft and hard masks from the linear, parametric and convolutional models and from PSPNet, SegNet and U-Net.",
-    "caption": "Total-Text samples, one column per photo. The hard masks from our models follow the curved text, while the SegNet and U-Net rows at the bottom often miss it or break it up."
+    "caption": "Total-Text samples, one column per photo. The bottom three rows are the comparison networks. Our hard masks follow the curved text, while the SegNet and U-Net masks often miss it or break it up.",
+    "source": "Fig. 9"
    }
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "The convolutional connection costs more memory, and we note that it can over-fit the training data. The datasets are small, with 100 to 1,255 training images, so the margins should be read with that in mind. The network also only says where text is. It does not read it. The paper points to splitting text into single characters as a natural next step."
+   "p": "The convolutional connection needs more memory and is prone to over-fitting the training data. The datasets are small, with 100 to 1,255 training images (Table 2). The network also only says where text is. It does not read it. The paper points to splitting text into single characters as a natural next step."
   },
   {
-   "p": "Reading shop names and road signs can help a navigation system, as the paper's introduction points out, and none of that starts until the text has been found."
+   "p": "Finding the text is the first step before reading it. The paper's introduction names reading shop names and street signs for navigation systems as one use."
   }
  ],
  "acknowledgements": "This work is sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -105,5 +108,10 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1016/j.patrec.2020.04.002"
   }
+ ],
+ "tables_used": [
+  "Table 2: size and type of the four datasets",
+  "Table 3: F-scores of the merged models and of SegNet, U-Net and PSPNet",
+  "Table 4: F-scores of each single network on SVT"
  ]
 }

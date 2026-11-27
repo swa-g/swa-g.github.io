@@ -3,8 +3,8 @@
  "title": "Making synthetic cell images to help a classifier learn from only 150 pictures",
  "paper_title": "SynCGAN: Using learnable class specific priors to generate synthetic data for improving classifier performance on cytological images",
  "date": "2019-12-22",
- "date_note": "NCVPRIPG 2019, IIT Jodhpur, 22-24 Dec 2019 (venue dates from my own knowledge; the PDF itself shows no date); Springer proceedings followed in 2020",
- "venue": "8th National Conference on Computer Vision, Pattern Recognition, Image Processing & Graphics (NCVPRIPG)",
+ "date_note": "NCVPRIPG 2019 (7th edition), Hubballi, 22-24 Dec 2019 (Springer CCIS 1249 front matter); the PDF itself shows no conference date",
+ "venue": "7th National Conference on Computer Vision, Pattern Recognition, Image Processing & Graphics (NCVPRIPG)",
  "detail": "pp. 32–42 · Springer",
  "authors": "S Dey, S Das, Swarnendu Ghosh, S Mitra, S Chakrabarty, N Das",
  "url": "https://doi.org/10.1007/978-981-15-8697-2_3",
@@ -24,7 +24,7 @@
    "h2": "The problem"
   },
   {
-   "p": "The images come from fine needle aspiration cytology (FNAC), a test in which a thin needle takes a few cells from a lump and a doctor examines them under a microscope. Our samples were collected at Theism Medical Diagnostics Centre in Kolkata with an Olympus microscope at 40× magnification. We got around 156 images, 77 benign and 79 malignant."
+   "p": "The images come from fine needle aspiration cytology (FNAC), a test in which a thin needle takes a few cells from a lump and a doctor examines them under a microscope. Our samples were collected at Theism Medical Diagnostics Centre in Kolkata with an Olympus microscope at 40× magnification. We collected around 156 images, 77 benign and 79 malignant, and used 150 of them, 75 per class."
   },
   {
    "p": "The usual remedy for small data is augmentation, which means making new training examples from the old ones, for example by flipping or rotating the pictures or adding noise. A newer option is a generative adversarial network, or GAN. A GAN has two parts that compete. A generator draws pictures and a discriminator tries to tell them from real ones, and both improve as they play. Asked to draw a full microscope image from scratch, though, a GAN has too much to guess. Every pixel has three colour values, each with 256 possible levels."
@@ -39,7 +39,8 @@
    "figure": {
     "src": "img/syncgan-synthetic-cytology/pipeline.png",
     "alt": "Flow diagram of SynCGAN. Real benign and malignant samples go through automatic mask generation. A conditional GAN is trained on the images and masks. Two separate GANs generate synthetic masks for each class, and these are fed to the trained conditional GAN to produce synthetic benign and malignant samples.",
-    "caption": "Training (left) teaches the conditional GAN to paint a cell image from a mask. Evaluation (right) feeds it brand-new masks made by one GAN per class."
+    "caption": "Training (left) teaches the conditional GAN to paint a cell image from a mask. Evaluation (right) feeds it brand-new masks made by one GAN per class.",
+    "source": "Fig. 1"
    }
   },
   {
@@ -59,7 +60,8 @@
    "figure": {
     "src": "img/syncgan-synthetic-cytology/masks.jpg",
     "alt": "Top row: two benign and two malignant microscope images. Bottom row: the black-and-white nucleus masks that the automatic method produced from them.",
-    "caption": "Real samples and the masks that were generated automatically from them. These masks are what the conditional GAN learns from."
+    "caption": "Real samples and the masks that were generated automatically from them. These masks are what the conditional GAN learns from.",
+    "source": "Fig. 2"
    }
   },
   {
@@ -69,35 +71,36 @@
    "figure": {
     "src": "img/syncgan-synthetic-cytology/synthetic-samples.jpg",
     "alt": "Top row: four synthetic masks, two for benign and two for malignant cells. Bottom row: the pink and purple synthetic cell images painted from those masks.",
-    "caption": "Synthetic masks from the class-specific GANs (top) and the cell images the conditional GAN paints from them (bottom). The shapes in the masks carry information about the class, benign or malignant."
+    "caption": "Synthetic masks from the class-specific GANs (top) and the cell images the conditional GAN paints from them (bottom). The shapes in the masks carry information about the class, benign or malignant.",
+    "source": "Fig. 3"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "We kept 75 images per class and split them 3:1:1 into 90 training, 30 validation and 30 test images. We generated twice as many synthetic training images as real ones, 180 in all. Then we trained ResNet-152, DenseNet-161 and Inception-V3 and compared test accuracy."
+   "p": "We kept 75 images per class and split them 3:1:1 into 90 training, 30 validation and 30 test images. We generated twice as many synthetic training images as real ones, 180 in all (Table 1). Then we trained ResNet-152, DenseNet-161 and Inception-V3 and compared test accuracy."
   },
   {
-   "p": "Adding SynCGAN images raised accuracy for all three: ResNet-152 from 73.33% to 76.67%, DenseNet-161 from 80.00% to 86.67%, and Inception-V3 from 73.33% to 80.00%."
+   "p": "Adding SynCGAN images raised accuracy for all three: ResNet-152 from 73.33% to 76.67%, DenseNet-161 from 80.00% to 86.67%, and Inception-V3 from 73.33% to 80.00% (Table 2)."
   },
   {
-   "callout": "With SynCGAN images added, Inception-V3 went from 73.33% to 80.00% test accuracy, while traditional augmentation lowered it to 63.33%."
+   "callout": "With SynCGAN images added, Inception-V3 went from 73.33% to 80.00% test accuracy, while traditional augmentation lowered it to 63.33% (Table 2)."
   },
   {
-   "p": "Traditional augmentation (flips, rotations, Gaussian noise) did less well. It lowered ResNet-152 to 70.00% and Inception-V3 to 63.33%, and raised DenseNet-161 only to 83.33%. Combining it with SynCGAN data was at par with SynCGAN alone or lower."
+   "p": "Traditional augmentation (flips, rotations, Gaussian noise) had a smaller effect. It lowered ResNet-152 to 70.00% and Inception-V3 to 63.33%, and raised DenseNet-161 to 83.33% (Table 2). Combining it with SynCGAN data was at par with SynCGAN alone or lower (Table 2)."
   },
   {
-   "p": "We also tried a plain GAN with no mask prior as a control. It did far worse. Trained on its images alone, the classifiers reached 50.00%, 50.00% and 56.67%, and adding them to the real data gave 63.33%, 60.00% and 66.67%, all below the original-data scores. Training on SynCGAN images alone gave 73.33%, 63.33% and 66.67%, so they help as a supplement rather than as a replacement for real images."
+   "p": "We also tried a plain GAN with no mask prior as a control. It performed far below the proposed pipeline. Trained on its images alone, the three classifiers reached 50.00%, 50.00% and 56.67%, and adding them to the real data gave 63.33%, 60.00% and 66.67% (Table 3). Training on SynCGAN images alone gave 73.33%, 63.33% and 66.67% (Table 3)."
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "The test set is 30 images, so a single image is worth 3.3 percentage points. We say in the paper that the method depends heavily on how the masks are produced. Our masks come from one unsupervised nuclei-segmentation recipe, and we suggest trying other nuclei segmentation methods. We have also only tried one kind of cytology image."
+   "p": "The test set holds 30 images (Table 1), and all the results come from one kind of cytology image, FNAC samples from a single centre. We say in the paper that the method depends heavily on how the masks are produced. Our masks come from one unsupervised nuclei-segmentation recipe, and we suggest trying other nuclei segmentation methods. Other GAN variants, such as the Wasserstein GAN, might improve results further."
   },
   {
-   "p": "The takeaway we would keep is that a GAN does much better with a simple guide than with none. Detailed labels were too costly to draw for every image, and rough automatic masks were enough to make the generated images useful. We also suggest that the approach could be extended to other cytological data."
+   "p": "A GAN does much better with a simple guide than with none. Detailed labels were too costly to draw for every image, and rough automatic masks were enough to make the generated images useful. We also suggest that the approach could be extended to other cytological data."
   }
  ],
  "acknowledgements": "This work is funded by the SERB (DST), Govt. of India sponsored project (order no. EEQ/2018/000963 dated 22/03/2019). The authors are thankful to Theism Medical Diagnostics Centre, Kolkata, West Bengal, India, for providing the cytology samples, and to the Centre for Microprocessor Application for Training, Education, and Research, Jadavpur University, for providing additional infrastructure for the research.",
@@ -106,5 +109,10 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1007/978-981-15-8697-2_3"
   }
+ ],
+ "tables_used": [
+  "Table 1: number of original and synthetic images in the training, validation and test sets",
+  "Table 2: test accuracy of each classifier with SynCGAN and traditional augmentation",
+  "Table 3: test accuracy with SynCGAN images compared with a plain GAN control"
  ]
 }

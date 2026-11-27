@@ -34,7 +34,7 @@ window.PUBLICATIONS = [
     authors: "P Maiti, S Chanda, S Chandra, Swarnendu Ghosh, D Guha Roy",
     venue: "UK Design Patent", detail: "No. 6391276" },
   { year: 2024, type: "workshop",
-    title: "MADS: A Multi-modal Academic Document Segmentation Dataset for Smart Question Bank Management", url: "https://ceur-ws.org/Vol-3764/#paper1",
+    title: "MADS: A Multi-modal Academic Document Segmentation Dataset for Smart Question Bank Management", url: "https://ceur-ws.org/Vol-3764/#paper1", pdf: "https://ceur-ws.org/Vol-3764/paper1.pdf", blog: "blog/mads-question-bank-dataset.html",
     authors: "U Aich, Swarnendu Ghosh, T Saha",
     venue: "2nd Symposium on NLP for Social Good (NSG)", detail: "CEUR-WS, Vol. 3764" },
   { year: 2024, type: "talk",
@@ -48,7 +48,7 @@ window.PUBLICATIONS = [
 
   /* ---------- 2023 ---------- */
   { year: 2023, type: "journal",
-    title: "Im2graph: A weakly supervised approach for generating holistic scene graphs from regional dependencies", url: "https://doi.org/10.3390/fi15020070",
+    title: "Im2graph: A weakly supervised approach for generating holistic scene graphs from regional dependencies", url: "https://doi.org/10.3390/fi15020070", pdf: "https://www.mdpi.com/1999-5903/15/2/70/pdf", blog: "blog/im2graph-scene-graphs.html",
     authors: "Swarnendu Ghosh, T Gonçalves, N Das",
     venue: "Future Internet", detail: "15(2):70 · MDPI" },
   { year: 2023, type: "conference",
@@ -128,7 +128,7 @@ window.PUBLICATIONS = [
   { year: 2019, type: "conference",
     title: "SynCGAN: Using learnable class specific priors to generate synthetic data for improving classifier performance on cytological images", url: "https://doi.org/10.1007/978-981-15-8697-2_3", blog: "blog/syncgan-synthetic-cytology.html",
     authors: "S Dey, S Das, Swarnendu Ghosh, S Mitra, S Chakrabarty, N Das",
-    venue: "8th National Conference on Computer Vision, Pattern Recognition, Image Processing & Graphics (NCVPRIPG)", detail: "pp. 32–42 · Springer" },
+    venue: "7th National Conference on Computer Vision, Pattern Recognition, Image Processing & Graphics (NCVPRIPG)", detail: "pp. 32–42 · Springer" },
   { year: 2019, type: "conference",
     title: "Using dynamic routing to extract intermediate features for developing scalable capsule networks", url: "https://doi.org/10.1109/icaccp.2019.8883020", blog: "blog/capsule-feature-routing.html",
     authors: "B Mandal, Swarnendu Ghosh, R Sarkhel, N Das, M Nasipuri",

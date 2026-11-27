@@ -69,3 +69,9 @@
 .pager small { display: block; font-family: var(--mono); font-size: .72rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
 .pager .next { text-align: right; }
 @media (max-width: 600px) { .pager { grid-template-columns: 1fr; } .pager .next { text-align: left; } }
+
+.sources { margin-top: 2.2em; padding-top: 16px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); line-height: 1.6; }
+.sources h2 { max-width: none; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; margin: 0 0 8px; color: var(--muted); }
+.sources p { margin: 0 0 .5em; }
+.sources ul { margin: 0; padding-left: 1.1em; }
+.sources b { color: var(--ink); font-weight: 600; }

@@ -13,7 +13,7 @@
   "superpixels"
  ],
  "kind": "article",
- "summary": "A contour detector that looks at seven views of an image and uses superpixels to throw out false edges. On the BSDS300 benchmark it came second in precision and ran about five times faster than the leader.",
+ "summary": "A contour detector that looks at seven views of an image and uses superpixels to throw out false edges. On BSDS300 it came second in average precision, and the paper reports it runs much faster than the leader.",
  "body": [
   {
    "p": "A contour is the line where one object ends and another begins. Finding it is a basic step in computer vision, and it is harder than it sounds, because shadows, texture and noise also create sharp changes in a picture. We built a detector that looks at an image through seven different channels. It then uses superpixels, small patches of similar pixels, to remove the edges that are not real object boundaries."
@@ -22,19 +22,20 @@
    "h2": "The problem"
   },
   {
-   "p": "Classical edge detectors look for places where brightness changes quickly. They cannot tell an object boundary from a shadow, a patch of texture or a speck of noise, so they produce false edges. They also break real contours into pieces where the boundary is faint. Methods that fix this by linking edges together tend to ignore the picture as a whole, or take a long time."
+   "p": "Classical edge detectors look for places where brightness changes quickly. They are fooled by shadows, reflections and noise, which also create sharp changes, so they produce false edges. They also break real contours into pieces where the boundary is faint. Some methods that link edges together ignore the picture as a whole, and others take a long time."
   },
   {
    "h2": "Seven views of one image"
   },
   {
-   "p": "We turn each image into seven channels. Three come from the CIELAB colour space, which describes brightness and two colour axes in a way that is closer to human perception. The fourth is hue, the pure colour, taken from the HSV colour space. Two objects of the same brightness but different colour then differ in at least one channel. The last three come from an \"intrinsic image\" built from how much each pair of red, green and blue values differs in the original."
+   "p": "We turn each image into seven channels. Three come from the CIELAB colour space, which describes brightness and two colour axes in a way that is closer to human perception than plain RGB. The fourth is hue, the pure colour, taken from the HSV colour space. Two objects of similar brightness but different colour then differ in at least one channel. The last three come from an \"intrinsic image\", which measures how much each pair of red, green and blue values differs, compared with the total difference across all pairs."
   },
   {
    "figure": {
     "src": "img/multi-cue-contour-detection/channels.jpg",
     "alt": "A photo of two women in a field, followed by its lightness, two colour, hue and three intrinsic channels, one intermediate edge map, and the combined edge map of all seven cues.",
-    "caption": "The seven channels of one photo and how they combine. The last two panels show the edge map from one channel and the combined map from all seven."
+    "caption": "The seven channels of one photo and how they combine. The last two panels show the edge map from one channel and the combined map from all seven.",
+    "source": "Fig. 1"
    }
   },
   {
@@ -47,39 +48,41 @@
    "p": "Next we cut the image into superpixels with SLICO, a version of the SLIC method that needs no tuning of patch compactness. Superpixel borders tend to follow real object borders. We keep only those edges that lie close to a superpixel border."
   },
   {
-   "p": "The number of superpixels matters. Too few and real edges are lost, too many and false edges survive. We grouped the 200 training images by scene type, using k-means clustering on spatial-pyramid and colour-histogram features. A statistical method, the gap statistic, found 11 groups. For each group we found, by gradient ascent on the F-measure, the superpixel count that worked best. A new image gets the count of the group whose centre is nearest."
+   "p": "The number of superpixels has to be chosen in advance, so we learned it from the training images. We grouped the 200 training images by scene type, using k-means clustering on spatial-pyramid and colour-histogram features. A statistical method, the gap statistic, found 11 groups. For each training image we found the best superpixel count by gradient ascent on a weighted F-measure that favours recall, then averaged the counts within each group. A new image gets the count of the group whose centre is nearest."
   },
   {
    "figure": {
     "src": "img/multi-cue-contour-detection/superpixels.jpg",
     "alt": "Three panels: a photo covered by small superpixel patches, the patch borders alone, and the final edge map of the two women.",
-    "caption": "The filtering step: superpixels laid over the photo (a), their borders (b), and the final edge map (c)."
+    "caption": "The filtering step: superpixels laid over the photo (a), their borders (b), and the final edge map (c).",
+    "source": "Fig. 2"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "We tested on the Berkeley Segmentation Dataset (BSDS300), where people drew the boundaries they see in each photo. Our average precision was 0.65, second of nine methods, behind only gPb at 0.68. The remaining methods in the table scored between 0.62 and 0.43. Our speed was listed as 1/47 against 1/240 for gPb in the paper's \"frames per second\" column, which makes ours roughly five times faster."
+   "p": "We tested on the Berkeley Segmentation Dataset (BSDS300), where people drew the boundaries they see in each photo. Our average precision was 0.65, second of nine methods, behind only gPb at 0.68 (Table I). The remaining methods in the table scored between 0.62 and 0.43 (Table I). The paper reports that ours runs much faster than gPb, which it describes as suffering from inordinate time complexity."
   },
   {
    "figure": {
     "src": "img/multi-cue-contour-detection/comparison.jpg",
     "alt": "Three rows of photos. Columns show each photo, the human-drawn boundaries, our edge map, the EDContours method and the thresholded gPb method.",
-    "caption": "Three BSDS300 photos. Columns, left to right: the photo, the human-drawn boundaries, our result, EDContours, and gPb."
+    "caption": "Three BSDS300 photos. Columns, left to right: the photo, the human-drawn boundaries, our result, EDContours, and gPb.",
+    "source": "Fig. 3"
    }
   },
   {
-   "callout": "Average precision on BSDS300: 0.65 for our detector, 0.68 for gPb, the top method."
+   "callout": "Average precision on BSDS300: 0.65 for our detector, 0.68 for gPb, the top method (Table I)."
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "The results are preliminary, and the paper says so. Our maximum recall of 0.91 sits below Canny (0.96), Felzenszwalb and Huttenlocher (0.99) and Sobel (0.97). We did not use texture, which we plan to add as an extra channel, together with colour relations between channels."
+   "p": "The results are preliminary, and the paper says so, though it calls them adequate to show the value of using several cues together. We did not use texture. We plan to add it as an extra channel, followed by region information based on the correlation between colour channels."
   },
   {
-   "p": "The authors call the results preliminary but good enough to show the value of using several cues together."
+   "p": "In the paper's conclusion, combining several cues with scene-level superpixel context captures object boundaries while keeping spurious edges down."
   }
  ],
  "acknowledgements": "",
@@ -88,5 +91,8 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1109/icacci.2016.7732184"
   }
+ ],
+ "tables_used": [
+  "Table I: average precision, speed and maximum recall of nine contour detection methods on BSDS300"
  ]
 }

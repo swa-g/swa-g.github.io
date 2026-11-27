@@ -23,10 +23,10 @@
    "h2": "The idea"
   },
   {
-   "p": "A picture is more than a list of objects. A bird on a branch differs from a bird in a cage, even though both contain a bird. So the representation has to keep the properties of objects and the relations between them, not just the nouns."
+   "p": "A picture is more than a list of objects. It also has properties, such as a little red bird and a dry branch, and relations, such as the bird sitting on the branch. So the representation has to keep the properties of objects and the relations between them, not just the nouns."
   },
   {
-   "p": "We read each caption with the C&C parser and Boxer, which write out a discourse representation structure: the things mentioned and the facts that connect them. Unlike in our earlier work on text classification, we kept only nouns, adjectives, verbs and the relations between them, because the rest of the grammar added little for captions."
+   "p": "We read each caption with the C&C parser and Boxer, which write out a discourse representation structure: the things mentioned and the facts that connect them. Unlike in our earlier work on text classification, we kept only nouns, adjectives, verbs and the relations between them, because we found the rest of the grammatical information valueless for captions."
   },
   {
    "h2": "From caption to graph"
@@ -38,7 +38,8 @@
    "figure": {
     "src": "img/image-captions-concept-graphs/caption-graph.png",
     "alt": "A chain of boxes: node Bird with attributes little and red, edge Agent, node Sit with attribute quietly, edge On, node Branch with attribute dry.",
-    "caption": "The graph for \"A little red bird is sitting quietly on a dry branch\". Boxes are nodes or edges, and each node has an ID, a name and attributes."
+    "caption": "The graph for \"A little red bird is sitting quietly on a dry branch\". Boxes are nodes or edges, and each node has an ID, a name and attributes.",
+    "source": "Fig. 3"
    }
   },
   {
@@ -51,7 +52,8 @@
    "figure": {
     "src": "img/image-captions-concept-graphs/flowchart.png",
     "alt": "Flow chart: image caption, then Boxer and C&C tools, then discourse representation structure, then graphical representation of the concept, then approximated maximum common subgraph, then ranked image retrieval.",
-    "caption": "The whole system, from caption to ranked list of pictures."
+    "caption": "The whole system, from caption to ranked list of pictures.",
+    "source": "Fig. 2"
    }
   },
   {
@@ -67,23 +69,24 @@
    "callout": "The best retrievals got an average rating of 2.95 out of 4 (± 0.707) from 25 human judges."
   },
   {
-   "p": "The scores fell steadily down the ranking, with average medians of 2.95, 2.55, 2.3, 1.95 and 1.55 for positions one to five, and 2.26 ± 0.748 over all five. We read this as ranking that goes along with human judgement. Two examples show what the system does well and badly. A duck query returned other ducks. A query showing fruit bats in a tree returned plastic bags in trees. The paper notes that the system favours concept over content here, and that negation needs better handling, since the bats caption itself says \"not plastic bags\"."
+   "p": "The scores fell steadily down the ranking, with average medians of 2.95, 2.55, 2.3, 1.95 and 1.55 for positions one to five, and 2.26 ± 0.748 over all five (Table I). We read this as ranking that goes along with human judgement. Two examples show what the system does well and badly. A duck query returned other ducks. A query showing fruit bats in a tree returned plastic bags in trees. The paper notes that the system favours concept over content here, and that negation needs better handling, and the bats caption itself begins \"Not plastic bags\"."
   },
   {
    "figure": {
     "src": "img/image-captions-concept-graphs/retrievals.jpg",
     "alt": "Two rows of three photos with captions. Top row: three ducks on water. Bottom row: bats in a tree, then two plastic bags caught in trees.",
-    "caption": "Top row: a duck query and two good matches. Bottom row: a bats query and two matches that look right in concept but are wrong in content."
+    "caption": "Top row: a duck query and two good matches. Bottom row: a bats query and two matches that look right in concept but are wrong in content.",
+    "source": "Fig. 4"
    }
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "Negation is the clearest weakness. The evaluation used 20 query sets rated by people, and the paper does not compare against other retrieval methods. Our aim was to show that this representation makes sense to people, and we say that further work is needed before it can compete with other techniques. We also propose adding image features and trying dependency-based graphs for speed."
+   "p": "Negation is the weakness the paper names. Our aim was to show that this representation makes sense to people, and we say that further studies are needed before it can compete with other contemporary techniques. We also propose adding image features and trying dependency-based graphs for speed."
   },
   {
-   "p": "The paper is a small step towards searching pictures by what they mean."
+   "p": "Retrieval was only the test. The main goal was a graph model of what a caption means."
   }
  ],
  "acknowledgements": "",
@@ -92,5 +95,8 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1109/icacci.2016.7732041"
   }
+ ],
+ "tables_used": [
+  "Table I: median score and standard deviation from the 25 judges for each of the five retrieved images in the 20 sets"
  ]
 }

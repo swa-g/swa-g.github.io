@@ -43,6 +43,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://swarnendughosh.com/blog/mads-question-bank-dataset.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://swarnendughosh.com/blog/leukemia-compact-cnn.html</loc>
     <lastmod>2026-11-27</lastmod>
     <changefreq>yearly</changefreq>
@@ -50,6 +56,12 @@
   </url>
   <url>
     <loc>https://swarnendughosh.com/blog/guidebp-weaker-logits.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://swarnendughosh.com/blog/im2graph-scene-graphs.html</loc>
     <lastmod>2026-11-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>

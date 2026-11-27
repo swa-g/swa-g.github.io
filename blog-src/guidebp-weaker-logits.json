@@ -18,7 +18,7 @@
  "summary": "When a network has several branches that each score the classes, the usual trick is to average the scores. We tried sending the learning signal only through the weakest branch for each class, and it helped.",
  "body": [
   {
-   "p": "Some neural networks have several branches that each produce their own score for every class. The usual way to use them is to average the scores. We tried something different: during training, for each class we pick the branch that is doing worst and let only that branch learn. We call the method GuideBP."
+   "p": "Some neural networks have several branches that each produce their own score for every class. The usual way to use them is to average the scores. We tried something different: during training, for each class we find the branch that is doing worst and send the learning signal through that branch. We call the method GuideBP."
   },
   {
    "h2": "The problem"
@@ -39,7 +39,8 @@
    "figure": {
     "src": "img/guidebp-weaker-logits/combine.png",
     "alt": "Three bar charts of class scores from three branches, with the true class highlighted, and a combined chart that takes the weakest value for each class.",
-    "caption": "For each class, the combined output takes the value from the branch that is weakest for it. Low scores on the true class and high scores on wrong classes count as weak."
+    "caption": "For each class, the combined output takes the value from the branch that is weakest for it. Low scores on the true class and high scores on wrong classes count as weak.",
+    "source": "Fig. 2"
    }
   },
   {
@@ -49,23 +50,24 @@
    "figure": {
     "src": "img/guidebp-weaker-logits/idea.png",
     "alt": "Two panels showing three network paths feeding an output layer. In the forward pass, logits are routed by weakness. In the backward pass, gradients flow only through the weaker paths.",
-    "caption": "Left: the forward pass routes the weakest logits to the output. Right: the backward pass sends gradients only along those weaker paths."
+    "caption": "Left: the forward pass routes the weakest logits to the output. Right: the backward pass sends gradients only along those weaker paths.",
+    "source": "Fig. 1"
    }
   },
   {
    "h2": "How it works"
   },
   {
-   "p": "After training there are two ways to make a prediction. In mean inference we simply average the branches' outputs. In strong inference we take, for each class, the branch with the least weakness, judged against the network's own best guess because the true label is unknown at test time."
+   "p": "After training there are two ways to make a prediction. In mean inference we simply average the branches' outputs. In strong inference we take, for each class, the branch with the least weakness. The true label is not known at test time, so the weakness is judged against a pseudo target built from the branches' own outputs."
   },
   {
-   "p": "We tried the method in four settings. M1 combines three ResNet18 networks, a standard image network. M2 uses GoogLeNet, which normally has extra classifiers that are cut away after training. We keep them, so they also take part at test time. M3 builds on a YOLOv3-style network and produces predictions for 16 regions of its internal feature maps. M4 combines 23 small networks that each read a different region of the input. Nothing was pre-trained, and the experiments cover 13 image datasets, from handwritten digits in several scripts to SVHN and CIFAR-10."
+   "p": "We tried the method in four settings. M1 combines three ResNet18 networks, a standard image network. M2 uses GoogLeNet, which normally has extra classifiers that are cut away after training. We keep them, so they also take part at test time. M3 builds on a YOLOv3-style network and produces predictions for 16 regions of its internal feature maps. M4 combines 23 small networks that each read a different region of the input, following an earlier published design. Nothing was pre-trained and no data augmentation was used. The experiments cover 13 image datasets, from handwritten digits in several scripts to SVHN and CIFAR-10."
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "Averaged over the datasets, GuideBP beat plain averaging in every setting. The accuracies below are means over the datasets, with the best of our two inference modes on the right."
+   "p": "The paper's first observation is that at least one of the two inference modes always beat plain averaging. The accuracies below are means over the 13 datasets (Table 2), with GuideBP using mean inference."
   },
   {
    "ul": [
@@ -78,21 +80,22 @@
   {
    "figure": {
     "src": "img/guidebp-weaker-logits/gain.png",
-    "alt": "Bar chart of the accuracy gain over averaging for each of 13 datasets and their mean, shown for four setups M1 to M4.",
-    "caption": "Accuracy gain over averaging, in percentage points, for each dataset. The gains are small on MNIST, where accuracy was already near the ceiling."
+    "alt": "Bar chart of the increase in accuracy over averaging for each of 13 datasets and their mean, shown for four setups M1 to M4.",
+    "caption": "Increase in accuracy over averaging the logits, using the better of the two inference modes, for each dataset and on the mean. The gain is small on MNIST, where accuracy was already very high.",
+    "source": "Fig. 8"
    }
   },
   {
-   "p": "The paper reports that at least one of the two inference modes beat averaging on every dataset. The gains average between 0.47 and 1.03 percentage points depending on the setting, and they are largest for the region-based M3 and M4. In the paper's comparison, which setting wins depends on the data. M3 was best on the six small CMATERdb handwriting sets and on Fashion-MNIST, whose images follow a fairly fixed template. M2 was best on four of the five MNIST-like sets and on SVHN. M1 was best on CIFAR-10, where objects move around the frame a lot."
+   "p": "Which setting wins depends on the data (Table 2). M3 was best on the six CMATERdb handwriting sets and on Fashion-MNIST, whose images follow a fairly fixed template with little variation. M2 was best on four of the five MNIST-like sets and on SVHN. M1 was best on CIFAR-10, where objects of the same class vary a lot in position and shape, so the class has no fixed template."
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "GuideBP is a way to combine outputs, not a new record-setting model, and the paper says it is not meant as a benchmark. The region-based variants are weak on natural images: M3 reached only 75.00% on CIFAR-10 and 86.40% on SVHN, against 95.20% and 96.00% for M1. A McNemar test, which checks whether two classifiers differ by more than chance, found no significant difference for M1 on most datasets. The paper reports significant differences for the other settings on nearly all datasets, with MNIST the exception, probably because scores there are already saturated."
+   "p": "The paper presents GuideBP as a general way to combine the outputs of multi-branch networks, not as a benchmarking model. Because our four settings are upgrades of existing networks, they inherit the drawbacks of those networks. M3, for instance, reached only 75.00% on CIFAR-10 and 86.40% on SVHN, against 95.20% and 96.00% for M1 (Table 2). The paper explains that where objects vary a lot within a class, the feature regions cannot be exploited as effectively. A McNemar test, which checks whether two classifiers differ by more than chance, showed that apart from M1 the proposed models learned significantly different concepts from the baselines (Table 3). MNIST was the exception on the datasets, probably because accuracy there is already saturated."
   },
   {
-   "p": "For now the method acts only on the output logits. Whether the same idea can work on the inner layers of a network is the obvious next question, and we have not tried it."
+   "p": "At the moment the method acts only on the output logits. The conclusion suggests that a similar approach might be adopted for inner layers in future work."
   }
  ],
  "acknowledgements": "",
@@ -101,5 +104,9 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1007/978-981-97-2611-0_12"
   }
+ ],
+ "tables_used": [
+  "Table 2: accuracy of every setting on each of the 13 datasets, with the mean over datasets",
+  "Table 3: McNemar test p-values comparing the proposed methods and the standard networks"
  ]
 }

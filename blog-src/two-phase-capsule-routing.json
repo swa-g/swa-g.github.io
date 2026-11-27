@@ -48,7 +48,8 @@
    "figure": {
     "src": "img/two-phase-capsule-routing/caps5.png",
     "alt": "Diagram of the Caps-5 network: the whole image goes to a primary capsule network, four stacked image quadrants go to a secondary one, and both feed a multi-level dynamic routing step that produces one output capsule per class.",
-    "caption": "Caps-5 reads the whole image and four scaled-up quadrants, then combines all of it in a single routing step."
+    "caption": "Caps-5 reads the whole image and four scaled-up quadrants. Their contributions are then combined by the two-phase routing.",
+    "source": "Fig. 4"
    }
   },
   {
@@ -58,35 +59,39 @@
    "figure": {
     "src": "img/two-phase-capsule-routing/routing.png",
     "alt": "Diagram of the two routing levels: image regions pass through region-specific capsule networks, a first-level routing step merges their contributions, and a second-level routing step produces the output capsules.",
-    "caption": "The two routing levels. The first merges what the regions say, the second turns that into the output for each class."
+    "caption": "The two routing levels. The first merges what the regions say, the second turns that into the output for each class.",
+    "source": "Fig. 2"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "We tested on seven public datasets: handwritten digits in Bengali, Devanagari, Arabic and Telugu (only 2,000 to 4,000 training images each), plus Fashion-MNIST (clothing), Not-MNIST (letters in many typefaces) and SVHN (house numbers from street photos). No data augmentation was used."
+   "p": "We tested on seven public datasets: handwritten digits in Bengali, Devanagari, Arabic and Telugu (only 2,000 to 4,000 training images each), plus Fashion-MNIST (clothing), Not-MNIST (letters A to J in many typefaces) and SVHN (house numbers from street photos) (Table 3). No data augmentation was used."
   },
   {
-   "p": "Caps-5 beat both a plain capsule network and a LeNet5 baseline on all seven datasets. Caps-21 beat LeNet5 everywhere but trailed the plain capsule network on the Bengali and Devanagari digits and on SVHN. On the Telugu digits, Caps-5 reached 98.00% against 95.40% for the plain capsule network and 92.20% for LeNet5. Caps-5 did best on the digit sets and SVHN, while Caps-21 did best on Fashion-MNIST (91.27%) and Not-MNIST (95.66%), where objects vary more within a class."
+   "p": "Caps-5 beat both a plain capsule network and a LeNet5 baseline on all seven datasets (Table 4). Caps-21 beat LeNet5 everywhere but trailed the plain capsule network on the Bengali and Devanagari digits and on SVHN. On the Telugu digits, Caps-5 reached 98.00% against 95.40% for the plain capsule network and 92.20% for LeNet5. Caps-5 did well on the digit sets and SVHN, while Caps-21 did better on the non-digit sets with more variation inside a class: 91.27% on Fashion-MNIST and 95.66% on Not-MNIST."
   },
   {
-   "p": "We also built ordinary multi-column convolutional networks with the same inputs. On SVHN, Caps-5 scored 90.19% against 81.87% for the five-column convolutional version, and the 21-column version fell to 57.79%. Replacing our routing with majority voting or probability averaging usually cost accuracy too. The gap was largest on SVHN: 90.19% for our routing against 87.71% for voting and 87.59% for averaging in Caps-5. Majority voting did win on Fashion-MNIST for Caps-5 (91.49% against 90.96%). A statistical test, McNemar's, showed that some improvements, mostly on the small digit sets, could be down to chance."
+   "p": "We also built ordinary multi-column convolutional networks with the same inputs. On SVHN, Caps-5 scored 90.19% against 81.87% for the five-column convolutional version, and the 21-column version fell to 57.79% (Table 5). The paper backs these comparisons with McNemar mid-P tests, a check on whether two classifiers really differ. For some pairs, mostly on the small digit sets, the difference is not statistically significant (Table 6)."
+  },
+  {
+   "p": "Next we replaced our routing with majority voting or probability averaging. The paper concludes that the two-phase routing aggregates opinions better. The gap was largest on SVHN, where Caps-5 scored 90.19% with our routing, 87.71% with voting and 87.59% with averaging (Table 7). Majority voting did win on Fashion-MNIST for Caps-5, 91.49% against 90.96% (Table 7)."
   },
   {
    "callout": "A region that is accurate on its own is not always the one that gets the most weight in routing. Regions count when they agree with the overall consensus."
   },
   {
-   "p": "That last point explains why routing can beat voting. When we tested each region alone, the full image was best, the quadrants slightly weaker and the small tiles weakest. Yet in the routing weights, many small regions carried contributions comparable to the full image."
+   "p": "Why can routing beat voting? When we tested each region alone, the full image was best, the quadrants slightly weaker and the small tiles weakest. Yet in the routing weights, many small regions had contributions comparable to the full image (Figs. 6 to 8 of the paper). The paper's explanation is that voting combines the strongest opinions of independent classifiers, while routing can prefer weaker opinions when they form a stronger consensus."
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "Our networks do not match the best convolutional networks. Training is slow, which limits how far the idea can scale, and the paper says so directly. Without augmentation, Caps-5 and Caps-21 reached only 68.87% and 68.97% on CIFAR-10. With another capsule paper's data loader the numbers rose to 74.67% and 75.82%, in the range of the 75.70% reported for MS-CapsNet, though the paper notes that the pre-processing differs between the setups."
+   "p": "Our networks do not yet reach the level of state-of-the-art convolutional networks. The paper names speed as the main bottleneck: like other capsule networks, ours train slowly, which limits scalability. Without augmentation, Caps-5 and Caps-21 reached only 68.87% and 68.97% on CIFAR-10 (Table 8). In that comparison the paper reports MS-CapsNet as the best method, and notes that its data loading includes pre-processing and augmentation that ours did not. When we used the MS-CapsNet data loader, our CIFAR-10 numbers rose substantially."
   },
   {
-   "p": "We meant the two-level scheme as a step toward deeper capsule networks with several routing layers. The paper leaves that extension, and hierarchies with more than two levels, as an open direction."
+   "p": "We meant the two-level scheme as a step toward deeper capsule networks with several routing layers. It could in theory be extended to more levels, but that is still computationally expensive, so hierarchies with more levels are left for future work."
   }
  ],
  "acknowledgements": "This work was supported by the project sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and was carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -99,5 +104,13 @@
    "label": "Code on GitHub",
    "url": "https://github.com/DVLP-CMATERJU/TwoPhaseDynamicRouting"
   }
+ ],
+ "tables_used": [
+  "Table 3: the seven datasets with training and test set sizes",
+  "Table 4: accuracy of Caps-5, Caps-21, a plain capsule network and LeNet5 on each dataset",
+  "Table 5: accuracy of Caps-5 and Caps-21 against five- and 21-column convolutional networks",
+  "Table 6: McNemar mid-P significance tests for the comparisons",
+  "Table 7: our routing against majority voting and probability averaging",
+  "Table 8: comparison with other capsule network variants on Fashion-MNIST and CIFAR-10"
  ]
 }

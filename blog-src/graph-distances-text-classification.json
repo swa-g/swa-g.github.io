@@ -40,7 +40,8 @@
    "figure": {
     "src": "img/graph-distances-text-classification/sentence-to-graph.png",
     "alt": "Three panels showing the parser output for the sentence Adam drinks water, the discourse structure Boxer builds from it, and the resulting graph with nodes x0, x1, x2 and labelled edges agent and patient.",
-    "caption": "The same sentence in three forms: the parser output (a), the discourse structure (b) and the graph (c). The words adam, drink and water sit on loops, and agent and patient label the edges."
+    "caption": "The same sentence in three forms: the parser output (a), the discourse structure (b) and the graph (c). The words adam, drink and water sit on loops, and agent and patient label the edges.",
+    "source": "Fig. 2"
    }
   },
   {
@@ -56,32 +57,33 @@
    "figure": {
     "src": "img/graph-distances-text-classification/pipeline.png",
     "alt": "Flow chart: a text document is summarised, parsed into a discourse structure, converted to a graph, compared with other graphs through common subgraph and supergraph, and classified with nearest neighbours.",
-    "caption": "The whole pipeline. Everything inside the box on the left is done with the Natural Language Toolkit."
+    "caption": "The whole pipeline. Everything inside the box on the left is done with the Natural Language Toolkit.",
+    "source": "Fig. 1"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "We used 20 topics from the Reuters-21578 collection, with 10 documents per topic for training and 10 for testing, and tried k = 3, 5 and 7. The best graph result was 51.50% accuracy, from the edge-based version of the fifth distance with three-sentence summaries and k = 7. The worst was 35.50%. Bag-of-words, run on the same summaries, scored between 48.50% and 50.50%."
+   "p": "We used 20 topics from the Reuters-21578 collection, with 10 documents per topic for training and 10 for testing, and tried k = 3, 5 and 7. The best graph result was 51.50% accuracy, from the edge-based version of the fifth distance with three-sentence summaries and k = 7 (Table 2). The lowest was 35.50% (Table 1). Bag-of-words, run on the same summaries, scored between 48.50% and 50.50% (Table 1, Table 2)."
   },
   {
-   "p": "Two patterns stood out. The measures that counted edges did better than their node-counting twins, which suggests the relations carry real information. And three-sentence summaries did better than two-sentence ones. The five distances behaved alike: averaged over k, their three-sentence edge-based accuracy was 49.43 ± 0.38%."
+   "p": "Two patterns stood out. The measures that counted edges did better than their node-counting twins, which fits the idea that the relations carry real information. And three-sentence summaries did better than two-sentence ones. The five distances behaved alike: averaged over k, their three-sentence edge-based accuracy was 49.43 ± 0.38%."
   },
   {
-   "callout": "Best graph measure: 51.50% accuracy on 20 Reuters topics (three-sentence summaries, k = 7). Bag-of-words, same setting: 49.00%."
+   "callout": "Best graph measure: 51.50% accuracy on 20 Reuters topics (three-sentence summaries, k = 7). Bag-of-words, same setting: 49.00% (Table 2)."
   },
   {
-   "p": "Topic by topic, the picture is mixed. For the gold topic, the F-measure (a single score that balances finding the right documents against picking wrong ones) rose from 0.25 with word counts to 0.71 with graphs. Words such as \"ounces\" and \"carat\" are rare, so counting overlooks them, while the graph ties them to \"gold\". For carcass it went the other way, 0.95 against 0.32, because \"beef\" and \"pork\" are enough on their own. Averaged over all topics the two methods tie at 0.51."
+   "p": "Topic by topic, the picture is mixed. For the gold topic, the F-measure (a single score that balances finding the right documents against picking wrong ones) rose from 0.25 with word counts to 0.71 with the best graph distance (Table 3). Words such as \"ounces\" and \"carat\" are rare, so counting overlooks them, while the graph ties them to \"gold\". For carcass it went the other way, 0.95 against 0.32, because \"beef\" and \"pork\" are enough on their own. Averaged over all topics the two methods tie at 0.51 (Table 3)."
   },
   {
    "h2": "What it does not show"
   },
   {
-   "p": "The test set is small, only 200 documents, and the graph method matched bag-of-words rather than clearly beating it. We also did not study how much the summarising step helps or hurts. We list that as future work, along with trying support vector machines on graph kernels."
+   "p": "We tested on ten documents per topic, and the graph method came out about equal to bag-of-words, not clearly ahead of it. We did not study how much the summarising step helps or hurts, and we list that as future work, along with trying other learning methods such as support vector machines on graph kernels."
   },
   {
-   "p": "A companion paper mixed these graph measures with word counts, and the combination gained accuracy."
+   "p": "A companion paper mixed these graph measures with word counts, and the combination gave better accuracy than either alone."
   }
  ],
  "acknowledgements": "This work was funded by Emma in the framework of the EU Erasmus Mundus Action 2.",
@@ -90,5 +92,10 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.17562/pb-49-6"
   }
+ ],
+ "tables_used": [
+  "Table 1: accuracy for each distance and bag-of-words with two-sentence summaries",
+  "Table 2: accuracy for each distance and bag-of-words with three-sentence summaries",
+  "Table 3: recall, precision and F-measure per topic, bag-of-words against the best graph distance"
  ]
 }

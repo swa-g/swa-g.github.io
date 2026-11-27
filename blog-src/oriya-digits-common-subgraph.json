@@ -16,7 +16,7 @@
  "summary": "We turned handwritten Oriya digits into small graphs and recognised them by how much each graph overlaps with training examples. The method reached 97.64% accuracy on 2200 test images.",
  "body": [
   {
-   "p": "Oriya is a language of India, and its handwritten digits have received far less attention from researchers than those of many other scripts. We show a way to recognise them by turning each digit into a small graph and measuring how much it overlaps with graphs of known digits. After training on 5000 images, the method reached 97.64% accuracy on 2200 test images."
+   "p": "Oriya is a language of India, and it has received less attention from handwriting-recognition researchers than many other scripts. We show a way to recognise its handwritten digits by turning each digit into a small graph and measuring how much it overlaps with graphs of known digits. After training on 5000 images, the method reached 97.64% accuracy on 2200 test images."
   },
   {
    "h2": "Collecting and cleaning the digits"
@@ -31,7 +31,8 @@
    "figure": {
     "src": "img/oriya-digits-common-subgraph/digits.png",
     "alt": "A row of ten handwritten Oriya digits from zero to nine, and below each its thin white skeleton on a black square.",
-    "caption": "Top: the ten handwritten digits from zero to nine. Bottom: the same digits after skeletonising."
+    "caption": "Top: the ten handwritten digits from zero to nine. Bottom: the same digits after skeletonising.",
+    "source": "Fig. 3"
    }
   },
   {
@@ -44,7 +45,8 @@
    "figure": {
     "src": "img/oriya-digits-common-subgraph/grid-graph.png",
     "alt": "A four by four grid of numbered blocks with a dark stroke winding through them and arrows showing which blocks are connected.",
-    "caption": "How a skeleton becomes a graph. Each numbered block is a node, and an arrow means the stroke continues into the next block. The paper draws a simplified 16 by 16 version for clarity."
+    "caption": "How a skeleton becomes a graph. Each numbered block is a node, and an arrow means the stroke continues into the next block. The paper draws a simplified 16 by 16 version for clarity.",
+    "source": "Fig. 4"
    }
   },
   {
@@ -66,16 +68,16 @@
    "callout": "Test accuracy: 97.64% on 2200 handwritten Oriya digit images."
   },
   {
-   "p": "Digits 0, 3 and 8 were recognised perfectly. Digit 7 was the hardest. Of its 220 test images, 196 were correct, 15 were read as a 2 and 9 as a 6. Earlier published work on Oriya handwriting, such as a 2007 system with 94.60% accuracy on 18,190 test samples, dealt with characters rather than digits, so the numbers are not a like-for-like comparison."
+   "p": "Digits 0, 3 and 8 scored the highest F-measure, a score that balances finding the right images against picking wrong ones (Table 1). Digit 7 scored the lowest (Table 1). Of its 220 test images, 196 were correct, 15 were read as a 2 and 9 as a 6 (Table 2)."
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "We tested one dataset of one script. The method also depends on a skeletonising routine that we took from MATLAB, and the paper suggests that tuning the thinning step could improve results further. We named two next steps: running the method on more datasets and scripts, and using graph kernels for similarity."
+   "p": "We tested one dataset of one script. The method also depends on a skeletonising routine that we took from MATLAB, and the paper suggests that tuning the thinning step could improve results further. We named two next steps: running the method on more datasets, including other scripts, and using graph kernels for similarity."
   },
   {
-   "p": "The same similarity idea had already been used by us for classifying text."
+   "p": "The same family of similarity measures had already been used in our earlier work on classifying text."
   }
  ],
  "acknowledgements": "",
@@ -84,5 +86,9 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1007/978-81-322-2757-1_18"
   }
+ ],
+ "tables_used": [
+  "Table 1: per-digit true-positive rate, precision, recall and F-measure",
+  "Table 2: confusion matrix of the 2200 test images"
  ]
 }

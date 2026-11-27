@@ -9,7 +9,7 @@ def check(slug):
     p = os.path.join(HERE, slug + '.json')
     try: d = json.load(open(p, encoding='utf8'))
     except Exception as e: return ['invalid JSON: %s' % e], []
-    for k in ('slug', 'title', 'paper_title', 'date', 'venue', 'authors', 'tags', 'summary', 'kind', 'body', 'acknowledgements', 'links'):
+    for k in ('slug', 'title', 'paper_title', 'date', 'venue', 'authors', 'tags', 'summary', 'kind', 'body', 'acknowledgements', 'links', 'tables_used'):
         if k not in d: errs.append('missing key ' + k)
     if errs: return errs, warns
     if d['slug'] != slug: errs.append('slug field != filename')
@@ -18,6 +18,13 @@ def check(slug):
     if d['kind'] not in ('article', 'explainer'): errs.append('kind must be article|explainer')
     if len(d['summary']) > 220: errs.append('summary > 220 chars (%d)' % len(d['summary']))
     n = 0; figs = 0
+    if not isinstance(d['tables_used'], list) or any(not re.match(r'^Table\s*[IVX\d]+', t) for t in d['tables_used']):
+        errs.append('tables_used must be a list of strings like "Table 2: what it shows"')
+    alltext = ' '.join((' '.join(v) if isinstance(v, list) else (v['caption'] if isinstance(v, dict) else v)) for b in d['body'] for v in b.values())
+    cited = set(re.findall(r'Table\s*([IVX\d]+)', alltext))
+    listed = set(re.match(r'^Table\s*([IVX\d]+)', t).group(1) for t in d['tables_used'] if re.match(r'^Table\s*([IVX\d]+)', t))
+    if listed - cited: warns.append('tables_used lists tables never cited inline: %s' % sorted(listed - cited))
+    if cited - listed: errs.append('tables cited inline but missing from tables_used: %s' % sorted(cited - listed))
     for b in d['body']:
         keys = set(b) & BLOCKS
         if len(keys) != 1: errs.append('bad block %r' % list(b)[:3]); continue
@@ -25,8 +32,9 @@ def check(slug):
         txt = ' '.join(v) if k in ('ul', 'ol') else (v.get('caption', '') if k == 'figure' else v)
         if k == 'figure':
             figs += 1
-            for f in ('src', 'alt', 'caption'):
+            for f in ('src', 'alt', 'caption', 'source'):
                 if f not in v: errs.append('figure missing ' + f)
+            if 'source' in v and not re.match(r'^(Fig\.|Figure)\s*\d+', v['source']): errs.append('figure source must look like "Fig. 3" or "Fig. 4(a)": %r' % v['source'])
             fp = os.path.join(BLOG, v.get('src', ''))
             if not os.path.isfile(fp): errs.append('figure file not found: ' + fp)
             elif os.path.getsize(fp) > 450_000: errs.append('figure > 450 KB: ' + v['src'])

@@ -16,7 +16,7 @@
  "summary": "Meaning graphs matched word counting on 20 Reuters topics. Averaging the two methods' votes did better than either alone, reaching up to 56.00% accuracy.",
  "body": [
   {
-   "p": "A text classifier that counts words and one that reads relations between words make different mistakes. We built the second kind by turning summaries into graphs, then asked whether letting both vote would help. On a set of Reuters news stories it did. The two together reached up to 56.00% accuracy, against 49.50% for word counting and at most 51.50% for the graphs alone."
+   "p": "A text classifier that counts words and one that reads relations between words seem to pick up different information. We built the second kind by turning summaries into graphs, then asked whether letting both vote would help. On a set of Reuters news stories it did. The two together reached up to 56.00% accuracy, against 49.50% for word counting and at most 51.50% for the graphs alone (Table 1, Table 3)."
   },
   {
    "h2": "Two ways to read a document"
@@ -31,45 +31,47 @@
    "figure": {
     "src": "img/graphs-plus-bag-of-words/pipeline.png",
     "alt": "Flow chart in three dashed boxes: (a) text is summarised and parsed into a discourse structure, (b) the structure becomes a graph and common subgraph and supergraph are computed, (c) similarity measures feed a nearest-neighbour classifier.",
-    "caption": "The system in three stages: reading the text (a), building and comparing graphs (b), and classifying with the nearest neighbours (c)."
+    "caption": "The system in three stages: reading the text (a), building and comparing graphs (b), and classifying with the nearest neighbours (c).",
+    "source": "Fig. 2"
    }
   },
   {
    "h2": "Graphs alone"
   },
   {
-   "p": "We used 20 Reuters topics with 10 training and 10 test documents each, and a k-nearest-neighbour classifier that labels a document by majority vote among the k most similar training documents. As in our earlier study, edge-based measures did better on the whole than node-based ones, and three-sentence summaries did better than two-sentence ones. The best graph result was 51.50%, while word counting scored 49.50% on the same three-sentence summaries."
+   "p": "We used 20 Reuters topics with 10 training and 10 test documents each, and a k-nearest-neighbour classifier that labels a document by majority vote among the k most similar training documents. Edge-based measures did better than node-based ones, and three-sentence summaries did better than two-sentence ones. The best graph result was 51.50%, while word counting scored 49.50% on the same three-sentence summaries (Table 1)."
   },
   {
    "figure": {
     "src": "img/graphs-plus-bag-of-words/accuracy.png",
     "alt": "Two bar charts of recognition accuracy for five distance measures. Left: vertex-based bars are lower than edge-based bars. Right: two-sentence bars are lower than three-sentence bars.",
-    "caption": "Edge-based measures beat vertex-based ones (left), and three-sentence summaries beat two-sentence ones (right). Both vertical axes start above zero, so the gaps look larger than they are."
+    "caption": "Edge-based measures beat vertex-based ones (left), and three-sentence summaries beat two-sentence ones (right).",
+    "source": "Fig. 5(a) and Fig. 5(b)"
    }
   },
   {
-   "p": "Per topic, the two methods disagree in telling ways. Bag-of-words wins on carcass, where words like \"beef\" and \"pork\" are enough, with an F1 score of 0.95 against 0.32 for graphs. Graphs win on gold, 0.71 against 0.25. The word \"gold\" also appears in the copper and alum topics, and rare words such as \"ounces\" and \"carat\", which counting overlooks, are tied to \"gold\" by the graph. Averaged over topics, both methods score an F1 of 0.51."
+   "p": "Per topic, the two methods disagree in telling ways. Bag-of-words wins on carcass, where words like \"beef\" and \"pork\" are enough, with an F1 score of 0.95 against 0.32 for graphs (Table 2). Graphs win on gold, 0.71 against 0.25 (Table 2). The word \"gold\" also appears in the copper and alum topics, and rare words such as \"ounces\" and \"carat\", which counting overlooks, are tied to \"gold\" by the graph. Averaged over topics, both methods score an F1 of 0.51 (Table 2)."
   },
   {
    "h2": "Letting both vote"
   },
   {
-   "p": "Since the errors differ, we combined the methods. The k-nearest-neighbour classifier from the Weka toolkit gives a confidence for each topic. For every document we averaged the word-count confidence and the graph confidence for each topic and picked the topic with the highest average."
+   "p": "The two methods do well on different topics, so we combined them. The k-nearest-neighbour classifier from the Weka toolkit gives a confidence for each topic. For every document we averaged the word-count confidence and the graph confidence for each topic and picked the topic with the highest average."
   },
   {
-   "callout": "Combined accuracy reached 56.00% with three-sentence summaries; word counting alone got 49.50%."
+   "callout": "Combined accuracy reached 56.00% with three-sentence summaries; word counting alone got 49.50% (Table 3)."
   },
   {
-   "p": "With three-sentence summaries, every combination scored between 54.00% and 56.00%. That is 3.5 to 8.5 points above the same graph measure used alone, and above every individual result. The average was 54.5% for node-based and 55.5% for edge-based measures. With two-sentence summaries the gains ranged from 1.5 to 10.5 points. We read this as evidence that the graphs hold some information the word counts do not."
+   "p": "With three-sentence summaries, every combination scored between 54.00% and 56.00%, which is above every individual result (Table 3). The average was 54.5% for node-based and 55.5% for edge-based measures. With two-sentence summaries the combination also scored higher than the graph measure alone (Table 3). We read this as a sign that the graphs hold some information the word counts do not."
   },
   {
    "h2": "What it does not show"
   },
   {
-   "p": "The test set is small, only 200 documents, and every figure comes from one corpus and one kind of classifier. The summarising step is also untested. We want to try more sentences or other summarisers, and to try support vector machines with a graph kernel, a way of comparing graphs inside such a classifier."
+   "p": "We tested one subset of Reuters-21578 with one kind of classifier, and the graph method alone was about as good as bag-of-words, not clearly better. The effect of the summarising step is still open. We plan to try more sentences or other summarisers, and to try support vector machines with a graph kernel, a way of comparing graphs inside such a classifier."
   },
   {
-   "p": "The combination went beyond our first study. The graphs did not replace word counts but added to them."
+   "p": "The graphs did not replace word counts but added to them."
   }
  ],
  "acknowledgements": "",
@@ -78,5 +80,10 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1007/978-3-319-10888-9_33"
   }
+ ],
+ "tables_used": [
+  "Table 1: accuracy of each graph distance and of bag-of-words, for two- and three-sentence summaries",
+  "Table 2: recall, precision and F1 per topic, bag-of-words against the best graph distance",
+  "Table 3: accuracy when graph and bag-of-words confidences are combined"
  ]
 }

@@ -52,14 +52,16 @@
    "figure": {
     "src": "img/indic-script-small-cnn-ensemble/twelve-networks.png",
     "alt": "Flow diagram. An input image is rescaled to 128 by 128, then either goes straight on or through a Haar wavelet transformation. Each branch is resized to 32, 64 and 128 pixels and feeds a depth-2 and a depth-3 network, giving twelve networks.",
-    "caption": "The twelve networks: raw images on the left in orange, wavelet-reconstructed images on the right in blue."
+    "caption": "The twelve networks: raw images on the left in orange, wavelet-reconstructed images on the right in blue.",
+    "source": "Fig. 5"
    }
   },
   {
    "figure": {
     "src": "img/indic-script-small-cnn-ensemble/wavelet-views.jpg",
     "alt": "Top row: four handwritten word images on a light background. Bottom row: the same words as bright outlines on a dark background after the wavelet reconstruction.",
-    "caption": "Original words on top and the same words rebuilt from wavelet details below. The background is gone and the strokes remain."
+    "caption": "Original words on top and the same words rebuilt from wavelet details below. The background is gone and the strokes remain.",
+    "source": "Fig. 6"
    }
   },
   {
@@ -72,29 +74,30 @@
    "h2": "What we found"
   },
   {
-   "p": "Single networks scored between 75.5% and 92.2% accuracy. Merging networks almost always helped, which tells us they make different mistakes. One exception: merging the 64 and 128 pixel wavelet networks lowered accuracy, because the 128 pixel wavelet network did poorly. Wavelets helped most at medium image sizes and hurt at the largest."
+   "p": "Single networks scored between 75.5% and 92.2% accuracy (Table 3). Merging networks almost always helped, which tells us they make different mistakes. One exception: merging the 64 and 128 pixel wavelet networks lowered accuracy, because the 128 pixel wavelet network did poorly. Wavelets helped most at medium image sizes and hurt at the largest."
   },
   {
-   "p": "Averaging probabilities worked best, at about 95% accuracy. Taking the most confident network (max-voting) came close, and simply joining the networks' features (feature concatenation) was a little behind."
+   "p": "Averaging the probabilities worked best, and the paper reports a maximum accuracy of 95.04%. Probabilistic voting did better than max-voting and better than simply joining the networks' features (feature concatenation)."
   },
   {
-   "callout": "On the same word dataset, a feature-based method scored 91.00%, LeNet 82.00% and AlexNet 92.14%. Our probability-averaging team scored 95.45%."
+   "callout": "Our best accuracy was 95.04%. That is 2.9% above AlexNet and more than 4% above the benchmark script-identification technique on the same dataset."
   },
   {
    "figure": {
     "src": "img/indic-script-small-cnn-ensemble/combination-results.png",
     "alt": "Bar chart with three groups, CNN max, CNN prob and CNN feat, each showing accuracy, precision, recall and F-measure between about 94.5 and 95.5 percent. CNN prob is highest.",
-    "caption": "The three ways of combining the networks. Probability averaging is highest on all four measures."
+    "caption": "The three ways of combining the networks. Probability averaging is highest on all four measures.",
+    "source": "Fig. 12"
    }
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "Not all scripts are equal. Bangla was the hardest, with an F-measure of 0.888, and Telugu the easiest at 0.991. All of this concerns single words in one dataset of 11,000 images, so it says little about other handwriting collections. We also trained each network separately. Training them together against a common loss would probably have given better features, as the paper says, but we wanted networks that can be trained one by one on small hardware."
+   "p": "Not all scripts are equal. Bangla was the hardest, with an F-measure of 0.888, and Telugu the easiest at 0.991 (Table 5). All results are for single words from one dataset of 11,000 images. We also trained each network separately. Training them together against a common loss would probably have given better features, as the paper says, but we wanted networks that can be trained one by one on small hardware."
   },
   {
-   "p": "A group of small, different networks was enough to beat a larger one here. That makes script identification feasible on modest hardware."
+   "p": "The point is about hardware as much as accuracy. The paper calls the 90-dollar card a household-level GPU, and a team of small networks was trained on it."
   }
  ],
  "acknowledgements": "This work was partially supported by the project order no. SB/S3/EECE/054/2016, dated 25/11/2016, sponsored by SERB (Government of India), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University. The authors also thank the reviewers for their valuable suggestions, which helped to improve the quality of the manuscript.",
@@ -103,5 +106,9 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1007/s00521-019-04111-1"
   }
+ ],
+ "tables_used": [
+  "Table 3: accuracy of each single network, each hierarchical combination and the three ensembles",
+  "Table 5: precision, recall and F-measure for each script"
  ]
 }

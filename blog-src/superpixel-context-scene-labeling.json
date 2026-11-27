@@ -14,31 +14,32 @@
   "ensembles"
  ],
  "kind": "article",
- "summary": "We label outdoor scenes by classifying superpixels, small patches of similar pixels, with their neighbours. Combining three small networks reached 77.14% accuracy on the ICCV09 dataset, at 25 to 30 ms per image.",
+ "summary": "We label outdoor scenes by classifying superpixels (small patches of similar pixels) with their neighbours. Three small networks combined reached 77.14% accuracy on ICCV09, in 25 to 30 ms of testing time.",
  "body": [
   {
-   "p": "Scene labelling means giving every part of a photo a name such as sky, tree, grass or road. Most deep-learning methods do this one pixel at a time, which is slow, and a single pixel says very little about what it belongs to. We worked with superpixels instead, and gave each one a look at its neighbours. Three small networks voted on each patch, and the combined answer beat several published methods on the same dataset."
+   "p": "Scene labelling means giving every part of a photo a name such as sky, tree, grass or road. Most deep-learning methods do this one pixel at a time, and a single pixel says very little about what it belongs to. We worked with superpixels instead, and gave each one a look at its neighbours. Three small networks each classified every patch, and a merging step combined their answers into a result that compares well with other published methods on the same dataset."
   },
   {
    "h2": "Why superpixels"
   },
   {
-   "p": "A superpixel is a small patch of neighbouring pixels that look alike and are grouped together. A photo with millions of pixels turns into a few hundred patches. We used an algorithm called SLIC to cut each image up, because it is fast and its patches follow object edges well."
+   "p": "A superpixel is a small patch of neighbouring pixels that look alike and are grouped together. An image ends up with far fewer patches than pixels. We used an algorithm called SLIC to cut each image up, because it is fast and its patches follow object edges well."
   },
   {
-   "p": "The patch count is set by a number we call the minimum object resolution. We fixed it at roughly 20×20 pixels. Over the whole dataset this gave 291,911 superpixels. Classifying each patch costs far less than classifying each pixel, and a patch carries texture as well as colour."
+   "p": "The number of patches is set by a quantity we call the minimum object resolution. We fixed it at roughly 20×20 pixels. Over the whole dataset this gave 291,911 superpixels. Classifying a patch is much cheaper than classifying every pixel, and a patch shows texture, which a single pixel cannot."
   },
   {
    "h2": "Adding context"
   },
   {
-   "p": "A patch alone can still be ambiguous. Grass and a green tree look similar close up. What surrounds the patch helps: trees tend to sit above grass, and sky sits above both. So for each superpixel we built three inputs. The first is the patch alone. The second adds its immediate neighbours, and the third adds the neighbours of those neighbours."
+   "p": "A patch on its own can still be ambiguous, because similar-looking patches can belong to different classes. What surrounds the patch carries extra information. So for each superpixel we built three inputs. The first is the patch alone. The second adds its immediate neighbours, and the third adds the neighbours of those neighbours."
   },
   {
    "figure": {
     "src": "img/superpixel-context-scene-labeling/neighbours.jpg",
-    "alt": "Left: a photo of trees cut into superpixels with a red outline on one patch and two nested red boxes around it. Right: three cut-outs showing that patch alone, with its first ring of neighbours, and with its second ring.",
-    "caption": "One superpixel (red) is cut out alone (b), then with its first neighbours (c) and with its second neighbours (d). Each version is padded to a regular box before it goes into a network."
+    "source": "Fig. 2",
+    "alt": "Left: a photo of trees cut into superpixels with a small red outline on one patch and two nested red boxes labelled 1N and 2N around it. Right, top row: that patch alone, with its first ring of neighbours, and with its second ring. Bottom row: the patch outline, its bounding box, and an empty regular-sized box.",
+    "caption": "One superpixel (red) is cut out alone (b), then with its first neighbours (c) and with its second neighbours (d). The bottom row shows how a cut-out is put into a regular-sized box before it goes into a network."
    }
   },
   {
@@ -47,7 +48,8 @@
   {
    "figure": {
     "src": "img/superpixel-context-scene-labeling/workflow.png",
-    "alt": "Flowchart. An image is split into superpixels by SLIC. Three inputs (patch alone, patch plus first neighbours, patch plus second neighbours) go through three separate small convolutional networks, whose outputs feed one ensemble step.",
+    "source": "Fig. 1",
+    "alt": "Flowchart. An image is split into superpixels by SLIC. Three inputs (patch alone, patch plus first neighbours, patch plus second neighbours) go through three separate small convolutional networks, whose outputs feed one ensemble step: max-voting, weighted voting or Dempster-Shafer theory.",
     "caption": "The whole pipeline. Three networks see the same patch at three levels of context, and an ensemble step merges their answers."
    }
   },
@@ -55,35 +57,36 @@
    "h2": "Combining the three answers"
   },
   {
-   "p": "We tried three ways of merging. Max-voting takes the class that most networks choose. A weighted average blends the probabilities, trusting each network according to how well it did in training. The third uses the Dempster-Shafer theory of evidence. Instead of one probability per class, it also lets the system put belief on pairs of classes. We estimated these from the confusion matrix, the table of which classes the networks mixed up during training. A patch can then be “sky or building” rather than being forced to one answer."
+   "p": "We tried three ways of merging. Max-voting takes the class that most networks choose. A weighted average blends the probabilities, trusting each network according to how well it did in training. The third uses the Dempster-Shafer theory of evidence. Instead of one probability per class, it deals with belief spread over groups of classes. We estimated this from the confusion matrix, the table of which classes a network mixed up during training, so that a patch can carry some belief for a class that is often confused with its top choice."
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "We used the ICCV09 dataset: 715 photos with 8 classes, split into 500 for training, 72 for validation and 143 for testing. The three networks alone scored almost the same: 72.32% for the patch alone, 72.45% with first neighbours and 72.24% with second neighbours. From that you might think the neighbours add nothing. Combining them showed otherwise."
+   "p": "We used the ICCV09 dataset: 715 photos with 8 classes, split into 500 for training, 72 for validation and 143 for testing. The three networks alone scored almost the same: 72.32% for the patch alone, 72.45% with first neighbours and 72.24% with second neighbours (Table 1). From that you might think the neighbours add nothing. Combining them showed otherwise."
   },
   {
-   "callout": "The weighted average of the three networks reached 77.14% accuracy on the test images, against about 72% for each network alone."
+   "callout": "The weighted average of the three networks reached 77.14% accuracy on the ICCV09 test images, against about 72% for each network alone (Table 1, Table 2)."
   },
   {
-   "p": "Dempster-Shafer gave 77.07% and max-voting 72.88%. So the two better methods were practically tied, and each won on different classes. Our method scored above the pixel-based CRF baseline (74.3%), the CNN plus superpixel method of Farabet et al. (74.56%) and three other published methods (76.3% to 76.9%) on this dataset. Testing took 25 to 30 milliseconds per image on a GTX 1080 graphics card, which we took as good enough for real-time use."
+   "p": "Dempster-Shafer gave 77.07% and max-voting 72.88% (Table 2). The weighted average and Dempster-Shafer were close, and each came out ahead on some classes. On this dataset our result of 77.14% was above the pixel-based CRF baseline (74.3%), the CNN plus superpixel method of Farabet et al. (74.56%) and three other published methods (76.3% to 76.9%) (Table 3). Testing took 25 to 30 milliseconds on a GTX 1080 graphics card, which the paper takes as enough for real-time use."
   },
   {
    "figure": {
     "src": "img/superpixel-context-scene-labeling/results.jpg",
-    "alt": "Six photos of roads, trees and buildings, each next to its coloured label map, with a colour key for sky, foreground object, grass, tree, road, building, water and mountain.",
-    "caption": "Example outputs. The big regions come out right, but outlines are blocky because every superpixel gets one label."
+    "source": "Fig. 3",
+    "alt": "Six photos of roads, trees, buildings and a motorbike rider, each next to its coloured label map, with a colour key for sky, foreground object, grass, tree, road, building, water and mountain.",
+    "caption": "Example outputs. Large regions such as sky, trees and road are labelled in clear blocks, and the outlines follow the superpixels."
    }
   },
   {
    "h2": "What it does not do"
   },
   {
-   "p": "The mountain class almost failed: accuracy was 2.56% with Dempster-Shafer and about 4% with the other two methods. Mountain segments are scarce in the dataset, so the networks had little to learn from. Water and foreground objects were also weaker than sky or road. The dataset itself is small, and we did not test other ones."
+   "p": "The mountain class almost failed: accuracy was 2.56% with Dempster-Shafer and about 4% with the other two methods (Table 2). Segments with mountains are scarce in the dataset, so the networks had little to learn from. Water and foreground objects were also weaker than sky or ground (Table 2). We tested only on ICCV09."
   },
   {
-   "p": "We saw video segmentation as the natural next step, since a fast and small method suits it."
+   "p": "We saw video segmentation as the natural next step, since a fast method built on relatively small networks suits it."
   }
  ],
  "acknowledgements": "This work is partially supported by the project entitled “Development of knowledge graph from images using deep learning”, sponsored by SERB (Government of India, order no. SB/S3/EECE/054/2016, dated 25/11/2016), and carried out at the Centre for Microprocessor Application for Training Education and Research, CSE Department, Jadavpur University.",
@@ -92,5 +95,10 @@
    "label": "Publisher page",
    "url": "https://doi.org/10.1007/978-981-13-1280-9_28"
   }
+ ],
+ "tables_used": [
+  "Table 1: test accuracy of the three single networks",
+  "Table 2: accuracy of the three ensemble methods, per class and on average",
+  "Table 3: our result next to other published methods on ICCV09"
  ]
 }

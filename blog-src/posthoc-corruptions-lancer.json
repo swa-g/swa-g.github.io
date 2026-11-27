@@ -18,29 +18,30 @@
  "cta": "Read the full write-up on the LANCER page",
  "body": [
   {
-   "p": "This paper belongs to <b>LANCER</b>, my project at the University of Ljubljana on autonomous navigation in complex environments using reinforcement learning. A part of that work is about testing: how do we know a camera-driven car will cope with night, fog or rain?"
+   "p": "This paper belongs to <b>LANCER</b>, my postdoctoral project at the University of Ljubljana on autonomous navigation in complex environments using reinforcement learning. Part of that work is testing: how do we know a camera-driven car will cope with night or fog?"
   },
   {
    "h2": "The shortcut we questioned"
   },
   {
-   "p": "The common shortcut is to take recorded footage and damage it with image filters, such as darkening it or adding a fog-like veil, then see how badly the vision network copes. It is cheap, but it assumes the filtered picture stands in for the real condition. We checked that assumption in a driving simulator that can produce night and fog in two ways: by filtering the finished picture, and by changing the lighting and air in the scene before it is rendered."
+   "p": "The common shortcut is to take recorded footage and damage it with image filters, such as darkening it or adding a fog-like veil, then see how badly the vision network copes. It hides an assumption: that the filtered picture stands in for the physical condition it is named after. We tested it in a driving simulator that can produce night and fog in two ways. One filters the finished picture. The other changes the lights and the fog in the scene before it is rendered. We matched each filter to its physical condition by how much it changes the picture, and let nine independently trained agents drive in both."
   },
   {
    "figure": {
     "src": "img/posthoc-corruptions-lancer/night-vs-filter.png",
     "alt": "Two rows of frames: with simulated night the car leaves the road, while with the matched darkening filter it completes the run; for fog the physical condition and its filter look and behave alike.",
-    "caption": "The same road, agent and random seed. The simulated night puts the car off the road. The filter that matches it does not."
+    "caption": "The same road, agent and random seed, driven by the most fragile of the nine agents, chosen because the failure is easy to see. The simulated night puts the car off the road. The filter that matches it does not.",
+    "source": "Fig. 3"
    }
   },
   {
    "h2": "What we found"
   },
   {
-   "p": "Fog passed the test: the real fog and its filter agree at every strength. Night did not. At a picture change of 38 grey levels, the simulated night cost nine independently trained agents 0.51 of their driving performance, while the matched darkening filter cost nothing measurable. All nine agents agreed (p = 0.004). Training with filters did not help either: an agent trained that way did slightly worse against physical conditions (8.68 laps out of ten, against 9.05 without it), while training on re-rendered conditions completed every lap."
+   "p": "Fog passed the test: the real fog and its filter agree at every strength. Night did not. At a picture change of 38 grey levels, the physical night cost the nine agents 0.51 of their driving performance, while the matched darkening filter cost nothing measurable. All nine agents agreed (sign test, p = 0.004). Training with filters did not help either: against physical conditions an agent trained that way did slightly worse (8.68 laps out of ten, against 9.05 without), while an agent that also saw re-rendered conditions completed every lap."
   },
   {
-   "p": "So whether a filter is a fair stand-in depends on the physics of the condition it imitates. The details, including a distance-based test we tried and what it can and cannot tell you, are on the project page."
+   "p": "So whether a filter is a fair stand-in depends on the physics of the condition it imitates. These are simulator measurements, and our night has no headlights, which plausibly overstates what darkness does to a lit vehicle. The details, including a distance-based test we tried, are on the project page."
   }
  ],
  "acknowledgements": "This work was co-funded by the European Union's Horizon Europe research and innovation programme under the Marie Skłodowska-Curie COFUND Postdoctoral Programme, grant agreement No. 101081355 (SMASH), and by the Republic of Slovenia and the European Union from the European Regional Development Fund. It was also supported by the Slovenian Research and Innovation Agency (ARIS), research programme P2-0241, Synergetics of complex systems and processes. Views and opinions expressed are those of the authors only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.",
@@ -53,5 +54,6 @@
    "label": "Paper (PDF)",
    "url": "../LANCER/papers/posthoc-corruptions-is2026.pdf"
   }
- ]
+ ],
+ "tables_used": []
 }
