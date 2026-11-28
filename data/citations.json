@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-27T15:06:39.875Z",
+  "updated": "2026-11-28T14:13:36.845Z",
   "source": "Google Scholar via SerpAPI",
   "total": 1341,
   "h_index": 13,
@@ -47,11 +47,11 @@
     },
     {
       "year": 2025,
-      "citations": 197
+      "citations": 196
     },
     {
       "year": 2026,
-      "citations": 76
+      "citations": 77
     }
   ],
   "papers": {
